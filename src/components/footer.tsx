@@ -136,6 +136,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/guides" className="hover:text-ink hover:underline transition-colors">
+                  Guides
+                </Link>
+              </li>
+              <li>
                 <a
                   href="mailto:careers@qrvenues.com"
                   className="hover:text-ink hover:underline transition-colors inline-flex items-center gap-1"

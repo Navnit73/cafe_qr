@@ -33,14 +33,9 @@ export function Header() {
               width={32}
               height={32}
             />
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="text-sm sm:text-base font-semibold tracking-tight text-ink group-hover:text-fin-orange transition-colors">
-                {tNav("brand")}
-              </span>
-              <span className="badge badge-sm bg-fin-orange text-on-primary text-[10px] font-semibold tracking-wide uppercase px-2 py-0.5 border-0 rounded hidden sm:inline-flex">
-                {tNav("badge")}
-              </span>
-            </div>
+            <span className="text-sm sm:text-base font-semibold tracking-tight text-ink group-hover:text-fin-orange transition-colors">
+              {tNav("brand")}
+            </span>
           </Link>
         </div>
 
@@ -91,11 +86,8 @@ export function Header() {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-surface-1 border-b border-hairline px-4 py-4 space-y-4 animate-in slide-in-from-top-2 shadow-lg">
-          <div className="flex items-center justify-between pb-2 border-b border-hairline-soft">
+          <div className="pb-2 border-b border-hairline-soft">
             <span className="text-xs font-semibold text-ink uppercase tracking-wider">Navigation</span>
-            <span className="badge badge-sm bg-fin-orange text-on-primary text-[10px] font-semibold tracking-wide uppercase px-2 py-0.5 border-0 rounded">
-              {tNav("badge")}
-            </span>
           </div>
 
           <nav className="flex flex-col space-y-1 text-sm font-medium text-ink">
