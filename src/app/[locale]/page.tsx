@@ -31,11 +31,13 @@ export async function generateMetadata({
   params,
 }: LandingPageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}`;
+  const canonicalUrl = `https://qrvenues.com/${locale}`;
+  const title = "Create QR Code Menus, Google Review Links & Contactless Ordering — Free to Start | QRVenues";
+  const description = "Give your restaurant or cafe a QR code menu, a Google review QR code, and a full ordering system — all from one dashboard. Free to start.";
 
   return {
-    title: "Create QR Code Menus, Google Review Links & Contactless Ordering — Free to Start | QRVenues",
-    description: "Give your restaurant or cafe a QR code menu, a Google review QR code, and a full ordering system — all from one dashboard. Free to start.",
+    title,
+    description,
     keywords: [
       "qr code menu",
       "free qr menu maker",
@@ -54,6 +56,18 @@ export async function generateMetadata({
         "en-AU": "https://qrvenues.com/en-au",
         "x-default": "https://qrvenues.com/en-us",
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "QRVenues",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }
@@ -129,23 +143,50 @@ export default async function LandingPage({ params }: LandingPageProps) {
     ],
   };
 
+  // Structured Data for Software Application / SaaS Rich Snippet
+  const softwareAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "QRVenues",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "All (Web Browser)",
+    "url": "https://qrvenues.com",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Free tier with QR code menu maker and Google review link generator",
+    },
+    "featureList": [
+      "Digital Menu QR Code Generator",
+      "Google Review QR Code Generator & Private Feedback Loop",
+      "Contactless Dine-in & Takeaway Table Ordering System",
+      "Live Kitchen POS Order Stream",
+      "Print-ready Table Tent Templates",
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
-      {/* FAQ Schema Inject */}
+      {/* Schema Injections */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppSchema) }}
+      />
 
-      {/* =========================================================================
-          Common Header / Navbar
-          ========================================================================= */}
+      {/* Common Header / Navbar */}
       <Header />
 
-      {/* =========================================================================
-          1. Hero Section
-          ========================================================================= */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-8 pt-12 sm:pt-20 pb-16 text-center flex flex-col items-center">
+      {/* Main Content Landmark */}
+      <main className="flex-1">
+        {/* =========================================================================
+            1. Hero Section
+            ========================================================================= */}
+        <section className="max-w-5xl mx-auto px-4 sm:px-8 pt-12 sm:pt-20 pb-16 text-center flex flex-col items-center">
         <div className="badge badge-lg bg-surface-1 border border-hairline text-xs font-medium text-ink gap-2 px-3.5 py-3 mb-6 rounded-full">
           <span className="w-2 h-2 rounded-full bg-fin-orange animate-pulse" />
           <span>{tHero("badge")}</span>
@@ -839,6 +880,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
           </div>
         </div>
       </section>
+      </main>
 
       {/* =========================================================================
           Footer & Compliance

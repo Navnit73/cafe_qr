@@ -13,12 +13,12 @@ interface LocaleOption {
 }
 
 const LOCALE_OPTIONS: LocaleOption[] = [
-  { code: "en-US", label: "English (US)", region: "United States", flag: "🇺🇸" },
-  { code: "en-GB", label: "English (UK)", region: "United Kingdom", flag: "🇬🇧" },
-  { code: "en-AU", label: "English (AU)", region: "Australia", flag: "🇦🇺" },
+  { code: "en-us", label: "English (US)", region: "United States", flag: "🇺🇸" },
+  { code: "en-gb", label: "English (UK)", region: "United Kingdom", flag: "🇬🇧" },
+  { code: "en-au", label: "English (AU)", region: "Australia", flag: "🇦🇺" },
   // Future markets (uncomment when translations are available):
-  // { code: "de-DE", label: "Deutsch", region: "Germany", flag: "🇩🇪" },
-  // { code: "fr-FR", label: "Français", region: "France", flag: "🇫🇷" },
+  // { code: "de-de", label: "Deutsch", region: "Germany", flag: "🇩🇪" },
+  // { code: "fr-fr", label: "Français", region: "France", flag: "🇫🇷" },
 ];
 
 export function LanguageSwitcher() {
@@ -39,22 +39,24 @@ export function LanguageSwitcher() {
   };
 
   return (
-    <div className="dropdown dropdown-end">
+    <div className="dropdown dropdown-end shrink-0">
       <div
         tabIndex={0}
         role="button"
-        className="btn btn-ghost btn-sm h-8 min-h-8 px-2.5 rounded-md text-xs font-medium text-ink flex items-center gap-1.5 border border-hairline hover:border-ink hover:bg-surface-1"
+        className="btn btn-ghost btn-sm h-8 min-h-8 px-2 sm:px-2.5 rounded-md text-xs font-medium text-ink flex items-center gap-1 sm:gap-1.5 border border-hairline hover:border-ink hover:bg-surface-1"
         aria-label="Change region and language"
       >
-        <Globe className="w-3.5 h-3.5 text-ink-subtle" />
-        <span className="hidden sm:inline">{currentOption.flag}</span>
-        <span className="font-medium">{currentOption.code}</span>
-        <ChevronDown className="w-3 h-3 text-ink-subtle opacity-70" />
+        <Globe className="w-3.5 h-3.5 text-ink-subtle shrink-0" />
+        <span className="text-xs shrink-0">{currentOption.flag}</span>
+        <span className="font-medium hidden sm:inline">
+          {currentOption.code === "en-us" ? "en-US" : currentOption.code === "en-gb" ? "en-GB" : "en-AU"}
+        </span>
+        <ChevronDown className="w-3 h-3 text-ink-subtle opacity-70 shrink-0" />
       </div>
 
       <ul
         tabIndex={0}
-        className="dropdown-content menu z-50 p-1.5 shadow-sm bg-surface-1 border border-hairline rounded-lg w-52 mt-1 space-y-0.5"
+        className="dropdown-content menu z-50 p-1.5 shadow-md bg-surface-1 border border-hairline rounded-lg w-52 mt-1 space-y-0.5"
       >
         <li className="menu-title px-2 py-1 text-[10px] uppercase font-semibold text-ink-tertiary tracking-wider">
           Select Region

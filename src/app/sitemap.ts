@@ -5,7 +5,6 @@ const baseUrl = "https://qrvenues.com";
 
 const PATHS = [
   { path: "", changeFrequency: "weekly" as const, priority: 1.0 },
-  { path: "/login", changeFrequency: "monthly" as const, priority: 0.6 },
   { path: "/about", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/contact", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/case-studies", changeFrequency: "monthly" as const, priority: 0.8 },
@@ -21,18 +20,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
   for (const page of PATHS) {
     const alternates: Record<string, string> = {
       "x-default": `${baseUrl}/en-us${page.path}`,
+      "en-US": `${baseUrl}/en-us${page.path}`,
+      "en-GB": `${baseUrl}/en-gb${page.path}`,
+      "en-AU": `${baseUrl}/en-au${page.path}`,
     };
 
     for (const locale of activeLocales) {
-      alternates[locale] = `${baseUrl}/${locale.toLowerCase()}${page.path}`;
-    }
-
-    for (const locale of activeLocales) {
       routes.push({
-        url: `${baseUrl}/${locale.toLowerCase()}${page.path}`,
+        url: `${baseUrl}/${locale}${page.path}`,
         lastModified: new Date(),
         changeFrequency: page.changeFrequency,
-        priority: locale === "en-US" ? page.priority : page.priority * 0.9,
+        priority: locale === "en-us" ? page.priority : Number((page.priority * 0.9).toFixed(2)),
         alternates: {
           languages: alternates,
         },

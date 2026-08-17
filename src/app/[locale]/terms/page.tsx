@@ -12,11 +12,13 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}/terms`;
+  const canonicalUrl = `https://qrvenues.com/${locale}/terms`;
+  const title = "Terms of Service — QRVenues";
+  const description = "Terms and conditions governing the use of QRVenues software and services.";
 
   return {
-    title: "Terms of Service — QRVenues",
-    description: "Terms and conditions governing the use of QRVenues software and services.",
+    title,
+    description,
     alternates: {
       canonical: canonicalUrl,
       languages: {
@@ -25,6 +27,18 @@ export async function generateMetadata({
         "en-AU": "https://qrvenues.com/en-au/terms",
         "x-default": "https://qrvenues.com/en-us/terms",
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "QRVenues",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }
@@ -35,8 +49,33 @@ export default async function TermsPage({ params }: PageProps) {
 
   const tTerms = await getTranslations({ locale, namespace: "terms" });
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": `https://qrvenues.com/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Terms of Service",
+        "item": `https://qrvenues.com/${locale}/terms`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
+      {/* Breadcrumb Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       {/* Common Header */}
       <Header />
 

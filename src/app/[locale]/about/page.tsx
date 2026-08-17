@@ -12,11 +12,13 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}/about`;
+  const canonicalUrl = `https://qrvenues.com/${locale}/about`;
+  const title = "About Us — QRVenues Hospitality Platform";
+  const description = "Learn about the mission, team, and hospitality expertise behind QRVenues.";
 
   return {
-    title: "About Us — QRVenues Hospitality Platform",
-    description: "Learn about the mission, team, and hospitality expertise behind QRVenues.",
+    title,
+    description,
     alternates: {
       canonical: canonicalUrl,
       languages: {
@@ -25,6 +27,18 @@ export async function generateMetadata({
         "en-AU": "https://qrvenues.com/en-au/about",
         "x-default": "https://qrvenues.com/en-us/about",
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "QRVenues",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }
@@ -35,8 +49,33 @@ export default async function AboutPage({ params }: PageProps) {
 
   const tAbout = await getTranslations({ locale, namespace: "about" });
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": `https://qrvenues.com/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "About Us",
+        "item": `https://qrvenues.com/${locale}/about`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
+      {/* Breadcrumb Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       {/* Common Header */}
       <Header />
 

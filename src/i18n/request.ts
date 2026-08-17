@@ -38,11 +38,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   // Load region-specific overrides
   let regionalOverrides: Record<string, unknown> = {};
-  if (locale === "en-US") {
+  if (locale === "en-us") {
     regionalOverrides = (await import("../../messages/en/us.json")).default;
-  } else if (locale === "en-GB") {
+  } else if (locale === "en-gb") {
     regionalOverrides = (await import("../../messages/en/gb.json")).default;
-  } else if (locale === "en-AU") {
+  } else if (locale === "en-au") {
     regionalOverrides = (await import("../../messages/en/au.json")).default;
   }
 

@@ -25,16 +25,56 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "QRVenues — QR Code Menus & Contactless Ordering",
+  metadataBase: new URL("https://qrvenues.com"),
+  title: {
+    default: "QRVenues — QR Code Menus, Google Review Links & Contactless Ordering",
+    template: "%s | QRVenues",
+  },
   description: "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues",
-  keywords: ["cafe", "qr ordering", "contactless menu", "restaurant POS", "qr code menu", "qrvenues"],
+  keywords: [
+    "cafe",
+    "qr ordering",
+    "contactless menu",
+    "restaurant POS",
+    "qr code menu",
+    "qrvenues",
+    "google review qr code",
+    "digital menu maker",
+  ],
   authors: [{ name: "QRVenues" }],
+  creator: "QRVenues",
+  publisher: "QRVenues",
   icons: {
     icon: [
       { url: "/favicons.svg", type: "image/svg+xml" },
     ],
     shortcut: "/favicons.svg",
     apple: "/favicons.svg",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "QRVenues",
+    title: "QRVenues — QR Code Menus, Google Review Links & Contactless Ordering",
+    description: "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues",
+    url: "https://qrvenues.com",
+    locale: "en_US",
+    alternateLocale: ["en_GB", "en_AU"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "QRVenues — QR Code Menus, Google Review Links & Contactless Ordering",
+    description: "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -64,12 +104,45 @@ export default async function LocaleLayout({
   // Providing all messages to the client side
   const messages = await getMessages();
 
+  // Global Structured Data: Organization and WebSite
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "QRVenues",
+    "url": "https://qrvenues.com",
+    "logo": "https://qrvenues.com/favicons.svg",
+    "description": "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@qrvenues.com",
+      "contactType": "customer service",
+      "availableLanguage": ["en"],
+    },
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "QRVenues",
+    "url": "https://qrvenues.com",
+  };
+
   return (
     <html
       lang={locale}
       data-theme="intercom"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}

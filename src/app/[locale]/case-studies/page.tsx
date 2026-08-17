@@ -20,11 +20,13 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}/case-studies`;
+  const canonicalUrl = `https://qrvenues.com/${locale}/case-studies`;
+  const title = "Hospitality Case Studies & Operator ROI — QRVenues";
+  const description = "Read how cafes and restaurants achieved +42% table turnaround, 4.9-star ratings, and zero queue friction with QRVenues.";
 
   return {
-    title: "Hospitality Case Studies & Operator ROI — QRVenues",
-    description: "Read how cafes and restaurants achieved +42% table turnaround, 4.9-star ratings, and zero queue friction with QRVenues.",
+    title,
+    description,
     alternates: {
       canonical: canonicalUrl,
       languages: {
@@ -33,6 +35,18 @@ export async function generateMetadata({
         "en-AU": "https://qrvenues.com/en-au/case-studies",
         "x-default": "https://qrvenues.com/en-us/case-studies",
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "QRVenues",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }
@@ -43,8 +57,99 @@ export default async function CaseStudiesPage({ params }: PageProps) {
 
   const tCases = await getTranslations({ locale, namespace: "caseStudies" });
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": `https://qrvenues.com/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Case Studies",
+        "item": `https://qrvenues.com/${locale}/case-studies`,
+      },
+    ],
+  };
+
+  const caseStudiesSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "QRVenues Hospitality Operator Case Studies",
+    "itemListElement": [
+      {
+        "@type": "Review",
+        "position": 1,
+        "itemReviewed": {
+          "@type": "SoftwareApplication",
+          "name": "QRVenues",
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "The Roasted Bean Roastery & Cafe",
+        },
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5",
+          "bestRating": "5",
+        },
+        "reviewBody": tCases("case1Desc"),
+      },
+      {
+        "@type": "Review",
+        "position": 2,
+        "itemReviewed": {
+          "@type": "SoftwareApplication",
+          "name": "QRVenues",
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "Little Napoli Authentic Pizzeria",
+        },
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "4.9",
+          "bestRating": "5",
+        },
+        "reviewBody": tCases("case2Desc"),
+      },
+      {
+        "@type": "Review",
+        "position": 3,
+        "itemReviewed": {
+          "@type": "SoftwareApplication",
+          "name": "QRVenues",
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "The Daily Grind Espresso Bar",
+        },
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5",
+          "bestRating": "5",
+        },
+        "reviewBody": tCases("case3Desc"),
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(caseStudiesSchema) }}
+      />
+
       {/* Common Header */}
       <Header />
 

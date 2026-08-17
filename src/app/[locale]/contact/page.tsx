@@ -12,11 +12,13 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}/contact`;
+  const canonicalUrl = `https://qrvenues.com/${locale}/contact`;
+  const title = "Contact & Support — QRVenues";
+  const description = "Contact the QRVenues hospitality operations and compliance desk.";
 
   return {
-    title: "Contact & Support — QRVenues",
-    description: "Contact the QRVenues hospitality operations and compliance desk.",
+    title,
+    description,
     alternates: {
       canonical: canonicalUrl,
       languages: {
@@ -25,6 +27,18 @@ export async function generateMetadata({
         "en-AU": "https://qrvenues.com/en-au/contact",
         "x-default": "https://qrvenues.com/en-us/contact",
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "QRVenues",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }
@@ -35,8 +49,45 @@ export default async function ContactPage({ params }: PageProps) {
 
   const tContact = await getTranslations({ locale, namespace: "contact" });
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": `https://qrvenues.com/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Contact Us",
+        "item": `https://qrvenues.com/${locale}/contact`,
+      },
+    ],
+  };
+
+  const contactPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "QRVenues Support & Compliance Desk",
+    "url": `https://qrvenues.com/${locale}/contact`,
+    "description": "24/7 Global Hospitality Operations, Enterprise Solutions and Compliance Support.",
+  };
+
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactPageSchema) }}
+      />
+
       {/* Common Header */}
       <Header />
 

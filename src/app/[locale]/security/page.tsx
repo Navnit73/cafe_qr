@@ -12,11 +12,13 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}/security`;
+  const canonicalUrl = `https://qrvenues.com/${locale}/security`;
+  const title = "Security & PCI DSS Compliance — QRVenues";
+  const description = "Our security controls, TLS 1.3 encryption, and Level 1 PCI DSS compliant payment handling.";
 
   return {
-    title: "Security & PCI DSS Compliance — QRVenues",
-    description: "Our security controls, TLS 1.3 encryption, and Level 1 PCI DSS compliant payment handling.",
+    title,
+    description,
     alternates: {
       canonical: canonicalUrl,
       languages: {
@@ -25,6 +27,18 @@ export async function generateMetadata({
         "en-AU": "https://qrvenues.com/en-au/security",
         "x-default": "https://qrvenues.com/en-us/security",
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "QRVenues",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }
@@ -35,8 +49,33 @@ export default async function SecurityPage({ params }: PageProps) {
 
   const tSec = await getTranslations({ locale, namespace: "security" });
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": `https://qrvenues.com/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Security & PCI DSS",
+        "item": `https://qrvenues.com/${locale}/security`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
+      {/* Breadcrumb Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       {/* Common Header */}
       <Header />
 

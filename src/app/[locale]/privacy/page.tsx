@@ -12,11 +12,13 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}/privacy`;
+  const canonicalUrl = `https://qrvenues.com/${locale}/privacy`;
+  const title = "Privacy Policy — QRVenues";
+  const description = "Our full privacy policy outlining data collection, cookies, and protection measures.";
 
   return {
-    title: "Privacy Policy — QRVenues",
-    description: "Our full privacy policy outlining data collection, cookies, and protection measures.",
+    title,
+    description,
     alternates: {
       canonical: canonicalUrl,
       languages: {
@@ -25,6 +27,18 @@ export async function generateMetadata({
         "en-AU": "https://qrvenues.com/en-au/privacy",
         "x-default": "https://qrvenues.com/en-us/privacy",
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "QRVenues",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }
@@ -35,8 +49,33 @@ export default async function PrivacyPage({ params }: PageProps) {
 
   const tPriv = await getTranslations({ locale, namespace: "privacy" });
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": `https://qrvenues.com/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Privacy Policy",
+        "item": `https://qrvenues.com/${locale}/privacy`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
+      {/* Breadcrumb Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       {/* Common Header */}
       <Header />
 
