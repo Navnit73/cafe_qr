@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "title": "Sign In — Cafe QRBuddy",
+    "description": "Smart contactless ordering & customer service powered by Fin AI",
+    "tagline": "Smart contactless ordering & customer service"
+  },
+  "nav": {
+    "brand": "Cafe QRBuddy",
+    "badge": "Fin AI",
+    "help": "Help",
+    "privacy": "Privacy",
+    "switchRegion": "Select Region"
+  },
+  "auth": {
+    "title": "Sign in to your account",
+    "subtitle": "Welcome back! Please enter your details.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "name@company.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me for 30 days",
+    "signInBtn": "Sign in",
+    "signingIn": "Signing in...",
+    "noAccount": "Don't have an account?",
+    "trialLink": "Start a 14-day free trial",
+    "generalError": "Invalid email or password. Please check your credentials and try again.",
+    "unexpectedError": "An unexpected error occurred. Please try again later.",
+    "successRedirect": "Signed in successfully! Redirecting..."
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 6 characters"
+  },
+  "regional": {
+    "title": "Regional Localization",
+    "marketLabel": "Market",
+    "currencyLabel": "Pricing / Currency",
+    "currencyValue": "$ USD ($29.00 / mo)",
+    "dateFormatLabel": "Date Format",
+    "dateFormatValue": "MM/DD/YYYY",
+    "spellingLabel": "Localized Spelling",
+    "spellingValue": "Color customization and centralized flavor profiles"
+  },
+  "footer": {
+    "copyright": "© {year} Cafe QRBuddy, Inc. Built with Intercom Design System & daisyUI."
+  }
+}

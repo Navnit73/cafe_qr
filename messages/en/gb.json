@@ -1,0 +1,11 @@
+{
+  "auth": {
+    "subtitle": "Welcome back! Please enter your details to access your workspace."
+  },
+  "regional": {
+    "marketLabel": "United Kingdom (en-GB)",
+    "currencyValue": "£24.00 GBP / mo",
+    "dateFormatValue": "DD/MM/YYYY (e.g. 17/08/2026)",
+    "spellingValue": "Colour customisation & central flavour profiles"
+  }
+}

@@ -1,34 +1,47 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useTranslations } from "next-intl";
 import { Mail, Lock, AlertCircle, CheckCircle2, Eye, EyeOff, ArrowRight } from "lucide-react";
 
-const loginSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(6, "Password must be at least 6 characters"),
-  rememberMe: z.boolean(),
-});
-
-export type LoginFormData = z.infer<typeof loginSchema>;
+export interface LoginFormData {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
 
 export interface LoginFormProps {
   onSuccess?: (data: LoginFormData) => void;
 }
 
 export function LoginForm({ onSuccess }: LoginFormProps) {
+  const tAuth = useTranslations("auth");
+  const tVal = useTranslations("validation");
+
   const [showPassword, setShowPassword] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // Dynamic Zod schema with localized validation messages
+  const loginSchema = useMemo(
+    () =>
+      z.object({
+        email: z
+          .string()
+          .trim()
+          .min(1, tVal("emailRequired"))
+          .email(tVal("emailInvalid")),
+        password: z
+          .string()
+          .min(1, tVal("passwordRequired"))
+          .min(6, tVal("passwordMin")),
+        rememberMe: z.boolean(),
+      }),
+    [tVal]
+  );
 
   const {
     register,
@@ -52,7 +65,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       if (data.email === "error@example.com") {
-        setFormError("Invalid email or password. Please check your credentials and try again.");
+        setFormError(tAuth("generalError"));
         return;
       }
 
@@ -61,7 +74,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         onSuccess(data);
       }
     } catch {
-      setFormError("An unexpected error occurred. Please try again later.");
+      setFormError(tAuth("unexpectedError"));
     }
   };
 
@@ -76,11 +89,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       <div className="card-body p-6 sm:p-8">
         <div className="mb-4">
           <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-ink">
-            Sign in to your account
+            {tAuth("title")}
           </h2>
-          <p className="text-sm text-ink-muted mt-1">
-            Welcome back! Please enter your details.
-          </p>
+          <p className="text-sm text-ink-muted mt-1">{tAuth("subtitle")}</p>
         </div>
 
         {formError && (
@@ -101,7 +112,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             className="alert alert-success text-xs rounded-lg py-2.5 px-3 mb-3 flex items-center gap-2"
           >
             <CheckCircle2 className="w-4 h-4 shrink-0" />
-            <span>Signed in successfully! Redirecting...</span>
+            <span>{tAuth("successRedirect")}</span>
           </div>
         )}
 
@@ -109,7 +120,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           {/* Email Field */}
           <fieldset className="fieldset w-full">
             <legend className="fieldset-legend text-xs font-medium text-ink mb-1.5">
-              Email address
+              {tAuth("emailLabel")}
             </legend>
             <div
               className={`flex items-center w-full px-3 py-2.5 bg-surface-1 border rounded-lg transition-all ${
@@ -122,7 +133,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               <input
                 id="email-input"
                 type="email"
-                placeholder="name@company.com"
+                placeholder={tAuth("emailPlaceholder")}
                 disabled={isSubmitting}
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? "email-error" : undefined}
@@ -142,13 +153,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           <fieldset className="fieldset w-full">
             <div className="flex items-center justify-between mb-1.5">
               <legend className="fieldset-legend text-xs font-medium text-ink">
-                Password
+                {tAuth("passwordLabel")}
               </legend>
               <a
                 href="#forgot-password"
                 className="text-xs text-ink-muted hover:text-ink hover:underline font-medium"
               >
-                Forgot password?
+                {tAuth("forgotPassword")}
               </a>
             </div>
             <div
@@ -162,7 +173,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               <input
                 id="password-input"
                 type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
+                placeholder={tAuth("passwordPlaceholder")}
                 disabled={isSubmitting}
                 aria-invalid={!!errors.password}
                 aria-describedby={errors.password ? "password-error" : undefined}
@@ -206,7 +217,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               htmlFor="remember-me-checkbox"
               className="text-xs text-ink-muted cursor-pointer select-none"
             >
-              Remember me for 30 days
+              {tAuth("rememberMe")}
             </label>
           </div>
 
@@ -221,11 +232,11 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               {isSubmitting ? (
                 <>
                   <span className="loading loading-spinner loading-xs" />
-                  <span>Signing in...</span>
+                  <span>{tAuth("signingIn")}</span>
                 </>
               ) : (
                 <span className="flex items-center justify-center gap-1.5">
-                  <span>Sign in</span>
+                  <span>{tAuth("signInBtn")}</span>
                   <ArrowRight className="w-4 h-4" />
                 </span>
               )}
@@ -235,9 +246,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
         <div className="text-center pt-4 border-t border-hairline-soft mt-5">
           <p className="text-xs text-ink-muted">
-            Don&apos;t have an account?{" "}
+            {tAuth("noAccount")}{" "}
             <a href="#sign-up" className="text-ink font-medium hover:underline">
-              Start a 14-day free trial
+              {tAuth("trialLink")}
             </a>
           </p>
         </div>
