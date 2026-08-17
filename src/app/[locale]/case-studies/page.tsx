@@ -1,10 +1,9 @@
 import { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { LanguageSwitcher } from "@/components/language-switcher";
+import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import {
-  ArrowLeft,
   TrendingUp,
   MapPin,
   Zap,
@@ -21,18 +20,18 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://cafeqrbuddy.com/${locale.toLowerCase()}/case-studies`;
+  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}/case-studies`;
 
   return {
-    title: "Hospitality Case Studies & Operator ROI — Cafe QRBuddy",
-    description: "Read how cafes and restaurants achieved +42% table turnaround, 4.9-star ratings, and zero queue friction with Cafe QRBuddy.",
+    title: "Hospitality Case Studies & Operator ROI — QRVenues",
+    description: "Read how cafes and restaurants achieved +42% table turnaround, 4.9-star ratings, and zero queue friction with QRVenues.",
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://cafeqrbuddy.com/en-us/case-studies",
-        "en-GB": "https://cafeqrbuddy.com/en-gb/case-studies",
-        "en-AU": "https://cafeqrbuddy.com/en-au/case-studies",
-        "x-default": "https://cafeqrbuddy.com/en-us/case-studies",
+        "en-US": "https://qrvenues.com/en-us/case-studies",
+        "en-GB": "https://qrvenues.com/en-gb/case-studies",
+        "en-AU": "https://qrvenues.com/en-au/case-studies",
+        "x-default": "https://qrvenues.com/en-us/case-studies",
       },
     },
   };
@@ -42,29 +41,12 @@ export default async function CaseStudiesPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const tNav = await getTranslations({ locale, namespace: "nav" });
   const tCases = await getTranslations({ locale, namespace: "caseStudies" });
 
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
-      {/* Header Bar */}
-      <header className="sticky top-0 z-40 bg-canvas/90 backdrop-blur-md border-b border-hairline-soft">
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-xs font-medium text-ink-muted hover:text-ink transition-colors group"
-          >
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
-            <span>Back to overview</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <LanguageSwitcher />
-            <Link href="/login" className="btn btn-primary btn-sm rounded-md text-xs font-medium h-9 min-h-9 px-3.5 shadow-none">
-              {tNav("signIn")}
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Common Header */}
+      <Header />
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-8 py-16 flex-1 w-full space-y-12">

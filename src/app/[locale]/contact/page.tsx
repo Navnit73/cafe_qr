@@ -1,9 +1,8 @@
 import { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/routing";
-import { LanguageSwitcher } from "@/components/language-switcher";
+import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { ArrowLeft, Mail, MessageSquare, Building2, ShieldCheck, Clock } from "lucide-react";
+import { Mail, MessageSquare, Building2, ShieldCheck, Clock } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -13,18 +12,18 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://cafeqrbuddy.com/${locale.toLowerCase()}/contact`;
+  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}/contact`;
 
   return {
-    title: "Contact & Support — Cafe QRBuddy",
-    description: "Contact the Cafe QRBuddy hospitality operations and compliance desk.",
+    title: "Contact & Support — QRVenues",
+    description: "Contact the QRVenues hospitality operations and compliance desk.",
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://cafeqrbuddy.com/en-us/contact",
-        "en-GB": "https://cafeqrbuddy.com/en-gb/contact",
-        "en-AU": "https://cafeqrbuddy.com/en-au/contact",
-        "x-default": "https://cafeqrbuddy.com/en-us/contact",
+        "en-US": "https://qrvenues.com/en-us/contact",
+        "en-GB": "https://qrvenues.com/en-gb/contact",
+        "en-AU": "https://qrvenues.com/en-au/contact",
+        "x-default": "https://qrvenues.com/en-us/contact",
       },
     },
   };
@@ -34,29 +33,12 @@ export default async function ContactPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const tNav = await getTranslations({ locale, namespace: "nav" });
   const tContact = await getTranslations({ locale, namespace: "contact" });
 
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
-      {/* Header Bar */}
-      <header className="sticky top-0 z-40 bg-canvas/90 backdrop-blur-md border-b border-hairline-soft">
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-xs font-medium text-ink-muted hover:text-ink transition-colors group"
-          >
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
-            <span>Back to overview</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <LanguageSwitcher />
-            <Link href="/login" className="btn btn-primary btn-sm rounded-md text-xs font-medium h-9 min-h-9 px-3.5 shadow-none">
-              {tNav("signIn")}
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Common Header */}
+      <Header />
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-8 py-16 flex-1 w-full space-y-10">

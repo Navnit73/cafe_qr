@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { activeLocales } from "@/i18n/routing";
 
-const baseUrl = "https://cafeqrbuddy.com";
+const baseUrl = "https://qrvenues.com";
 
 const PATHS = [
   { path: "", changeFrequency: "weekly" as const, priority: 1.0 },

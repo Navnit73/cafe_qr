@@ -1,9 +1,8 @@
 import { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/routing";
-import { LanguageSwitcher } from "@/components/language-switcher";
+import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { ArrowLeft, ShieldCheck, Cookie, Mail } from "lucide-react";
+import { ShieldCheck, Cookie, Mail } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -13,18 +12,18 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://cafeqrbuddy.com/${locale.toLowerCase()}/privacy`;
+  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}/privacy`;
 
   return {
-    title: "Privacy Policy — Cafe QRBuddy",
+    title: "Privacy Policy — QRVenues",
     description: "Our full privacy policy outlining data collection, cookies, and protection measures.",
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://cafeqrbuddy.com/en-us/privacy",
-        "en-GB": "https://cafeqrbuddy.com/en-gb/privacy",
-        "en-AU": "https://cafeqrbuddy.com/en-au/privacy",
-        "x-default": "https://cafeqrbuddy.com/en-us/privacy",
+        "en-US": "https://qrvenues.com/en-us/privacy",
+        "en-GB": "https://qrvenues.com/en-gb/privacy",
+        "en-AU": "https://qrvenues.com/en-au/privacy",
+        "x-default": "https://qrvenues.com/en-us/privacy",
       },
     },
   };
@@ -34,29 +33,12 @@ export default async function PrivacyPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const tNav = await getTranslations({ locale, namespace: "nav" });
   const tPriv = await getTranslations({ locale, namespace: "privacy" });
 
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
-      {/* Header Bar */}
-      <header className="sticky top-0 z-40 bg-canvas/90 backdrop-blur-md border-b border-hairline-soft">
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-xs font-medium text-ink-muted hover:text-ink transition-colors group"
-          >
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
-            <span>Back to overview</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <LanguageSwitcher />
-            <Link href="/login" className="btn btn-primary btn-sm rounded-md text-xs font-medium h-9 min-h-9 px-3.5 shadow-none">
-              {tNav("signIn")}
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Common Header */}
+      <Header />
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-8 py-16 flex-1 w-full space-y-10">
@@ -92,8 +74,8 @@ export default async function PrivacyPage({ params }: PageProps) {
               Under the EU General Data Protection Regulation (GDPR) and UK Data Protection Act:
             </p>
             <ul className="list-disc pl-5 space-y-1 text-xs">
-              <li><strong>Data Processor:</strong> Cafe QRBuddy processes guest table orders and feedback solely on behalf of the subscriber venue.</li>
-              <li><strong>Data Controller:</strong> Cafe QRBuddy controls account, subscription, and billing data for registered venue operators.</li>
+              <li><strong>Data Processor:</strong> QRVenues processes guest table orders and feedback solely on behalf of the subscriber venue.</li>
+              <li><strong>Data Controller:</strong> QRVenues controls account, subscription, and billing data for registered venue operators.</li>
             </ul>
           </section>
 
@@ -139,8 +121,8 @@ export default async function PrivacyPage({ params }: PageProps) {
               If you have any questions regarding our privacy practices or wish to submit a Data Subject Access Request (DSAR), please contact our Data Protection Officer at:
             </p>
             <p className="font-mono text-xs text-ink bg-canvas p-3 rounded-lg border border-hairline">
-              Cafe QRBuddy Privacy & Compliance Office<br />
-              Email: privacy@cafeqrbuddy.com<br />
+              QRVenues Privacy & Compliance Office<br />
+              Email: privacy@qrvenues.com<br />
               Address: 548 Market St, Suite 39201, San Francisco, CA 94104
             </p>
           </section>

@@ -25,10 +25,17 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Sign In — Cafe QRBuddy",
-  description: "Smart contactless ordering & customer service powered by Fin AI",
-  keywords: ["cafe", "qr ordering", "contactless menu", "restaurant POS", "fin ai"],
-  authors: [{ name: "Cafe QRBuddy" }],
+  title: "QRVenues — QR Code Menus & Contactless Ordering",
+  description: "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues",
+  keywords: ["cafe", "qr ordering", "contactless menu", "restaurant POS", "qr code menu", "qrvenues"],
+  authors: [{ name: "QRVenues" }],
+  icons: {
+    icon: [
+      { url: "/favicons.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicons.svg",
+    apple: "/favicons.svg",
+  },
 };
 
 export function generateStaticParams() {

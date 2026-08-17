@@ -1,9 +1,8 @@
 import { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/routing";
-import { LanguageSwitcher } from "@/components/language-switcher";
+import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { ArrowLeft, ShieldCheck, Mail, Lock, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Mail, Lock, CheckCircle2 } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -13,18 +12,18 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://cafeqrbuddy.com/${locale.toLowerCase()}/gdpr`;
+  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}/gdpr`;
 
   return {
-    title: "GDPR & Data Protection Compliance — Cafe QRBuddy",
+    title: "GDPR & Data Protection Compliance — QRVenues",
     description: "Our comprehensive commitment to the EU GDPR, UK DPA, and international data privacy regulations.",
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://cafeqrbuddy.com/en-us/gdpr",
-        "en-GB": "https://cafeqrbuddy.com/en-gb/gdpr",
-        "en-AU": "https://cafeqrbuddy.com/en-au/gdpr",
-        "x-default": "https://cafeqrbuddy.com/en-us/gdpr",
+        "en-US": "https://qrvenues.com/en-us/gdpr",
+        "en-GB": "https://qrvenues.com/en-gb/gdpr",
+        "en-AU": "https://qrvenues.com/en-au/gdpr",
+        "x-default": "https://qrvenues.com/en-us/gdpr",
       },
     },
   };
@@ -34,29 +33,12 @@ export default async function GdprPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const tNav = await getTranslations({ locale, namespace: "nav" });
   const tGdpr = await getTranslations({ locale, namespace: "gdpr" });
 
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
-      {/* Header Bar */}
-      <header className="sticky top-0 z-40 bg-canvas/90 backdrop-blur-md border-b border-hairline-soft">
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-xs font-medium text-ink-muted hover:text-ink transition-colors group"
-          >
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
-            <span>Back to overview</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <LanguageSwitcher />
-            <Link href="/login" className="btn btn-primary btn-sm rounded-md text-xs font-medium h-9 min-h-9 px-3.5 shadow-none">
-              {tNav("signIn")}
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Common Header */}
+      <Header />
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-8 py-16 flex-1 w-full space-y-10">
@@ -114,7 +96,7 @@ export default async function GdprPage({ params }: PageProps) {
             <p className="text-xs text-ink-muted leading-relaxed max-w-xl">{tGdpr("dpoContactDesc")}</p>
           </div>
           <a
-            href="mailto:privacy@cafeqrbuddy.com"
+            href="mailto:privacy@qrvenues.com"
             className="btn btn-primary btn-sm rounded-lg text-xs font-medium h-9 min-h-9 px-4 shrink-0 shadow-none inline-flex items-center gap-1.5"
           >
             <Mail className="w-3.5 h-3.5" />

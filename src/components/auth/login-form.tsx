@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -103,9 +104,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     <div className="card bg-surface-1 border border-hairline rounded-2xl shadow-none w-full">
       <div className="card-body p-6 sm:p-8">
         <div className="text-center mb-6">
-          <div className="w-10 h-10 rounded-xl bg-ink text-on-primary flex items-center justify-center font-bold text-base mx-auto mb-3">
-            CQ
-          </div>
+          <Image
+            src="/favicons.svg"
+            alt="QRVenues logo"
+            className="w-12 h-12 rounded-xl mx-auto mb-3"
+            width={48}
+            height={48}
+          />
           <h1 className="text-xl sm:text-2xl font-medium tracking-tight text-ink">
             {tAuth("title")}
           </h1>

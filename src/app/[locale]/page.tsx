@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { LanguageSwitcher } from "@/components/language-switcher";
+import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import {
   QrCode,
@@ -31,10 +31,10 @@ export async function generateMetadata({
   params,
 }: LandingPageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://cafeqrbuddy.com/${locale.toLowerCase()}`;
+  const canonicalUrl = `https://qrvenues.com/${locale.toLowerCase()}`;
 
   return {
-    title: "Create QR Code Menus, Google Review Links & Contactless Ordering — Free to Start",
+    title: "Create QR Code Menus, Google Review Links & Contactless Ordering — Free to Start | QRVenues",
     description: "Give your restaurant or cafe a QR code menu, a Google review QR code, and a full ordering system — all from one dashboard. Free to start.",
     keywords: [
       "qr code menu",
@@ -49,10 +49,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://cafeqrbuddy.com/en-us",
-        "en-GB": "https://cafeqrbuddy.com/en-gb",
-        "en-AU": "https://cafeqrbuddy.com/en-au",
-        "x-default": "https://cafeqrbuddy.com/en-us",
+        "en-US": "https://qrvenues.com/en-us",
+        "en-GB": "https://qrvenues.com/en-gb",
+        "en-AU": "https://qrvenues.com/en-au",
+        "x-default": "https://qrvenues.com/en-us",
       },
     },
   };
@@ -62,7 +62,6 @@ export default async function LandingPage({ params }: LandingPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const tNav = await getTranslations({ locale, namespace: "nav" });
   const tHero = await getTranslations({ locale, namespace: "hero" });
   const tQrMenu = await getTranslations({ locale, namespace: "qrMenu" });
   const tGoogleReview = await getTranslations({ locale, namespace: "googleReview" });
@@ -139,62 +138,9 @@ export default async function LandingPage({ params }: LandingPageProps) {
       />
 
       {/* =========================================================================
-          daisyUI Navbar
+          Common Header / Navbar
           ========================================================================= */}
-      <header className="sticky top-0 z-40 bg-canvas/90 backdrop-blur-md border-b border-hairline-soft">
-        <div className="navbar max-w-6xl mx-auto px-4 sm:px-8 min-h-16 h-16 justify-between">
-          <div className="navbar-start w-auto flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-ink flex items-center justify-center text-on-primary font-bold text-sm tracking-tight shadow-none">
-              CQ
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-base font-semibold tracking-tight text-ink">
-                {tNav("brand")}
-              </span>
-              <span className="badge badge-sm bg-fin-orange text-on-primary text-[10px] font-semibold tracking-wide uppercase px-2 py-0.5 border-0 rounded">
-                {tNav("badge")}
-              </span>
-            </div>
-          </div>
-
-          <nav className="navbar-center hidden lg:flex items-center gap-6 text-xs font-medium text-ink-muted">
-            <a href="#menu-maker" className="hover:text-ink transition-colors">
-              {tNav("menuMaker")}
-            </a>
-            <a href="#google-reviews" className="hover:text-ink transition-colors">
-              {tNav("reviews")}
-            </a>
-            <a href="#ordering-system" className="hover:text-ink transition-colors">
-              {tNav("ordering")}
-            </a>
-            <a href="#qr-studio" className="hover:text-ink transition-colors">
-              {tNav("studio")}
-            </a>
-            <a href="#how-it-works" className="hover:text-ink transition-colors">
-              {tNav("howItWorks")}
-            </a>
-            <a href="#faq" className="hover:text-ink transition-colors">
-              {tNav("faq")}
-            </a>
-          </nav>
-
-          <div className="navbar-end w-auto flex items-center gap-3">
-            <LanguageSwitcher />
-            <Link
-              href="/login"
-              className="text-xs font-medium text-ink hover:underline hidden sm:inline-block"
-            >
-              {tNav("signIn")}
-            </Link>
-            <Link
-              href="/login"
-              className="btn btn-primary btn-sm rounded-md text-xs font-medium h-9 min-h-9 px-3.5 shadow-none"
-            >
-              {tNav("getStarted")}
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* =========================================================================
           1. Hero Section

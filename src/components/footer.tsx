@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import {
@@ -23,9 +24,13 @@ export function Footer() {
           {/* Brand & Trust Overview (Span 2 columns on lg) */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 rounded-lg bg-ink flex items-center justify-center text-on-primary font-bold text-sm tracking-tight shadow-none">
-                CQ
-              </div>
+              <Image
+                src="/favicons.svg"
+                alt="QRVenues logo"
+                className="w-8 h-8 rounded-lg shrink-0"
+                width={32}
+                height={32}
+              />
               <div className="flex items-center gap-2">
                 <span className="text-base font-semibold tracking-tight text-ink group-hover:text-fin-orange transition-colors">
                   {tNav("brand")}
@@ -132,7 +137,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:careers@cafeqrbuddy.com"
+                  href="mailto:careers@qrvenues.com"
                   className="hover:text-ink hover:underline transition-colors inline-flex items-center gap-1"
                 >
                   <span>{t("careers")}</span>
@@ -179,11 +184,11 @@ export function Footer() {
         <div className="mt-10 pt-6 border-t border-hairline-soft flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-ink-subtle">
           <p>{t("registeredNotice")}</p>
           <a
-            href="mailto:privacy@cafeqrbuddy.com"
+            href="mailto:privacy@qrvenues.com"
             className="inline-flex items-center gap-1.5 text-ink-muted hover:text-ink font-medium hover:underline"
           >
             <Mail className="w-3.5 h-3.5 text-fin-orange" />
-            <span>privacy@cafeqrbuddy.com (Data Protection Desk)</span>
+            <span>privacy@qrvenues.com (Data Protection Desk)</span>
           </a>
         </div>
       </div>
