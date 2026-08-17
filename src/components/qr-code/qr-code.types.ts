@@ -44,6 +44,24 @@ export type QRContentType =
 export type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
 
 // ---------------------------------------------------------------------------
+// Download & Processing Config
+// ---------------------------------------------------------------------------
+export interface QRDownloadConfig {
+  filename?: string;
+  format: "png" | "svg";
+  includeFrame?: boolean;
+  resolution?: number;
+  processingDuration?: number; // Duration in seconds (e.g. 15)
+}
+
+export interface QRProcessingStep {
+  id: string;
+  label: string;
+  description: string;
+  durationMs: number;
+}
+
+// ---------------------------------------------------------------------------
 // QRCode props
 // ---------------------------------------------------------------------------
 export interface QRCodeProps {
@@ -101,6 +119,9 @@ export interface QRCodeProps {
   /** Custom frame label — overrides the preset default */
   frameLabel?: string;
 
+  /** Custom frame subtext — overrides the preset default */
+  frameSubtext?: string;
+
   /** Custom frame background color override */
   frameBgColor?: string;
 
@@ -112,6 +133,9 @@ export interface QRCodeProps {
 
   /** ARIA label — falls back to `alt` */
   ariaLabel?: string;
+
+  /** Custom processing duration in seconds when download button is clicked @default 15 */
+  processingSeconds?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -122,6 +146,10 @@ export interface QRCodeBatchItem {
   value: string;
   /** Optional label rendered below the QR */
   label?: string;
+  /** Optional category or table badge */
+  badge?: string;
+  /** Custom filename prefix */
+  filename?: string;
 }
 
 export interface QRCodeBatchProps {
@@ -133,4 +161,10 @@ export interface QRCodeBatchProps {
 
   /** Extra CSS classes on the grid container */
   className?: string;
+
+  /** Title above the batch */
+  title?: string;
+
+  /** Description below title */
+  description?: string;
 }
