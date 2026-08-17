@@ -1,8 +1,18 @@
 {
+  "hero": {
+    "subhead": "Delight guests with instant QR ordering, smart AI flavour pairing recommendations, and zero-wait contactless payments — right from their phone browser."
+  },
   "regional": {
     "marketLabel": "Australia (en-AU)",
     "currencyValue": "A$45.00 AUD / mo",
     "dateFormatValue": "DD/MM/YYYY (e.g. 17/08/2026)",
     "spellingValue": "Colour customisation & organised table ordering"
+  },
+  "pricing": {
+    "starterPrice": "A$45",
+    "proPrice": "A$119"
+  },
+  "testimonial": {
+    "quote": "“Cafe QRBuddy increased our morning rush table turnaround by 40%. The Fin AI recommendations alone added over A$5,800 in monthly pastry sales.”"
   }
 }

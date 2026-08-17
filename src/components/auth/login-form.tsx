@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useTranslations } from "next-intl";
-import { Mail, Lock, AlertCircle, CheckCircle2, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Mail, Lock, AlertCircle, CheckCircle2, Eye, EyeOff, ArrowRight, Sparkles } from "lucide-react";
 
 export interface LoginFormData {
   email: string;
@@ -24,6 +24,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
   // Dynamic Zod schema with localized validation messages
   const loginSchema = useMemo(
@@ -46,6 +47,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -58,13 +60,12 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
   const onSubmit = async (data: LoginFormData) => {
     setFormError(null);
-    setIsSuccess(false);
+    setInfoMessage(null);
 
     try {
-      // Simulate network authentication request
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      if (data.email === "error@example.com") {
+      if (data.email === "invalid@example.com") {
         setFormError(tAuth("generalError"));
         return;
       }
@@ -79,37 +80,69 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   };
 
   const handleInputChange = () => {
-    if (formError) {
-      setFormError(null);
+    if (formError) setFormError(null);
+    if (infoMessage) setInfoMessage(null);
+  };
+
+  const handleForgotPassword = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const currentEmail = getValues("email");
+    if (!currentEmail || !currentEmail.includes("@")) {
+      setInfoMessage("Please enter your email address above to receive a password reset link.");
+    } else {
+      setInfoMessage(`Password reset link has been dispatched to ${currentEmail}. Please check your inbox.`);
     }
   };
 
+  const handleStartTrial = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setInfoMessage("Welcome! Creating your 14-day free studio account. Enter your venue email above and click 'Sign in' to proceed.");
+  };
+
   return (
-    <div className="card w-full bg-surface-1 border border-hairline rounded-xl shadow-none">
+    <div className="card bg-surface-1 border border-hairline rounded-2xl shadow-none w-full">
       <div className="card-body p-6 sm:p-8">
-        <div className="mb-4">
-          <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-ink">
+        <div className="text-center mb-6">
+          <div className="w-10 h-10 rounded-xl bg-ink text-on-primary flex items-center justify-center font-bold text-base mx-auto mb-3">
+            CQ
+          </div>
+          <h1 className="text-xl sm:text-2xl font-medium tracking-tight text-ink">
             {tAuth("title")}
-          </h2>
-          <p className="text-sm text-ink-muted mt-1">{tAuth("subtitle")}</p>
+          </h1>
+          <p className="text-xs text-ink-muted mt-1 leading-relaxed">
+            {tAuth("subtitle")}
+          </p>
         </div>
 
         {formError && (
           <div
+            id="form-error-alert"
             role="alert"
-            aria-live="assertive"
-            className="alert alert-error text-xs rounded-lg py-2.5 px-3 mb-3 flex items-start gap-2"
+            aria-live="polite"
+            className="alert alert-error bg-red-500/10 border-semantic-error/20 text-semantic-error p-3 rounded-lg text-xs flex items-center gap-2 mb-4"
           >
-            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{formError}</span>
+          </div>
+        )}
+
+        {infoMessage && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="alert bg-surface-1 border-hairline text-ink p-3 rounded-lg text-xs flex items-center gap-2 mb-4"
+          >
+            <Sparkles className="w-4 h-4 text-fin-orange shrink-0" />
+            <span>{infoMessage}</span>
           </div>
         )}
 
         {isSuccess && (
           <div
-            role="alert"
+            id="form-success-alert"
+            role="status"
             aria-live="polite"
-            className="alert alert-success text-xs rounded-lg py-2.5 px-3 mb-3 flex items-center gap-2"
+            className="alert alert-success bg-emerald-500/10 border-semantic-success/20 text-semantic-success p-3 rounded-lg text-xs flex items-center gap-2 mb-4"
           >
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>{tAuth("successRedirect")}</span>
@@ -155,12 +188,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               <legend className="fieldset-legend text-xs font-medium text-ink">
                 {tAuth("passwordLabel")}
               </legend>
-              <a
-                href="#forgot-password"
-                className="text-xs text-ink-muted hover:text-ink hover:underline font-medium"
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-xs text-ink-muted hover:text-ink hover:underline font-medium cursor-pointer"
               >
                 {tAuth("forgotPassword")}
-              </a>
+              </button>
             </div>
             <div
               className={`flex items-center w-full px-3 py-2.5 bg-surface-1 border rounded-lg transition-all ${
@@ -247,9 +281,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         <div className="text-center pt-4 border-t border-hairline-soft mt-5">
           <p className="text-xs text-ink-muted">
             {tAuth("noAccount")}{" "}
-            <a href="#sign-up" className="text-ink font-medium hover:underline">
+            <button
+              type="button"
+              onClick={handleStartTrial}
+              className="text-ink font-medium hover:underline cursor-pointer"
+            >
               {tAuth("trialLink")}
-            </a>
+            </button>
           </p>
         </div>
       </div>

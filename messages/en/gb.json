@@ -1,4 +1,7 @@
 {
+  "hero": {
+    "subhead": "Delight guests with instant QR ordering, smart AI flavour pairing recommendations, and zero-wait contactless payments — right from their phone browser."
+  },
   "auth": {
     "subtitle": "Welcome back! Please enter your details to access your workspace."
   },
@@ -7,5 +10,12 @@
     "currencyValue": "£24.00 GBP / mo",
     "dateFormatValue": "DD/MM/YYYY (e.g. 17/08/2026)",
     "spellingValue": "Colour customisation & central flavour profiles"
+  },
+  "pricing": {
+    "starterPrice": "£24",
+    "proPrice": "£65"
+  },
+  "testimonial": {
+    "quote": "“Cafe QRBuddy increased our morning rush table turnaround by 40%. The Fin AI recommendations alone added over £3,200 in monthly pastry sales.”"
   }
 }
