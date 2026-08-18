@@ -124,7 +124,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             id="form-error-alert"
             role="alert"
             aria-live="polite"
-            className="alert alert-error bg-red-500/10 border-semantic-error/20 text-semantic-error p-3 rounded-lg text-xs flex items-center gap-2 mb-4"
+            className="alert alert-error bg-semantic-error/10 border-semantic-error/20 text-semantic-error p-3 rounded-lg text-xs flex items-center gap-2 mb-4"
           >
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{formError}</span>
@@ -147,7 +147,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             id="form-success-alert"
             role="status"
             aria-live="polite"
-            className="alert alert-success bg-emerald-500/10 border-semantic-success/20 text-semantic-success p-3 rounded-lg text-xs flex items-center gap-2 mb-4"
+            className="alert alert-success bg-semantic-success/10 border-semantic-success/20 text-semantic-success p-3 rounded-lg text-xs flex items-center gap-2 mb-4"
           >
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>{tAuth("successRedirect")}</span>

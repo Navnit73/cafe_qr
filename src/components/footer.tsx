@@ -199,7 +199,7 @@ export function Footer() {
       </div>
 
       {/* Bottom Sub-footer */}
-      <div className="bg-canvas border-t border-hairline-soft py-5">
+      <div className="bg-surface-2 border-t border-hairline-soft py-5">
         <div className="max-w-6xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-ink-tertiary">
           <p>{t("copyright", { year: new Date().getFullYear() })}</p>
           <div className="flex items-center gap-4 text-[11px] text-ink-subtle">
