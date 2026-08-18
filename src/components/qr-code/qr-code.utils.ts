@@ -386,55 +386,55 @@ function getPresetDefaultColors(frame: FramePreset): {
   switch (frame) {
     case "menu":
       return {
-        bg: "#f0fdf4",
-        text: "#059669",
-        border: "#bbf7d0",
+        bg: "#eeecfb",
+        text: "#5645d4",
+        border: "#dfe1ea",
         defaultLabel: "Scan for Menu",
         defaultSubtext: "Dine-in & Takeaway",
       };
     case "review":
       return {
         bg: "#fff7f2",
-        text: "#ea580c",
+        text: "#dd5b00",
         border: "#fed7aa",
         defaultLabel: "Review Us on Google",
         defaultSubtext: "★★★★★ 5.0 Rating",
       };
     case "order":
       return {
-        bg: "#eff6ff",
-        text: "#2563eb",
+        bg: "#eaf4ff",
+        text: "#0075de",
         border: "#bfdbfe",
         defaultLabel: "Scan to Order & Pay",
         defaultSubtext: "Fast Contactless Table Service",
       };
     case "scan-me":
       return {
-        bg: "#f7fee7",
-        text: "#4d7c0f",
-        border: "#d9f99d",
+        bg: "#eeecfb",
+        text: "#5645d4",
+        border: "#dfe1ea",
         defaultLabel: "SCAN ME",
       };
     case "badge":
       return {
-        bg: "#ecfeff",
-        text: "#0891b2",
-        border: "#a5f3fc",
+        bg: "#eaf4ff",
+        text: "#0075de",
+        border: "#bfdbfe",
         defaultLabel: "Point Camera to Scan",
       };
     case "card":
       return {
-        bg: "#ebe7e1",
-        text: "#111111",
-        border: "#d3cec6",
+        bg: "#f4f4f8",
+        text: "#0a1530",
+        border: "#dfe1ea",
         defaultLabel: "Tabletop Digital Portal",
         defaultSubtext: "Instant contactless access",
       };
     default:
       return {
         bg: "#ffffff",
-        text: "#111111",
-        border: "#d3cec6",
+        text: "#0a1530",
+        border: "#dfe1ea",
         defaultLabel: "QR Code",
       };
   }

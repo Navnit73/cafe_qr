@@ -2,37 +2,72 @@
 @plugin "daisyui";
 
 :root {
-  --color-primary: #b3e01c;
-  --color-on-primary: #111111;
-  --color-fin-orange: #ff5600;
-  --color-report-orange: #fe4c02;
-  --color-brand-blue: #0007cb;
+  /* ── Airbnb Brand Palette ─────────────────────────────── */
+  --color-primary: #5645d4;
+  --color-on-primary: #ffffff;
+  --color-primary-pressed: #4534b3;
+  --color-primary-deep: #3a2a99;
 
-  --color-ink: #111111;
-  --color-ink-muted: #626260;
-  --color-ink-subtle: #7b7b78;
-  --color-ink-tertiary: #9c9fa5;
+  /* Brand navy */
+  --color-brand-navy: #0a1530;
+  --color-brand-navy-deep: #070f24;
+  --color-brand-navy-mid: #1a2a52;
+
+  /* Accent blues */
+  --color-link-blue: #0075de;
+  --color-link-blue-pressed: #005bab;
+
+  /* Orange & pink accents */
+  --color-brand-orange: #dd5b00;
+  --color-brand-orange-deep: #793400;
+  --color-brand-pink: #ff64c8;
+
+  /* Rausch (Airbnb signature) */
+  --color-rausch: #ff385c;
+  --color-rausch-active: #e00b41;
+  --color-rausch-disabled: #ffd1da;
+
+  /* ── Ink / Text ───────────────────────────────────────── */
+  --color-ink: #0a1530;
+  --color-ink-muted: #5a5f73;
+  --color-ink-subtle: #5a5f73;
+  --color-ink-tertiary: #5a5f73;
   --color-inverse-ink: #ffffff;
-  --color-inverse-ink-muted: #9c9fa5;
+  --color-inverse-ink-muted: #9aa3c0;
 
-  --color-canvas: #f5f5f5;
+  /* ── Surfaces ─────────────────────────────────────────── */
+  --color-canvas: #ffffff;
   --color-surface-1: #ffffff;
-  --color-surface-2: #ebe7e1;
-  --color-inverse-canvas: #000000;
-  --color-inverse-surface-1: #313130;
+  --color-surface-2: #f4f4f8;
+  --color-inverse-canvas: #0a1530;
+  --color-inverse-surface-1: #1a2a52;
 
-  --color-hairline: #d3cec6;
-  --color-hairline-soft: #ebe7e1;
+  /* ── Borders ──────────────────────────────────────────── */
+  --color-hairline: #dfe1ea;
+  --color-hairline-soft: #dfe1ea;
 
-  --color-semantic-error: #c41c1c;
-  --color-semantic-success: #0bdf50;
+  /* ── Semantic ─────────────────────────────────────────── */
+  --color-semantic-error: #dd5b00;
+  --color-semantic-success: #059669;
 
-  --color-report-blue: #65b5ff;
-  --color-report-green: #0bdf50;
-  --color-report-pink: #ff2067;
-  --color-report-lime: #b3e01c;
-  --color-report-cyan: #03b2cb;
+  /* ── Chart palette ────────────────────────────────────── */
+  --color-chart-1: #5645d4;
+  --color-chart-2: #0a1530;
+  --color-chart-3: #0075de;
+  --color-chart-4: #dd5b00;
+  --color-chart-5: #ff64c8;
 
+  /* ── Fin-orange mapped to brand-orange for existing code ─ */
+  --color-fin-orange: #dd5b00;
+  --color-brand-blue: #0075de;
+  --color-report-orange: #dd5b00;
+  --color-report-blue: #0075de;
+  --color-report-green: #059669;
+  --color-report-pink: #ff64c8;
+  --color-report-lime: #5645d4;
+  --color-report-cyan: #0075de;
+
+  /* ── Spacing ──────────────────────────────────────────── */
   --space-xxs: 4px;
   --space-xs: 8px;
   --space-sm: 12px;
@@ -42,60 +77,68 @@
   --space-xxl: 48px;
   --space-section: 96px;
 
+  /* ── Radii ────────────────────────────────────────────── */
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-lg: 14px;
   --radius-xl: 16px;
   --radius-xxl: 24px;
   --radius-pill: 9999px;
   --radius-full: 9999px;
+
+  /* ── Airbnb shadow ────────────────────────────────────── */
+  --shadow-airbnb: rgba(10, 21, 48, 0.04) 0 0 0 1px, rgba(10, 21, 48, 0.06) 0 2px 6px 0, rgba(10, 21, 48, 0.12) 0 4px 8px 0;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   daisyUI custom theme — Airbnb Design Specification
+   ═══════════════════════════════════════════════════════════ */
 @plugin "daisyui/theme" {
-  name: "intercom-lime";
+  name: "airbnb";
   default: true;
   prefersdark: false;
   color-scheme: light;
 
-  --color-base-100: var(--color-surface-1);
-  --color-base-200: var(--color-canvas);
-  --color-base-300: var(--color-surface-2);
-  --color-base-content: var(--color-ink);
+  --color-base-100: #ffffff;
+  --color-base-200: #f4f4f8;
+  --color-base-300: #dfe1ea;
+  --color-base-content: #0a1530;
 
-  --color-primary: var(--color-primary);
-  --color-primary-content: var(--color-on-primary);
+  --color-primary: #5645d4;
+  --color-primary-content: #ffffff;
 
-  --color-secondary: var(--color-ink);
-  --color-secondary-content: var(--color-on-primary);
+  --color-secondary: #eeecfb;
+  --color-secondary-content: #0a1530;
 
-  --color-accent: var(--color-report-pink);
-  --color-accent-content: var(--color-on-primary);
+  --color-accent: #0075de;
+  --color-accent-content: #ffffff;
 
-  --color-neutral: var(--color-ink);
-  --color-neutral-content: var(--color-on-primary);
+  --color-neutral: #0a1530;
+  --color-neutral-content: #ffffff;
 
-  --color-info: var(--color-report-cyan);
-  --color-info-content: var(--color-on-primary);
+  --color-info: #0075de;
+  --color-info-content: #ffffff;
 
-  --color-success: var(--color-semantic-success);
-  --color-success-content: var(--color-ink);
+  --color-success: #059669;
+  --color-success-content: #ffffff;
 
-  --color-warning: var(--color-report-orange);
-  --color-warning-content: var(--color-on-primary);
+  --color-warning: #dd5b00;
+  --color-warning-content: #ffffff;
 
-  --color-error: var(--color-semantic-error);
-  --color-error-content: var(--color-on-primary);
+  --color-error: #ff385c;
+  --color-error-content: #ffffff;
 
-  --radius-selector: var(--radius-sm);
-  --radius-field: var(--radius-md);
-  --radius-box: var(--radius-lg);
+  --radius-selector: 0.875rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.875rem;
 
   --border: 1px;
-  --depth: 0;
+  --depth: 1;
   --noise: 0;
 }
 
+/* ── Expose custom tokens to Tailwind utilities ────────── */
 @theme inline {
   --color-canvas: var(--color-canvas);
   --color-surface-1: var(--color-surface-1);
@@ -112,6 +155,11 @@
   --color-brand-blue: var(--color-brand-blue);
   --color-semantic-error: var(--color-semantic-error);
   --color-semantic-success: var(--color-semantic-success);
+  --color-rausch: var(--color-rausch);
+  --color-brand-pink: var(--color-brand-pink);
+  --color-brand-navy: var(--color-brand-navy);
+  --color-brand-navy-mid: var(--color-brand-navy-mid);
+  --color-link-blue: var(--color-link-blue);
 }
 
 body {

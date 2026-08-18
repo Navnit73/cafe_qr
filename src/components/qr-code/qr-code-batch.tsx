@@ -36,7 +36,7 @@ export const QRCodeBatch = React.memo(function QRCodeBatch({
           <div>
             {title && (
               <h3 className="text-base font-semibold text-ink flex items-center gap-2">
-                <QrIcon className="w-4 h-4 text-[#059669]" />
+                <QrIcon className="w-4 h-4 text-primary" />
                 <span>{title}</span>
               </h3>
             )}
@@ -63,7 +63,7 @@ export const QRCodeBatch = React.memo(function QRCodeBatch({
           >
             {/* Header / Table Badge */}
             <div className="flex items-center justify-between w-full">
-              <span className="badge badge-xs bg-[#f0fdf4] text-[#059669] border-[#bbf7d0] font-medium text-[10px]">
+              <span className="badge badge-xs bg-secondary text-primary border-primary/20 font-medium text-[10px]">
                 {item.badge || `QR #${index + 1}`}
               </span>
               <button

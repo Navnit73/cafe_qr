@@ -31,23 +31,23 @@ export function Callout({
     },
     tip: {
       border: "border-fin-orange/30",
-      bg: "bg-[#fffaf7]",
+      bg: "bg-surface-2",
       icon: Lightbulb,
       iconColor: "text-fin-orange",
       defaultTitle: "Pro Tip",
     },
     warning: {
       border: "border-report-orange/40",
-      bg: "bg-[#fffbf5]",
+      bg: "bg-surface-2",
       icon: AlertTriangle,
       iconColor: "text-report-orange",
       defaultTitle: "Important",
     },
     success: {
-      border: "border-[#bbf7d0]",
-      bg: "bg-[#f0fdf4]",
+      border: "border-semantic-success/30",
+      bg: "bg-secondary",
       icon: CheckCircle2,
-      iconColor: "text-[#059669]",
+      iconColor: "text-semantic-success",
       defaultTitle: "Success",
     },
   }[type];
@@ -57,7 +57,7 @@ export function Callout({
   return (
     <div
       className={clsx(
-        "p-4 sm:p-5 rounded-xl border my-6 text-xs leading-relaxed space-y-1.5 ",
+        "p-4 sm:p-5 rounded-xl border my-6 text-xs leading-relaxed space-y-1.5",
         styles.border,
         styles.bg
       )}
@@ -84,10 +84,10 @@ export function StepCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="card bg-surface-1 border border-hairline rounded-xl  my-4 overflow-hidden">
+    <div className="card bg-surface-1 border border-hairline rounded-xl my-4 overflow-hidden">
       <div className="card-body p-5">
         <div className="flex items-start gap-3.5">
-          <div className="w-7 h-7 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] text-[#059669] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 ">
+          <div className="w-7 h-7 rounded-lg bg-secondary border border-primary/20 text-primary font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
             {number}
           </div>
           <div className="space-y-1.5 flex-1">
@@ -247,7 +247,7 @@ export function getGuideMDXComponents(): MDXComponents {
     ),
     pre: ({ children, ...props }) => (
       <pre
-        className="bg-[#111111] text-white rounded-xl p-4 overflow-x-auto my-6 text-xs leading-relaxed font-mono "
+        className="bg-ink text-inverse-ink rounded-xl p-4 overflow-x-auto my-6 text-xs leading-relaxed font-mono"
         {...props}
       >
         {children}

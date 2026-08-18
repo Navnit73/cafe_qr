@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f5f1ec",
+  themeColor: "#ffffff",
 };
 
 export const metadata: Metadata = {
@@ -130,7 +130,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      data-theme="intercom"
+      data-theme="airbnb"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>

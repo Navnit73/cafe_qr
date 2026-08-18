@@ -204,11 +204,11 @@ export default async function GuidesIndexPage({ params }: PageProps) {
                     {/* Meta row */}
                     <div className="flex items-center gap-3 text-[11px] text-ink-subtle mt-auto pt-3 border-t border-hairline-soft">
                       <span className="inline-flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5 text-[#059669]" />
+                        <Calendar className="w-3.5 h-3.5 text-semantic-success" />
                         {formatDate(guide.frontmatter.publishedAt)}
                       </span>
                       <span className="inline-flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5 text-[#0284c7]" />
+                        <Clock className="w-3.5 h-3.5 text-link-blue" />
                         {guide.readingTime} min read
                       </span>
                     </div>

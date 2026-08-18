@@ -342,7 +342,7 @@ function QRCodeDownloadModalContent({
                 </div>
               ) : (
                 <div className="w-20 h-20 rounded-xl bg-surface-1 border border-hairline flex items-center justify-center">
-                  <Download className="w-8 h-8 text-[#059669] animate-pulse" />
+                  <Download className="w-8 h-8 text-primary animate-pulse" />
                 </div>
               )}
             </div>
@@ -369,7 +369,7 @@ function QRCodeDownloadModalContent({
                     "h-full transition-all ease-out rounded-full",
                     isCompleted
                       ? "bg-semantic-success"
-                      : "bg-gradient-to-r from-[#059669] via-[#2563eb] to-fin-orange"
+                      : "bg-gradient-to-r from-primary via-link-blue to-brand-orange"
                   )}
                   style={{ width: `${progressPercent}%` }}
                 />
@@ -382,7 +382,7 @@ function QRCodeDownloadModalContent({
                 {isCompleted ? (
                   <CheckCircle2 className="w-4 h-4 text-semantic-success" />
                 ) : (
-                  <activeStep.icon className="w-4 h-4 text-[#059669] animate-spin" />
+                  <activeStep.icon className="w-4 h-4 text-primary animate-spin" />
                 )}
               </div>
               <div className="space-y-0.5 flex-1 min-w-0">
@@ -420,7 +420,7 @@ function QRCodeDownloadModalContent({
                     className={clsx(
                       "flex items-center justify-between px-3 py-2 rounded-lg border text-xs transition-all",
                       isStepCurrent
-                        ? "bg-surface-1 border-[#059669] font-medium text-ink ring-1 ring-[#059669]/20"
+                        ? "bg-surface-1 border-primary font-medium text-ink ring-1 ring-primary/20"
                         : isStepDone
                         ? "bg-canvas/50 border-hairline-soft text-ink-muted"
                         : "bg-canvas/20 border-transparent text-ink-tertiary"
@@ -436,7 +436,7 @@ function QRCodeDownloadModalContent({
                       {isStepDone ? (
                         <CheckCircle2 className="w-3.5 h-3.5 text-semantic-success shrink-0" />
                       ) : isStepCurrent ? (
-                        <span className="badge badge-xs bg-[#f0fdf4] text-[#059669] border-[#bbf7d0] font-mono text-[9px]">
+                        <span className="badge badge-xs bg-secondary text-primary border-primary/20 font-mono text-[9px]">
                           RUNNING
                         </span>
                       ) : (
@@ -485,7 +485,7 @@ function QRCodeDownloadModalContent({
               </>
             ) : (
               <div className="flex items-center gap-2 text-xs font-medium text-ink-muted">
-                <Loader2 className="w-3.5 h-3.5 text-[#059669] animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 text-primary animate-spin" />
                 <span>Processing asset ({remainingSeconds}s)...</span>
               </div>
             )}

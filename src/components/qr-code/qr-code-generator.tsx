@@ -57,25 +57,26 @@ export interface QRCodeGeneratorProps {
 // Design System Color Swatches
 // ---------------------------------------------------------------------------
 const FG_COLORS = [
-  { name: "Forest Green", hex: "#059669" },
-  { name: "Emerald", hex: "#10b981" },
-  { name: "Fresh Lime", hex: "#84cc16" },
-  { name: "Brand Blue", hex: "#0007cb" },
+  { name: "Brand Violet", hex: "#5645d4" },
+  { name: "Deep Violet", hex: "#3a2a99" },
+  { name: "Navy", hex: "#0a1530" },
+  { name: "Link Blue", hex: "#0075de" },
   { name: "Ocean Blue", hex: "#2563eb" },
   { name: "Sky Blue", hex: "#0284c7" },
-  { name: "Fin Orange", hex: "#ff5600" },
-  { name: "Charcoal", hex: "#111111" },
-  { name: "Berry Pink", hex: "#ff2067" },
-  { name: "Muted Slate", hex: "#626260" },
+  { name: "Brand Orange", hex: "#dd5b00" },
+  { name: "Rausch Red", hex: "#ff385c" },
+  { name: "Brand Pink", hex: "#ff64c8" },
+  { name: "Muted Slate", hex: "#5a5f73" },
 ];
 
 const BG_COLORS = [
   { name: "Pure White", hex: "#ffffff" },
-  { name: "Soft Mint", hex: "#f0fdf4" },
-  { name: "Soft Lime", hex: "#f7fee7" },
-  { name: "Soft Blue", hex: "#eff6ff" },
+  { name: "Soft Lavender", hex: "#eeecfb" },
+  { name: "Soft Blue", hex: "#eaf4ff" },
+  { name: "Soft Gray", hex: "#f4f4f8" },
   { name: "Warm Cream", hex: "#f5f1ec" },
 ];
+
 
 // ---------------------------------------------------------------------------
 // Built-in Logo Presets (Embedded SVG Data URIs for CORS-free exports)
@@ -91,31 +92,31 @@ const LOGO_PRESETS = [
     id: "google",
     name: "Google Review",
     icon: Star,
-    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23ff5600'/><path d='M50 20 L59 38 L79 41 L64 56 L68 76 L50 66 L32 76 L36 56 L21 41 L41 38 Z' fill='%23ffffff'/></svg>",
+    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23dd5b00'/><path d='M50 20 L59 38 L79 41 L64 56 L68 76 L50 66 L32 76 L36 56 L21 41 L41 38 Z' fill='%23ffffff'/></svg>",
   },
   {
     id: "coffee",
     name: "Coffee",
     icon: Coffee,
-    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23111111'/><path d='M30 35 h35 v25 a15 15 0 0 1 -30 0 v-25 z M65 40 h8 a6 6 0 0 1 0 12 h-8 z M25 70 h45 v4 h-45 z' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>",
+    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%230a1530'/><path d='M30 35 h35 v25 a15 15 0 0 1 -30 0 v-25 z M65 40 h8 a6 6 0 0 1 0 12 h-8 z M25 70 h45 v4 h-45 z' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>",
   },
   {
     id: "utensils",
     name: "Menu Dining",
     icon: UtensilsCrossed,
-    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23059669'/><path d='M35 25 v25 a8 8 0 0 0 16 0 v-25 M43 25 v50 M62 25 v50 M62 25 c0 15 -10 20 -10 20' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>",
+    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%235645d4'/><path d='M35 25 v25 a8 8 0 0 0 16 0 v-25 M43 25 v50 M62 25 v50 M62 25 c0 15 -10 20 -10 20' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>",
   },
   {
     id: "wifi",
     name: "WiFi",
     icon: Wifi,
-    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%230007cb'/><path d='M25 42 a36 36 0 0 1 50 0 M34 52 a22 22 0 0 1 32 0 M43 62 a10 10 0 0 1 14 0 M50 72 a2 2 0 1 1 0 -0.1' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round'/></svg>",
+    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%230075de'/><path d='M25 42 a36 36 0 0 1 50 0 M34 52 a22 22 0 0 1 32 0 M43 62 a10 10 0 0 1 14 0 M50 72 a2 2 0 1 1 0 -0.1' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round'/></svg>",
   },
   {
     id: "qrvenues",
     name: "QRVenues",
     icon: QrIcon,
-    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23ff5600'/><text x='50' y='60' font-size='32' font-weight='900' font-family='sans-serif' text-anchor='middle' fill='%23ffffff'>QV</text></svg>",
+    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%235645d4'/><text x='50' y='60' font-size='32' font-weight='900' font-family='sans-serif' text-anchor='middle' fill='%23ffffff'>QV</text></svg>",
   },
 ];
 
@@ -139,7 +140,7 @@ type AccordionSection = "content" | "colors" | "logo" | "design";
 export function QRCodeGenerator({
   initialValue = "https://qrvenues.com/menu/the-artisan-cafe",
   initialFrame = "menu",
-  initialFgColor = "#059669",
+  initialFgColor = "#5645d4",
   title = "Interactive QR Code Studio",
   description = "Create, customize, and export high-resolution QR codes in real time.",
   className,
@@ -188,7 +189,7 @@ export function QRCodeGenerator({
   const [bgColor, setBgColor] = useState("#ffffff");
   const [rounded, setRounded] = useState(true);
   const [enableGradient, setEnableGradient] = useState(false);
-  const [gradientTo, setGradientTo] = useState("#84cc16");
+  const [gradientTo, setGradientTo] = useState("#3a2a99");
   const [selectedLogoId, setSelectedLogoId] = useState("none");
   const [customLogoUrl, setCustomLogoUrl] = useState<string | undefined>(
     undefined
@@ -318,7 +319,7 @@ export function QRCodeGenerator({
       <div className="border-b border-hairline bg-canvas/40 px-4 sm:px-6 pt-4 pb-0">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-surface-1 border border-hairline flex items-center justify-center text-[#059669]">
+            <div className="w-8 h-8 rounded-lg bg-surface-1 border border-hairline flex items-center justify-center text-primary">
               <QrIcon className="w-4 h-4" />
             </div>
             <div>
@@ -332,7 +333,7 @@ export function QRCodeGenerator({
           </div>
 
           <div className="flex items-center gap-2 self-end sm:self-auto">
-            <span className="badge badge-sm bg-[#f0fdf4] text-[#059669] border-[#bbf7d0] font-medium text-[11px] gap-1">
+            <span className="badge badge-sm bg-secondary text-primary border-primary/20 font-medium text-[11px] gap-1">
               <Sparkles className="w-3 h-3" />
               Live Studio
             </span>
@@ -357,7 +358,7 @@ export function QRCodeGenerator({
                 className={clsx(
                   "flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-xs font-medium border-b-2 whitespace-nowrap transition-all rounded-t-lg",
                   isActive
-                    ? "border-[#059669] text-[#059669] font-semibold bg-surface-1"
+                    ? "border-primary text-primary font-semibold bg-surface-1"
                     : "border-transparent text-ink-muted hover:text-ink hover:bg-surface-2/60"
                 )}
                 aria-selected={isActive}
@@ -365,7 +366,7 @@ export function QRCodeGenerator({
                 <Icon
                   className={clsx(
                     "w-3.5 h-3.5",
-                    isActive ? "text-[#059669]" : "text-ink-subtle"
+                    isActive ? "text-primary" : "text-ink-subtle"
                   )}
                 />
                 <span>{tab.label}</span>
@@ -393,13 +394,13 @@ export function QRCodeGenerator({
                 aria-expanded={activeAccordion === "content"}
               >
                 <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-[#059669]" />
+                  <Globe className="w-4 h-4 text-primary" />
                   <span>1. Enter Content ({activeTab.toUpperCase()})</span>
                 </div>
                 <ChevronDown
                   className={clsx(
                     "w-4 h-4 text-ink-muted transition-transform duration-200",
-                    activeAccordion === "content" && "rotate-180 text-[#059669]"
+                    activeAccordion === "content" && "rotate-180 text-primary"
                   )}
                 />
               </button>
@@ -420,7 +421,7 @@ export function QRCodeGenerator({
                         value={urlVal}
                         onChange={(e) => setUrlVal(e.target.value)}
                         placeholder="https://yourrestaurant.com"
-                        className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink focus:border-[#059669] h-10"
+                        className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink focus:border-primary h-10"
                       />
                     </div>
                   )}
@@ -437,7 +438,7 @@ export function QRCodeGenerator({
                           value={menuSlug}
                           onChange={(e) => setMenuSlug(e.target.value)}
                           placeholder="the-artisan-cafe"
-                          className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink focus:border-[#059669] h-10"
+                          className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink focus:border-primary h-10"
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -449,7 +450,7 @@ export function QRCodeGenerator({
                           value={menuTable}
                           onChange={(e) => setMenuTable(e.target.value)}
                           placeholder="04"
-                          className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink focus:border-[#059669] h-10"
+                          className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink focus:border-primary h-10"
                         />
                       </div>
                     </div>
@@ -469,7 +470,7 @@ export function QRCodeGenerator({
                         value={reviewPlaceId}
                         onChange={(e) => setReviewPlaceId(e.target.value)}
                         placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4"
-                        className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink focus:border-[#059669] h-10"
+                        className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink focus:border-primary h-10"
                       />
                       <p className="text-[11px] text-ink-subtle leading-normal">
                         Launches Google Maps write-review prompt automatically
@@ -697,13 +698,13 @@ export function QRCodeGenerator({
                 aria-expanded={activeAccordion === "colors"}
               >
                 <div className="flex items-center gap-2">
-                  <Palette className="w-4 h-4 text-[#059669]" />
+                  <Palette className="w-4 h-4 text-primary" />
                   <span>2. Set Colors & Gradients</span>
                 </div>
                 <ChevronDown
                   className={clsx(
                     "w-4 h-4 text-ink-muted transition-transform duration-200",
-                    activeAccordion === "colors" && "rotate-180 text-[#059669]"
+                    activeAccordion === "colors" && "rotate-180 text-primary"
                   )}
                 />
               </button>
@@ -772,7 +773,7 @@ export function QRCodeGenerator({
                             className={clsx(
                               "w-6 h-6 rounded-full border transition-transform",
                               gradientTo === c.hex
-                                ? "scale-125 border-ink ring-2 ring-[#059669]/40"
+                                ? "scale-125 border-ink ring-2 ring-primary/40"
                                 : "border-black/10 hover:scale-110"
                             )}
                             style={{ backgroundColor: c.hex }}
@@ -829,13 +830,13 @@ export function QRCodeGenerator({
                 aria-expanded={activeAccordion === "logo"}
               >
                 <div className="flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-[#059669]" />
+                  <ImageIcon className="w-4 h-4 text-primary" />
                   <span>3. Add Center Logo</span>
                 </div>
                 <ChevronDown
                   className={clsx(
                     "w-4 h-4 text-ink-muted transition-transform duration-200",
-                    activeAccordion === "logo" && "rotate-180 text-[#059669]"
+                    activeAccordion === "logo" && "rotate-180 text-primary"
                   )}
                 />
               </button>
@@ -862,12 +863,12 @@ export function QRCodeGenerator({
                             className={clsx(
                               "p-2 rounded-xl border text-center flex flex-col items-center justify-center gap-1 text-xs transition-all h-16",
                               isSelected
-                                ? "border-[#059669] bg-surface-1 ring-2 ring-[#059669]/20 font-semibold"
+                                ? "border-primary bg-surface-1 ring-2 ring-primary/20 font-semibold"
                                 : "border-hairline bg-canvas hover:border-ink text-ink-muted"
                             )}
                           >
                             {preset.icon ? (
-                              <preset.icon className="w-5 h-5 text-[#059669]" />
+                              <preset.icon className="w-5 h-5 text-primary" />
                             ) : (
                               <span className="text-[10px] text-ink-subtle">
                                 No Logo
@@ -898,7 +899,7 @@ export function QRCodeGenerator({
                         onClick={() => fileInputRef.current?.click()}
                         className="btn btn-xs bg-surface-1 border border-hairline hover:bg-canvas text-ink text-xs h-8 px-3 rounded-lg gap-1.5"
                       >
-                        <Upload className="w-3.5 h-3.5 text-[#059669]" />
+                        <Upload className="w-3.5 h-3.5 text-primary" />
                         <span>Upload Image</span>
                       </button>
                       <input
@@ -935,13 +936,13 @@ export function QRCodeGenerator({
                 aria-expanded={activeAccordion === "design"}
               >
                 <div className="flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-[#059669]" />
+                  <Layers className="w-4 h-4 text-primary" />
                   <span>4. Customize Frame & Tabletop Card</span>
                 </div>
                 <ChevronDown
                   className={clsx(
                     "w-4 h-4 text-ink-muted transition-transform duration-200",
-                    activeAccordion === "design" && "rotate-180 text-[#059669]"
+                    activeAccordion === "design" && "rotate-180 text-primary"
                   )}
                 />
               </button>
@@ -996,7 +997,7 @@ export function QRCodeGenerator({
                           className={clsx(
                             "p-2.5 rounded-xl border text-left flex items-center justify-between text-xs transition-all",
                             frame === f.id
-                              ? "border-[#059669] bg-surface-1 font-semibold text-[#059669] ring-1 ring-[#059669]"
+                              ? "border-primary bg-surface-1 font-semibold text-primary ring-1 ring-primary"
                               : "border-hairline bg-canvas text-ink-muted hover:border-ink hover:text-ink"
                           )}
                         >
@@ -1083,7 +1084,7 @@ export function QRCodeGenerator({
             {/* Header Badge */}
             <div className="flex items-center justify-between w-full border-b border-hairline-soft pb-3">
               <span className="text-[11px] font-semibold uppercase tracking-wider text-ink-subtle flex items-center gap-1.5">
-                <Eye className="w-3.5 h-3.5 text-[#059669]" />
+                <Eye className="w-3.5 h-3.5 text-primary" />
                 <span>Live Interactive Preview</span>
               </span>
               <span className="badge badge-xs bg-semantic-success/15 text-semantic-success font-medium border-0 gap-1">
@@ -1127,7 +1128,7 @@ export function QRCodeGenerator({
               <div className="space-y-1.5 text-left">
                 <div className="flex items-center justify-between text-xs text-ink-muted">
                   <span className="flex items-center gap-1">
-                    <Sliders className="w-3.5 h-3.5 text-[#059669]" />
+                    <Sliders className="w-3.5 h-3.5 text-primary" />
                     Canvas Size:
                   </span>
                   <span className="font-semibold text-ink font-mono">
@@ -1160,7 +1161,7 @@ export function QRCodeGenerator({
                   onClick={() => openDownloadModal("svg", false)}
                   className="btn btn-sm bg-surface-1 border border-hairline hover:bg-canvas text-ink rounded-xl text-xs font-semibold h-11 min-h-11 gap-2"
                 >
-                  <FileCode className="w-4 h-4 text-[#059669]" />
+                  <FileCode className="w-4 h-4 text-primary" />
                   <span>Download SVG</span>
                 </button>
               </div>
@@ -1193,7 +1194,7 @@ export function QRCodeGenerator({
                   type="button"
                   onClick={() => {
                     setUrlVal("https://qrvenues.com/menu/the-artisan-cafe");
-                    setFgColor("#059669");
+                    setFgColor("#5645d4");
                     setBgColor("#ffffff");
                     setEnableGradient(false);
                     setSelectedLogoId("none");
