@@ -2,18 +2,12 @@
 @plugin "daisyui";
 
 :root {
-  /* ==========================================================================
-     Single Source of Truth: Intercom Design Tokens (DESIGN.md)
-     ========================================================================== */
-
-  /* Brand & Accent Colors */
-  --color-primary: #111111;
-  --color-on-primary: #ffffff;
+  --color-primary: #b3e01c;
+  --color-on-primary: #111111;
   --color-fin-orange: #ff5600;
   --color-report-orange: #fe4c02;
   --color-brand-blue: #0007cb;
 
-  /* Text / Ink Colors */
   --color-ink: #111111;
   --color-ink-muted: #626260;
   --color-ink-subtle: #7b7b78;
@@ -21,29 +15,24 @@
   --color-inverse-ink: #ffffff;
   --color-inverse-ink-muted: #9c9fa5;
 
-  /* Surface & Canvas Colors */
-  --color-canvas: #f5f1ec;
+  --color-canvas: #f5f5f5;
   --color-surface-1: #ffffff;
   --color-surface-2: #ebe7e1;
   --color-inverse-canvas: #000000;
   --color-inverse-surface-1: #313130;
 
-  /* Borders & Dividers */
   --color-hairline: #d3cec6;
   --color-hairline-soft: #ebe7e1;
 
-  /* Semantic / Status Colors */
   --color-semantic-error: #c41c1c;
   --color-semantic-success: #0bdf50;
 
-  /* In-Product Report Colors */
   --color-report-blue: #65b5ff;
   --color-report-green: #0bdf50;
   --color-report-pink: #ff2067;
   --color-report-lime: #b3e01c;
   --color-report-cyan: #03b2cb;
 
-  /* Spacing Scale */
   --space-xxs: 4px;
   --space-xs: 8px;
   --space-sm: 12px;
@@ -53,7 +42,6 @@
   --space-xxl: 48px;
   --space-section: 96px;
 
-  /* Radii Scale */
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -65,7 +53,7 @@
 }
 
 @plugin "daisyui/theme" {
-  name: "intercom";
+  name: "intercom-lime";
   default: true;
   prefersdark: false;
   color-scheme: light;
@@ -78,20 +66,20 @@
   --color-primary: var(--color-primary);
   --color-primary-content: var(--color-on-primary);
 
-  --color-secondary: var(--color-fin-orange);
+  --color-secondary: var(--color-ink);
   --color-secondary-content: var(--color-on-primary);
 
-  --color-accent: var(--color-fin-orange);
+  --color-accent: var(--color-report-pink);
   --color-accent-content: var(--color-on-primary);
 
   --color-neutral: var(--color-ink);
   --color-neutral-content: var(--color-on-primary);
 
-  --color-info: var(--color-report-blue);
+  --color-info: var(--color-report-cyan);
   --color-info-content: var(--color-on-primary);
 
   --color-success: var(--color-semantic-success);
-  --color-success-content: var(--color-on-primary);
+  --color-success-content: var(--color-ink);
 
   --color-warning: var(--color-report-orange);
   --color-warning-content: var(--color-on-primary);
@@ -135,7 +123,6 @@ body {
   min-height: 100vh;
 }
 
-/* QR Code entrance animation */
 @keyframes qr-appear {
   from {
     opacity: 0;

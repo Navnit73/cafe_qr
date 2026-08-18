@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="qrOrangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b1a" />
+      <stop offset="100%" stop-color="#ff4500" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#111111" />
+  <rect x="2" y="2" width="124" height="124" rx="26" stroke="#262626" stroke-width="2" />
+  <rect x="22" y="22" width="34" height="34" rx="8" stroke="url(#qrOrangeGrad)" stroke-width="5" fill="none" />
+  <rect x="31" y="31" width="16" height="16" rx="4" fill="url(#qrOrangeGrad)" />
+  <rect x="72" y="22" width="34" height="34" rx="8" stroke="url(#qrOrangeGrad)" stroke-width="5" fill="none" />
+  <rect x="81" y="31" width="16" height="16" rx="4" fill="url(#qrOrangeGrad)" />
+  <rect x="22" y="72" width="34" height="34" rx="8" stroke="url(#qrOrangeGrad)" stroke-width="5" fill="none" />
+  <rect x="31" y="81" width="16" height="16" rx="4" fill="url(#qrOrangeGrad)" />
+  <circle cx="64" cy="64" r="7" fill="#ffffff" />
+  <rect x="74" y="74" width="12" height="12" rx="3" fill="url(#qrOrangeGrad)" />
+  <rect x="92" y="74" width="14" height="14" rx="4" fill="#ffffff" />
+  <rect x="74" y="92" width="14" height="14" rx="4" fill="#ffffff" />
+  <rect x="94" y="94" width="12" height="12" rx="3" fill="url(#qrOrangeGrad)" />
+  <rect x="61" y="24" width="6" height="16" rx="3" fill="url(#qrOrangeGrad)" opacity="0.9" />
+  <rect x="24" y="61" width="16" height="6" rx="3" fill="url(#qrOrangeGrad)" opacity="0.9" />
+</svg>
