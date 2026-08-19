@@ -183,7 +183,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
             "@id": canonicalUrl,
           },
           articleSection: frontmatter.category,
-          keywords: frontmatter.tags.join(", "),
+          keywords: (frontmatter.tags || []).join(", "),
         };
 
   // -----------------------------------------------------------------------

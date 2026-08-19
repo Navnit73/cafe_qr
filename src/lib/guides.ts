@@ -46,29 +46,35 @@ export function calculateReadingTime(content: string): number {
 /**
  * Return all guide slugs (for generateStaticParams).
  */
-export function getGuideSlugs(): string[] {
-  if (!fs.existsSync(GUIDES_DIR)) return [];
-  return fs
-    .readdirSync(GUIDES_DIR)
-    .filter((f) => f.endsWith(".mdx"))
-    .map((f) => f.replace(/\.mdx$/, ""));
-}
-
-/**
- * Parse a single guide file by slug.
- */
 export function getGuideBySlug(slug: string): Guide | null {
   const filePath = path.join(GUIDES_DIR, `${slug}.mdx`);
   if (!fs.existsSync(filePath)) return null;
 
   const raw = fs.readFileSync(filePath, "utf-8");
+  if (!raw.trim()) return null;
   const { data, content } = matter(raw);
+  if (!data || !data.title || !data.slug) return null;
 
   return {
-    frontmatter: data as GuideFrontmatter,
+    frontmatter: {
+      tags: [],
+      ...data,
+    } as unknown as GuideFrontmatter,
     content,
     readingTime: calculateReadingTime(content),
   };
+}
+
+/**
+ * Return all valid guide slugs (for generateStaticParams).
+ */
+export function getGuideSlugs(): string[] {
+  if (!fs.existsSync(GUIDES_DIR)) return [];
+  return fs
+    .readdirSync(GUIDES_DIR)
+    .filter((f) => f.endsWith(".mdx"))
+    .map((f) => f.replace(/\.mdx$/, ""))
+    .filter((slug) => getGuideBySlug(slug) !== null);
 }
 
 /**
