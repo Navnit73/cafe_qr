@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { activeLocales } from "@/i18n/routing";
 import { getGuideSlugs } from "@/lib/guides";
 
-const baseUrl = "https://qrvenues.com";
+const baseUrl = "https://www.qrvenues.com";
 
 const PATHS = [
   { path: "", changeFrequency: "weekly" as const, priority: 1.0 },
