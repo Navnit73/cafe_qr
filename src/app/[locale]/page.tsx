@@ -23,7 +23,6 @@ import {
   Zap,
   Utensils,
   ExternalLink,
-  Scan,
 } from "lucide-react";
 
 interface LandingPageProps {

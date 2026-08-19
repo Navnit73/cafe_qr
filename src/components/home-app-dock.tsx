@@ -9,8 +9,6 @@ import {
   Utensils,
   Star,
   Wifi,
-  Smartphone,
-  ArrowRight,
 } from "lucide-react";
 import { triggerHaptic } from "./scanner/scanner.utils";
 
