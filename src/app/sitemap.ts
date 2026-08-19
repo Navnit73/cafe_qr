@@ -6,6 +6,7 @@ const baseUrl = "https://www.qrvenues.com";
 
 const PATHS = [
   { path: "", changeFrequency: "weekly" as const, priority: 1.0 },
+  { path: "/online-qr-scanner", changeFrequency: "weekly" as const, priority: 0.9 },
   { path: "/about", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/contact", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/case-studies", changeFrequency: "monthly" as const, priority: 0.8 },

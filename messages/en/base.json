@@ -7,12 +7,7 @@
   "nav": {
     "brand": "QRVenues",
     "badge": "Studio",
-    "menuMaker": "QR Menu",
-    "reviews": "Google Reviews",
-    "ordering": "Ordering System",
-    "studio": "QR Studio",
-    "howItWorks": "How It Works",
-    "faq": "FAQ",
+    "scanner": "QR & Barcode Scanner",
     "signIn": "Sign In",
     "getStarted": "Get Started Free"
   },
@@ -286,6 +281,7 @@
     "qrMenu": "QR Code Menu Maker",
     "googleReviews": "Google Review QR Generator",
     "orderingSystem": "Contactless Ordering",
+    "scanner": "QR & Barcode Scanner",
     "feedbackQr": "Private Feedback Loop",
     "wifiQr": "Guest WiFi QR Code",
     "aboutUs": "About Us",

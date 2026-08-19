@@ -5,19 +5,16 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X, ArrowRight, Scan } from "lucide-react";
 
 export function Header() {
   const tNav = useTranslations("nav");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { href: "/#menu-maker", label: tNav("menuMaker") },
-    { href: "/#google-reviews", label: tNav("reviews") },
-    { href: "/#ordering-system", label: tNav("ordering") },
-    { href: "/#qr-studio", label: tNav("studio") },
-    { href: "/#how-it-works", label: tNav("howItWorks") },
-    { href: "/#faq", label: tNav("faq") },
+    
+    { href: "/online-qr-scanner", label: tNav("scanner"), isScanner: true },
+  
   ];
 
   return (
@@ -40,14 +37,22 @@ export function Header() {
         </div>
 
         {/* Center Links (Desktop) */}
-        <nav className="navbar-center hidden lg:flex items-center gap-6 text-xs font-medium text-ink-muted">
+        <nav className="navbar-center hidden lg:flex items-center gap-5 text-xs font-medium text-ink-muted">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="hover:text-ink transition-colors"
+              className={`hover:text-ink transition-colors flex items-center gap-1.5 ${
+                link.isScanner ? "text-ink font-semibold" : ""
+              }`}
             >
-              {link.label}
+              {link.isScanner && <Scan className="w-3.5 h-3.5 text-fin-orange" />}
+              <span>{link.label}</span>
+              {link.isScanner && (
+                <span className="badge badge-xs bg-fin-orange/10 text-fin-orange border-fin-orange/20 text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded">
+                  Scan
+                </span>
+              )}
             </Link>
           ))}
         </nav>
@@ -96,9 +101,19 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-2 px-2.5 rounded-md hover:bg-canvas text-ink-muted hover:text-ink transition-colors text-xs font-medium"
+                className={`py-2 px-2.5 rounded-md hover:bg-canvas text-ink-muted hover:text-ink transition-colors text-xs font-medium flex items-center justify-between ${
+                  link.isScanner ? "bg-fin-orange/5 text-ink font-semibold" : ""
+                }`}
               >
-                {link.label}
+                <div className="flex items-center gap-2">
+                  {link.isScanner && <Scan className="w-4 h-4 text-fin-orange" />}
+                  <span>{link.label}</span>
+                </div>
+                {link.isScanner && (
+                  <span className="badge badge-xs bg-fin-orange text-white border-0 text-[10px] font-medium px-2">
+                    Camera + Upload
+                  </span>
+                )}
               </Link>
             ))}
           </nav>

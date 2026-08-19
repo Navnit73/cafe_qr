@@ -3,6 +3,8 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { HomeAppDock } from "@/components/home-app-dock";
+import { QRCodeGenerator } from "@/components/qr-code";
 import {
   QrCode,
   Star,
@@ -21,6 +23,7 @@ import {
   Zap,
   Utensils,
   ExternalLink,
+  Scan,
 } from "lucide-react";
 
 interface LandingPageProps {
@@ -183,14 +186,13 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
       {/* Main Content Landmark */}
       <main className="flex-1">
+          {/* Phone App Icon Menu Dock (Quick Actions Hub) */}
+        <HomeAppDock />
         {/* =========================================================================
             1. Hero Section
             ========================================================================= */}
         <section className="max-w-5xl mx-auto px-4 sm:px-8 pt-12 sm:pt-20 pb-16 text-center flex flex-col items-center">
-        <div className="badge badge-lg bg-surface-1 border border-hairline text-xs font-medium text-ink gap-2 px-3.5 py-3 mb-6 rounded-full">
-          <span className="w-2 h-2 rounded-full bg-fin-orange animate-pulse" />
-          <span>{tHero("badge")}</span>
-        </div>
+       
 
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-medium tracking-tight text-ink max-w-4xl leading-[1.1] mb-6">
           {tHero("h1")}
@@ -216,9 +218,11 @@ export default async function LandingPage({ params }: LandingPageProps) {
           </a>
         </div>
 
-        <p className="text-xs text-ink-tertiary mb-10">
+        <p className="text-xs text-ink-tertiary mb-6">
           {tHero("noCard")}
         </p>
+
+      
 
         {/* Hero Interactive Studio Showcase Card */}
         <div className="card w-full max-w-4xl bg-surface-1 border border-hairline rounded-2xl text-left shadow-none overflow-hidden">
@@ -304,7 +308,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
       {/* =========================================================================
           2. Digital Menu Maker Section
           ========================================================================= */}
-      <section id="menu-maker" className="max-w-5xl mx-auto px-4 sm:px-8 py-16">
+      <section id="menu-maker" className="max-w-5xl mx-auto px-4 sm:px-8 py-16 scroll-mt-24">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="text-xs font-semibold uppercase text-fin-orange tracking-wider mb-2">
             {tQrMenu("badge")}
@@ -417,7 +421,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
       {/* =========================================================================
           3. Google Review QR Code Generator Section
           ========================================================================= */}
-      <section id="google-reviews" className="max-w-5xl mx-auto px-4 sm:px-8 py-16">
+      <section id="google-reviews" className="max-w-5xl mx-auto px-4 sm:px-8 py-16 scroll-mt-24">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="text-xs font-semibold uppercase text-fin-orange tracking-wider mb-2">
             {tGoogleReview("badge")}
@@ -516,7 +520,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
       {/* =========================================================================
           4. QR Code Ordering System Section
           ========================================================================= */}
-      <section id="ordering-system" className="max-w-5xl mx-auto px-4 sm:px-8 py-16">
+      <section id="ordering-system" className="max-w-5xl mx-auto px-4 sm:px-8 py-16 scroll-mt-24">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="text-xs font-semibold uppercase text-fin-orange tracking-wider mb-2">
             {tOrdering("badge")}
@@ -634,16 +638,28 @@ export default async function LandingPage({ params }: LandingPageProps) {
       </section>
 
       {/* =========================================================================
-          6. Complete QR Studio Suite (6-up)
+          6. Complete QR Studio Suite & Live Generator App
           ========================================================================= */}
-      <section id="qr-studio" className="max-w-5xl mx-auto px-4 sm:px-8 py-16">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="text-xs font-semibold uppercase text-fin-orange tracking-wider mb-2">
-            {tStudio("badge")}
+      <section id="qr-studio" className="max-w-5xl mx-auto px-4 sm:px-8 py-16 scroll-mt-24">
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <div className="badge badge-lg bg-surface-1 border border-hairline text-xs font-semibold text-ink gap-2 px-3.5 py-2.5 mb-3 rounded-full shadow-2xs">
+            <Sparkles className="w-3.5 h-3.5 text-fin-orange" />
+            <span>{tStudio("badge")}</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-ink">
+          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-ink mb-3">
             {tStudio("h2")}
           </h2>
+          <p className="text-xs sm:text-sm text-ink-muted leading-relaxed max-w-xl mx-auto">
+            Design, customize colors, test, and download high-resolution QR codes directly from your browser.
+          </p>
+        </div>
+
+        {/* Live Interactive QR Studio Generator App */}
+        <div className="mb-12">
+          <QRCodeGenerator
+            title="Interactive QR Code Studio"
+            description="Create custom QR codes for websites, guest Wi-Fi, menus, reviews, and vCards."
+          />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -700,7 +716,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
       {/* =========================================================================
           7. How It Works Section
           ========================================================================= */}
-      <section id="how-it-works" className="max-w-5xl mx-auto px-4 sm:px-8 py-16">
+      <section id="how-it-works" className="max-w-5xl mx-auto px-4 sm:px-8 py-16 scroll-mt-24">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="text-xs font-semibold uppercase text-fin-orange tracking-wider mb-2">
             {tHowItWorks("badge")}
@@ -758,7 +774,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
       {/* =========================================================================
           8. Frequently Asked Questions (daisyUI Accordion)
           ========================================================================= */}
-      <section id="faq" className="max-w-3xl mx-auto px-4 sm:px-8 py-16">
+      <section id="faq" className="max-w-3xl mx-auto px-4 sm:px-8 py-16 scroll-mt-24">
         <div className="text-center mb-10">
           <div className="text-xs font-semibold uppercase text-fin-orange tracking-wider mb-2">
             {tFaq("badge")}

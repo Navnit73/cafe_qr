@@ -102,6 +102,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/online-qr-scanner" className="hover:text-ink hover:underline transition-colors font-medium text-fin-orange">
+                  {t("scanner")}
+                </Link>
+              </li>
+              <li>
                 <Link href="/#qr-studio" className="hover:text-ink hover:underline transition-colors">
                   {t("feedbackQr")}
                 </Link>

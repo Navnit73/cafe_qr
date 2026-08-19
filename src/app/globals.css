@@ -181,3 +181,17 @@ body {
     transform: scale(1);
   }
 }
+
+@keyframes scanner-laser {
+  0% {
+    top: 12%;
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    top: 88%;
+    opacity: 0.8;
+  }
+}
