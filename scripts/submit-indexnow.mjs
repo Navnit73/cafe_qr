@@ -6,7 +6,7 @@
  */
 
 const KEY = "9493ae36fcb848a2a4686641c38600a6";
-const HOST = process.env.INDEXNOW_HOST || "qrvenues.com";
+const HOST = process.env.INDEXNOW_HOST || "www.qrvenues.com";
 const BASE_URL = `https://${HOST}`;
 const KEY_LOCATION = `${BASE_URL}/${KEY}.txt`;
 const ENDPOINT = "https://api.indexnow.org/IndexNow";

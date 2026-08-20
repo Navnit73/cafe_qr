@@ -12,7 +12,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale}/about`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/about`;
   const title = "About Us — QRVenues Hospitality Platform";
   const description = "Learn about the mission, team, and hospitality expertise behind QRVenues.";
 
@@ -22,10 +22,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://qrvenues.com/en-us/about",
-        "en-GB": "https://qrvenues.com/en-gb/about",
-        "en-AU": "https://qrvenues.com/en-au/about",
-        "x-default": "https://qrvenues.com/en-us/about",
+        "en-US": "https://www.qrvenues.com/en-us/about",
+        "en-GB": "https://www.qrvenues.com/en-gb/about",
+        "en-AU": "https://www.qrvenues.com/en-au/about",
+        "x-default": "https://www.qrvenues.com/en-us/about",
       },
     },
     openGraph: {
@@ -57,13 +57,13 @@ export default async function AboutPage({ params }: PageProps) {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": `https://qrvenues.com/${locale}`,
+        "item": `https://www.qrvenues.com/${locale}`,
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "About Us",
-        "item": `https://qrvenues.com/${locale}/about`,
+        "item": `https://www.qrvenues.com/${locale}/about`,
       },
     ],
   };

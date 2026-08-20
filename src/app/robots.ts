@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/", "/*/login"],
       },
     ],
-    sitemap: "https://qrvenues.com/sitemap.xml",
+    sitemap: "https://www.qrvenues.com/sitemap.xml",
   };
 }

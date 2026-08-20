@@ -12,7 +12,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale}/terms`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/terms`;
   const title = "Terms of Service — QRVenues";
   const description = "Terms and conditions governing the use of QRVenues software and services.";
 
@@ -22,10 +22,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://qrvenues.com/en-us/terms",
-        "en-GB": "https://qrvenues.com/en-gb/terms",
-        "en-AU": "https://qrvenues.com/en-au/terms",
-        "x-default": "https://qrvenues.com/en-us/terms",
+        "en-US": "https://www.qrvenues.com/en-us/terms",
+        "en-GB": "https://www.qrvenues.com/en-gb/terms",
+        "en-AU": "https://www.qrvenues.com/en-au/terms",
+        "x-default": "https://www.qrvenues.com/en-us/terms",
       },
     },
     openGraph: {
@@ -57,13 +57,13 @@ export default async function TermsPage({ params }: PageProps) {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": `https://qrvenues.com/${locale}`,
+        "item": `https://www.qrvenues.com/${locale}`,
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Terms of Service",
-        "item": `https://qrvenues.com/${locale}/terms`,
+        "item": `https://www.qrvenues.com/${locale}/terms`,
       },
     ],
   };

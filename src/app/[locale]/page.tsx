@@ -33,7 +33,7 @@ export async function generateMetadata({
   params,
 }: LandingPageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale}`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}`;
   const title = "Create QR Code Menus, Google Review Links & Contactless Ordering — Free to Start | QRVenues";
   const description = "Give your restaurant or cafe a QR code menu, a Google review QR code, and a full ordering system — all from one dashboard. Free to start.";
 
@@ -53,10 +53,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://qrvenues.com/en-us",
-        "en-GB": "https://qrvenues.com/en-gb",
-        "en-AU": "https://qrvenues.com/en-au",
-        "x-default": "https://qrvenues.com/en-us",
+        "en-US": "https://www.qrvenues.com/en-us",
+        "en-GB": "https://www.qrvenues.com/en-gb",
+        "en-AU": "https://www.qrvenues.com/en-au",
+        "x-default": "https://www.qrvenues.com/en-us",
       },
     },
     openGraph: {
@@ -152,7 +152,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
     "name": "QRVenues",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "All (Web Browser)",
-    "url": "https://qrvenues.com",
+    "url": "https://www.qrvenues.com",
     "offers": {
       "@type": "Offer",
       "price": "0",

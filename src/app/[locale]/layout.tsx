@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://qrvenues.com"),
+  metadataBase: new URL("https://www.qrvenues.com"),
   title: {
     default: "QRVenues — QR Code Menus, Google Review Links & Contactless Ordering",
     template: "%s | QRVenues",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     siteName: "QRVenues",
     title: "QRVenues — QR Code Menus, Google Review Links & Contactless Ordering",
     description: "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues",
-    url: "https://qrvenues.com",
+    url: "https://www.qrvenues.com",
     locale: "en_US",
     alternateLocale: ["en_GB", "en_AU"],
   },
@@ -109,8 +109,8 @@ export default async function LocaleLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "QRVenues",
-    "url": "https://qrvenues.com",
-    "logo": "https://qrvenues.com/favicons.svg",
+    "url": "https://www.qrvenues.com",
+    "logo": "https://www.qrvenues.com/favicons.svg",
     "description": "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues",
     "contactPoint": {
       "@type": "ContactPoint",
@@ -124,7 +124,7 @@ export default async function LocaleLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "QRVenues",
-    "url": "https://qrvenues.com",
+    "url": "https://www.qrvenues.com",
   };
 
   return (

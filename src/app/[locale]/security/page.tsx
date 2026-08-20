@@ -12,7 +12,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale}/security`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/security`;
   const title = "Security & PCI DSS Compliance — QRVenues";
   const description = "Our security controls, TLS 1.3 encryption, and Level 1 PCI DSS compliant payment handling.";
 
@@ -22,10 +22,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://qrvenues.com/en-us/security",
-        "en-GB": "https://qrvenues.com/en-gb/security",
-        "en-AU": "https://qrvenues.com/en-au/security",
-        "x-default": "https://qrvenues.com/en-us/security",
+        "en-US": "https://www.qrvenues.com/en-us/security",
+        "en-GB": "https://www.qrvenues.com/en-gb/security",
+        "en-AU": "https://www.qrvenues.com/en-au/security",
+        "x-default": "https://www.qrvenues.com/en-us/security",
       },
     },
     openGraph: {
@@ -57,13 +57,13 @@ export default async function SecurityPage({ params }: PageProps) {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": `https://qrvenues.com/${locale}`,
+        "item": `https://www.qrvenues.com/${locale}`,
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Security & PCI DSS",
-        "item": `https://qrvenues.com/${locale}/security`,
+        "item": `https://www.qrvenues.com/${locale}/security`,
       },
     ],
   };

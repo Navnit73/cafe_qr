@@ -15,7 +15,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale}/guides`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/guides`;
   const title =
     "QR Code Guides & Tutorials — Restaurant QR Menus, Reviews & Ordering";
   const description =
@@ -27,10 +27,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://qrvenues.com/en-us/guides",
-        "en-GB": "https://qrvenues.com/en-gb/guides",
-        "en-AU": "https://qrvenues.com/en-au/guides",
-        "x-default": "https://qrvenues.com/en-us/guides",
+        "en-US": "https://www.qrvenues.com/en-us/guides",
+        "en-GB": "https://www.qrvenues.com/en-gb/guides",
+        "en-AU": "https://www.qrvenues.com/en-au/guides",
+        "x-default": "https://www.qrvenues.com/en-us/guides",
       },
     },
     openGraph: {
@@ -61,18 +61,18 @@ export default async function GuidesIndexPage({ params }: PageProps) {
     name: "QR Code Guides & Tutorials",
     description:
       "Free guides on QR code menus, Google review QR codes, contactless ordering, and restaurant technology.",
-    url: `https://qrvenues.com/${locale}/guides`,
+    url: `https://www.qrvenues.com/${locale}/guides`,
     publisher: {
       "@type": "Organization",
       name: "QRVenues",
-      url: "https://qrvenues.com",
+      url: "https://www.qrvenues.com",
     },
     mainEntity: {
       "@type": "ItemList",
       itemListElement: guides.map((guide, i) => ({
         "@type": "ListItem",
         position: i + 1,
-        url: `https://qrvenues.com/${locale}/guides/${guide.frontmatter.slug}`,
+        url: `https://www.qrvenues.com/${locale}/guides/${guide.frontmatter.slug}`,
         name: guide.frontmatter.title,
       })),
     },
@@ -87,13 +87,13 @@ export default async function GuidesIndexPage({ params }: PageProps) {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: `https://qrvenues.com/${locale}`,
+        item: `https://www.qrvenues.com/${locale}`,
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Guides",
-        item: `https://qrvenues.com/${locale}/guides`,
+        item: `https://www.qrvenues.com/${locale}/guides`,
       },
     ],
   };
@@ -158,7 +158,7 @@ export default async function GuidesIndexPage({ params }: PageProps) {
           {/* Interactive Live Generator Studio */}
           <div className="mb-14">
             <QRCodeGenerator
-              initialValue="https://qrvenues.com/menu/the-artisan-cafe"
+              initialValue="https://www.qrvenues.com/menu/the-artisan-cafe"
               initialFrame="menu"
               title="Instant QR Code Studio"
               description="Create, customize, and export high-resolution QR codes in seconds. Enter any menu, review link, or custom URL below."

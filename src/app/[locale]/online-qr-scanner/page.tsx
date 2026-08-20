@@ -19,7 +19,7 @@ export async function generateMetadata({
   params,
 }: ScannerPageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale}/online-qr-scanner`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/online-qr-scanner`;
   const title = "Free QR Code & Barcode Scanner Online | QRVenues";
   const description =
     "Scan QR codes, EAN/UPC product barcodes, Code 128, Wi-Fi codes, and contacts instantly in your browser via camera or image upload. Fast, free, and 100% private.";
@@ -42,10 +42,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://qrvenues.com/en-us/online-qr-scanner",
-        "en-GB": "https://qrvenues.com/en-gb/online-qr-scanner",
-        "en-AU": "https://qrvenues.com/en-au/online-qr-scanner",
-        "x-default": "https://qrvenues.com/en-us/online-qr-scanner",
+        "en-US": "https://www.qrvenues.com/en-us/online-qr-scanner",
+        "en-GB": "https://www.qrvenues.com/en-gb/online-qr-scanner",
+        "en-AU": "https://www.qrvenues.com/en-au/online-qr-scanner",
+        "x-default": "https://www.qrvenues.com/en-us/online-qr-scanner",
       },
     },
     openGraph: {
@@ -76,13 +76,13 @@ export default async function OnlineQrScannerPage({ params }: ScannerPageProps) 
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": `https://qrvenues.com/${locale}`,
+        "item": `https://www.qrvenues.com/${locale}`,
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Online QR & Barcode Scanner",
-        "item": `https://qrvenues.com/${locale}/online-qr-scanner`,
+        "item": `https://www.qrvenues.com/${locale}/online-qr-scanner`,
       },
     ],
   };
@@ -92,7 +92,7 @@ export default async function OnlineQrScannerPage({ params }: ScannerPageProps) 
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "QRVenues Online QR & Barcode Scanner",
-    "url": `https://qrvenues.com/${locale}/online-qr-scanner`,
+    "url": `https://www.qrvenues.com/${locale}/online-qr-scanner`,
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",

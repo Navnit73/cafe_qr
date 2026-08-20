@@ -202,7 +202,7 @@ export const QRCode = forwardRef<QRCodeHandle, QRCodeProps>(function QRCode(
   // Shared QR props
   const qrProps = useMemo(
     () => ({
-      value: value || "https://qrvenues.com",
+      value: value || "https://www.qrvenues.com",
       size,
       bgColor,
       fgColor,

@@ -12,7 +12,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale}/privacy`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/privacy`;
   const title = "Privacy Policy — QRVenues";
   const description = "Our full privacy policy outlining data collection, cookies, and protection measures.";
 
@@ -22,10 +22,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://qrvenues.com/en-us/privacy",
-        "en-GB": "https://qrvenues.com/en-gb/privacy",
-        "en-AU": "https://qrvenues.com/en-au/privacy",
-        "x-default": "https://qrvenues.com/en-us/privacy",
+        "en-US": "https://www.qrvenues.com/en-us/privacy",
+        "en-GB": "https://www.qrvenues.com/en-gb/privacy",
+        "en-AU": "https://www.qrvenues.com/en-au/privacy",
+        "x-default": "https://www.qrvenues.com/en-us/privacy",
       },
     },
     openGraph: {
@@ -57,13 +57,13 @@ export default async function PrivacyPage({ params }: PageProps) {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": `https://qrvenues.com/${locale}`,
+        "item": `https://www.qrvenues.com/${locale}`,
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Privacy Policy",
-        "item": `https://qrvenues.com/${locale}/privacy`,
+        "item": `https://www.qrvenues.com/${locale}/privacy`,
       },
     ],
   };

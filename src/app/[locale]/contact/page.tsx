@@ -12,7 +12,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale}/contact`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/contact`;
   const title = "Contact & Support — QRVenues";
   const description = "Contact the QRVenues hospitality operations and compliance desk.";
 
@@ -22,10 +22,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://qrvenues.com/en-us/contact",
-        "en-GB": "https://qrvenues.com/en-gb/contact",
-        "en-AU": "https://qrvenues.com/en-au/contact",
-        "x-default": "https://qrvenues.com/en-us/contact",
+        "en-US": "https://www.qrvenues.com/en-us/contact",
+        "en-GB": "https://www.qrvenues.com/en-gb/contact",
+        "en-AU": "https://www.qrvenues.com/en-au/contact",
+        "x-default": "https://www.qrvenues.com/en-us/contact",
       },
     },
     openGraph: {
@@ -57,13 +57,13 @@ export default async function ContactPage({ params }: PageProps) {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": `https://qrvenues.com/${locale}`,
+        "item": `https://www.qrvenues.com/${locale}`,
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Contact Us",
-        "item": `https://qrvenues.com/${locale}/contact`,
+        "item": `https://www.qrvenues.com/${locale}/contact`,
       },
     ],
   };
@@ -72,7 +72,7 @@ export default async function ContactPage({ params }: PageProps) {
     "@context": "https://schema.org",
     "@type": "ContactPage",
     "name": "QRVenues Support & Compliance Desk",
-    "url": `https://qrvenues.com/${locale}/contact`,
+    "url": `https://www.qrvenues.com/${locale}/contact`,
     "description": "24/7 Global Hospitality Operations, Enterprise Solutions and Compliance Support.",
   };
 

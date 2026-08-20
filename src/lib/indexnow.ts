@@ -2,7 +2,7 @@ import { activeLocales } from "@/i18n/routing";
 import { getGuideSlugs } from "@/lib/guides";
 
 export const INDEXNOW_KEY = "9493ae36fcb848a2a4686641c38600a6";
-export const INDEXNOW_HOST = process.env.INDEXNOW_HOST || "qrvenues.com";
+export const INDEXNOW_HOST = process.env.INDEXNOW_HOST || "www.qrvenues.com";
 export const INDEXNOW_BASE_URL = `https://${INDEXNOW_HOST}`;
 export const INDEXNOW_KEY_LOCATION = `${INDEXNOW_BASE_URL}/${INDEXNOW_KEY}.txt`;
 export const INDEXNOW_ENDPOINT = "https://api.indexnow.org/IndexNow";

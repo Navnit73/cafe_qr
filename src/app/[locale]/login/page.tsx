@@ -12,7 +12,7 @@ export async function generateMetadata({
   params,
 }: LoginPageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale}/login`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/login`;
   const title = "Sign In — QRVenues";
   const description = "Sign in to your QRVenues dashboard to manage menus, tables, and AI orders.";
 
@@ -26,10 +26,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://qrvenues.com/en-us/login",
-        "en-GB": "https://qrvenues.com/en-gb/login",
-        "en-AU": "https://qrvenues.com/en-au/login",
-        "x-default": "https://qrvenues.com/en-us/login",
+        "en-US": "https://www.qrvenues.com/en-us/login",
+        "en-GB": "https://www.qrvenues.com/en-gb/login",
+        "en-AU": "https://www.qrvenues.com/en-au/login",
+        "x-default": "https://www.qrvenues.com/en-us/login",
       },
     },
     openGraph: {

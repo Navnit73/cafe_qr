@@ -49,7 +49,7 @@ export async function generateMetadata({
   if (!guide) return {};
 
   const { frontmatter } = guide;
-  const canonicalUrl = `https://qrvenues.com/${locale}/guides/${frontmatter.slug}`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/guides/${frontmatter.slug}`;
 
   return {
     title: `${frontmatter.title} — QRVenues Guides`,
@@ -59,10 +59,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": `https://qrvenues.com/en-us/guides/${frontmatter.slug}`,
-        "en-GB": `https://qrvenues.com/en-gb/guides/${frontmatter.slug}`,
-        "en-AU": `https://qrvenues.com/en-au/guides/${frontmatter.slug}`,
-        "x-default": `https://qrvenues.com/en-us/guides/${frontmatter.slug}`,
+        "en-US": `https://www.qrvenues.com/en-us/guides/${frontmatter.slug}`,
+        "en-GB": `https://www.qrvenues.com/en-gb/guides/${frontmatter.slug}`,
+        "en-AU": `https://www.qrvenues.com/en-au/guides/${frontmatter.slug}`,
+        "x-default": `https://www.qrvenues.com/en-us/guides/${frontmatter.slug}`,
       },
     },
     openGraph: {
@@ -95,7 +95,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
   if (!guide) notFound();
 
   const { frontmatter, content, readingTime } = guide;
-  const canonicalUrl = `https://qrvenues.com/${locale}/guides/${frontmatter.slug}`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/guides/${frontmatter.slug}`;
   const defaultQrValue = frontmatter.qrValue || canonicalUrl;
 
   // -----------------------------------------------------------------------
@@ -109,13 +109,13 @@ export default async function GuideDetailPage({ params }: PageProps) {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: `https://qrvenues.com/${locale}`,
+        item: `https://www.qrvenues.com/${locale}`,
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Guides",
-        item: `https://qrvenues.com/${locale}/guides`,
+        item: `https://www.qrvenues.com/${locale}/guides`,
       },
       {
         "@type": "ListItem",
@@ -141,15 +141,15 @@ export default async function GuideDetailPage({ params }: PageProps) {
           author: {
             "@type": "Organization",
             name: frontmatter.author,
-            url: "https://qrvenues.com",
+            url: "https://www.qrvenues.com",
           },
           publisher: {
             "@type": "Organization",
             name: "QRVenues",
-            url: "https://qrvenues.com",
+            url: "https://www.qrvenues.com",
             logo: {
               "@type": "ImageObject",
-              url: "https://qrvenues.com/favicons.svg",
+              url: "https://www.qrvenues.com/favicons.svg",
             },
           },
           mainEntityOfPage: {
@@ -167,15 +167,15 @@ export default async function GuideDetailPage({ params }: PageProps) {
           author: {
             "@type": "Organization",
             name: frontmatter.author,
-            url: "https://qrvenues.com",
+            url: "https://www.qrvenues.com",
           },
           publisher: {
             "@type": "Organization",
             name: "QRVenues",
-            url: "https://qrvenues.com",
+            url: "https://www.qrvenues.com",
             logo: {
               "@type": "ImageObject",
-              url: "https://qrvenues.com/favicons.svg",
+              url: "https://www.qrvenues.com/favicons.svg",
             },
           },
           mainEntityOfPage: {

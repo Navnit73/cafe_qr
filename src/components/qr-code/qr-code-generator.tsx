@@ -138,7 +138,7 @@ const TABS: { id: QRContentType; label: string; icon: React.ElementType }[] = [
 type AccordionSection = "content" | "colors" | "logo" | "design";
 
 export function QRCodeGenerator({
-  initialValue = "https://qrvenues.com/menu/the-artisan-cafe",
+  initialValue = "https://www.qrvenues.com/menu/the-artisan-cafe",
   initialFrame = "menu",
   initialFgColor = "#5645d4",
   title = "Interactive QR Code Studio",
@@ -211,9 +211,9 @@ export function QRCodeGenerator({
   const encodedValue = useMemo(() => {
     switch (activeTab) {
       case "url":
-        return urlVal || "https://qrvenues.com";
+        return urlVal || "https://www.qrvenues.com";
       case "menu":
-        return `https://qrvenues.com/menu/${menuSlug || "menu"}${
+        return `https://www.qrvenues.com/menu/${menuSlug || "menu"}${
           menuTable ? `?table=${menuTable}` : ""
         }`;
       case "review":
@@ -233,7 +233,7 @@ export function QRCodeGenerator({
       case "sms":
         return `smsto:${smsPhone}:${smsMsg}`;
       default:
-        return urlVal || "https://qrvenues.com";
+        return urlVal || "https://www.qrvenues.com";
     }
   }, [
     activeTab,
@@ -1193,7 +1193,7 @@ export function QRCodeGenerator({
                 <button
                   type="button"
                   onClick={() => {
-                    setUrlVal("https://qrvenues.com/menu/the-artisan-cafe");
+                    setUrlVal("https://www.qrvenues.com/menu/the-artisan-cafe");
                     setFgColor("#5645d4");
                     setBgColor("#ffffff");
                     setEnableGradient(false);

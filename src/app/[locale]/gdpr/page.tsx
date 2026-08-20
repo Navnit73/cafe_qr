@@ -12,7 +12,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale}/gdpr`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/gdpr`;
   const title = "GDPR & Data Protection Compliance — QRVenues";
   const description = "Our comprehensive commitment to the EU GDPR, UK DPA, and international data privacy regulations.";
 
@@ -22,10 +22,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://qrvenues.com/en-us/gdpr",
-        "en-GB": "https://qrvenues.com/en-gb/gdpr",
-        "en-AU": "https://qrvenues.com/en-au/gdpr",
-        "x-default": "https://qrvenues.com/en-us/gdpr",
+        "en-US": "https://www.qrvenues.com/en-us/gdpr",
+        "en-GB": "https://www.qrvenues.com/en-gb/gdpr",
+        "en-AU": "https://www.qrvenues.com/en-au/gdpr",
+        "x-default": "https://www.qrvenues.com/en-us/gdpr",
       },
     },
     openGraph: {
@@ -57,13 +57,13 @@ export default async function GdprPage({ params }: PageProps) {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": `https://qrvenues.com/${locale}`,
+        "item": `https://www.qrvenues.com/${locale}`,
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "GDPR Compliance",
-        "item": `https://qrvenues.com/${locale}/gdpr`,
+        "item": `https://www.qrvenues.com/${locale}/gdpr`,
       },
     ],
   };

@@ -20,7 +20,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://qrvenues.com/${locale}/case-studies`;
+  const canonicalUrl = `https://www.qrvenues.com/${locale}/case-studies`;
   const title = "Hospitality Case Studies & Operator ROI — QRVenues";
   const description = "Read how cafes and restaurants achieved +42% table turnaround, 4.9-star ratings, and zero queue friction with QRVenues.";
 
@@ -30,10 +30,10 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        "en-US": "https://qrvenues.com/en-us/case-studies",
-        "en-GB": "https://qrvenues.com/en-gb/case-studies",
-        "en-AU": "https://qrvenues.com/en-au/case-studies",
-        "x-default": "https://qrvenues.com/en-us/case-studies",
+        "en-US": "https://www.qrvenues.com/en-us/case-studies",
+        "en-GB": "https://www.qrvenues.com/en-gb/case-studies",
+        "en-AU": "https://www.qrvenues.com/en-au/case-studies",
+        "x-default": "https://www.qrvenues.com/en-us/case-studies",
       },
     },
     openGraph: {
@@ -65,13 +65,13 @@ export default async function CaseStudiesPage({ params }: PageProps) {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": `https://qrvenues.com/${locale}`,
+        "item": `https://www.qrvenues.com/${locale}`,
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Case Studies",
-        "item": `https://qrvenues.com/${locale}/case-studies`,
+        "item": `https://www.qrvenues.com/${locale}/case-studies`,
       },
     ],
   };
