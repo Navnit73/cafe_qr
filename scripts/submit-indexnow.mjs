@@ -14,17 +14,34 @@ const ENDPOINT = "https://api.indexnow.org/IndexNow";
 const LOCALES = ["en-us", "en-gb", "en-au"];
 const STATIC_PATHS = [
   "",
+  "/online-qr-scanner",
+  "/guides",
+  "/case-studies",
   "/about",
   "/contact",
-  "/case-studies",
-  "/guides",
   "/gdpr",
   "/privacy",
   "/terms",
   "/security",
 ];
 
-const GUIDE_SLUGS = ["google-review-qr-code"];
+const INDUSTRY_SLUGS = [
+  "qr-code-for-restaurants",
+  "qr-code-for-cafes",
+  "qr-code-for-hotels",
+  "qr-code-for-bars",
+  "qr-code-for-events",
+  "qr-code-for-real-estate",
+];
+
+const GUIDE_SLUGS = [
+  "free-qr-code-generator",
+  "generate-qrcode-online",
+  "google-review-qr-code",
+  "qr-code-visiting-card-generator",
+  "wifi-qr-code-generator",
+  "pdf-qr-code-generator",
+];
 
 function buildUrls() {
   const urls = [];
@@ -32,6 +49,12 @@ function buildUrls() {
   for (const pagePath of STATIC_PATHS) {
     for (const loc of LOCALES) {
       urls.push(`${BASE_URL}/${loc}${pagePath}`);
+    }
+  }
+
+  for (const slug of INDUSTRY_SLUGS) {
+    for (const loc of LOCALES) {
+      urls.push(`${BASE_URL}/${loc}/${slug}`);
     }
   }
 

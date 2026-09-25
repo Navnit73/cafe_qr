@@ -5,16 +5,34 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { Menu, X, ArrowRight, Scan } from "lucide-react";
+import {
+  Menu,
+  X,
+  ArrowRight,
+  Scan,
+  ChevronDown,
+  Utensils,
+  Coffee,
+  Hotel,
+  Beer,
+  Calendar,
+  Home,
+  BookOpen,
+  TrendingUp,
+} from "lucide-react";
 
 export function Header() {
   const tNav = useTranslations("nav");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [solutionsOpen, setSolutionsOpen] = useState(false);
 
-  const navLinks = [
-    
-    { href: "/online-qr-scanner", label: tNav("scanner"), isScanner: true },
-  
+  const solutions = [
+    { href: "/qr-code-for-restaurants", label: "Restaurants", icon: Utensils, desc: "Menus, table ordering & POS" },
+    { href: "/qr-code-for-cafes", label: "Cafes & Roasteries", icon: Coffee, desc: "Countertop speed & modifiers" },
+    { href: "/qr-code-for-hotels", label: "Hotels & Resorts", icon: Hotel, desc: "In-room dining & concierge" },
+    { href: "/qr-code-for-bars", label: "Bars & Breweries", icon: Beer, desc: "Live draft lists & fast tabs" },
+    { href: "/qr-code-for-events", label: "Events & Summits", icon: Calendar, desc: "Badges, agendas & leads" },
+    { href: "/qr-code-for-real-estate", label: "Real Estate", icon: Home, desc: "Yard sign riders & 3D tours" },
   ];
 
   return (
@@ -37,24 +55,80 @@ export function Header() {
         </div>
 
         {/* Center Links (Desktop) */}
-        <nav className="navbar-center hidden lg:flex items-center gap-5 text-xs font-medium text-ink-muted">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`hover:text-ink transition-colors flex items-center gap-1.5 ${
-                link.isScanner ? "text-ink font-semibold" : ""
-              }`}
+        <nav className="navbar-center hidden lg:flex items-center gap-6 text-xs font-medium text-ink-muted">
+          {/* Solutions Dropdown */}
+          <div className="dropdown dropdown-hover">
+            <div
+              tabIndex={0}
+              role="button"
+              className="flex items-center gap-1 hover:text-ink transition-colors cursor-pointer py-2"
             >
-              {link.isScanner && <Scan className="w-3.5 h-3.5 text-fin-orange" />}
-              <span>{link.label}</span>
-              {link.isScanner && (
-                <span className="badge badge-xs bg-fin-orange/10 text-fin-orange border-fin-orange/20 text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded">
-                  Scan
-                </span>
-              )}
-            </Link>
-          ))}
+              <span>Solutions</span>
+              <ChevronDown className="w-3.5 h-3.5 text-ink-subtle" />
+            </div>
+            <div
+              tabIndex={0}
+              className="dropdown-content z-50 menu p-3 shadow-lg bg-surface-1 rounded-xl border border-hairline w-80 space-y-1"
+            >
+              <div className="px-2 py-1 text-[10px] font-semibold text-ink-subtle uppercase tracking-wider">
+                Industry Solutions
+              </div>
+              <div className="grid grid-cols-1 gap-1">
+                {solutions.map((sol) => {
+                  const Icon = sol.icon;
+                  return (
+                    <Link
+                      key={sol.href}
+                      href={sol.href}
+                      className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-canvas text-ink transition-colors group"
+                    >
+                      <div className="w-7 h-7 rounded-md bg-canvas border border-hairline flex items-center justify-center text-fin-orange shrink-0 mt-0.5 group-hover:border-ink">
+                        <Icon className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-semibold text-ink group-hover:text-fin-orange transition-colors">
+                          {sol.label}
+                        </div>
+                        <div className="text-[11px] text-ink-muted leading-tight">
+                          {sol.desc}
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Scanner Link */}
+          <Link
+            href="/online-qr-scanner"
+            className="hover:text-ink transition-colors flex items-center gap-1.5 text-ink font-semibold"
+          >
+            <Scan className="w-3.5 h-3.5 text-fin-orange" />
+            <span>{tNav("scanner")}</span>
+            <span className="badge badge-xs bg-fin-orange/10 text-fin-orange border-fin-orange/20 text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded">
+              Free Tool
+            </span>
+          </Link>
+
+          {/* Guides Link */}
+          <Link
+            href="/guides"
+            className="hover:text-ink transition-colors flex items-center gap-1.5"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-ink-subtle" />
+            <span>Guides</span>
+          </Link>
+
+          {/* Case Studies Link */}
+          <Link
+            href="/case-studies"
+            className="hover:text-ink transition-colors flex items-center gap-1.5"
+          >
+            <TrendingUp className="w-3.5 h-3.5 text-ink-subtle" />
+            <span>ROI & Stories</span>
+          </Link>
         </nav>
 
         {/* End Actions */}
@@ -91,31 +165,67 @@ export function Header() {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-surface-1 border-b border-hairline px-4 py-4 space-y-4 animate-in slide-in-from-top-2 shadow-lg">
-          <div className="pb-2 border-b border-hairline-soft">
+          <div className="pb-2 border-b border-hairline-soft flex items-center justify-between">
             <span className="text-xs font-semibold text-ink uppercase tracking-wider">Navigation</span>
+            <span className="text-[10px] text-ink-subtle">QRVenues Menu</span>
           </div>
 
           <nav className="flex flex-col space-y-1 text-sm font-medium text-ink">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`py-2 px-2.5 rounded-md hover:bg-canvas text-ink-muted hover:text-ink transition-colors text-xs font-medium flex items-center justify-between ${
-                  link.isScanner ? "bg-fin-orange/5 text-ink font-semibold" : ""
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  {link.isScanner && <Scan className="w-4 h-4 text-fin-orange" />}
-                  <span>{link.label}</span>
-                </div>
-                {link.isScanner && (
-                  <span className="badge badge-xs bg-fin-orange text-white border-0 text-[10px] font-medium px-2">
-                    Camera + Upload
-                  </span>
-                )}
-              </Link>
-            ))}
+            <Link
+              href="/online-qr-scanner"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2 px-2.5 rounded-md bg-fin-orange/5 text-ink font-semibold flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2">
+                <Scan className="w-4 h-4 text-fin-orange" />
+                <span>Online QR & Barcode Scanner</span>
+              </div>
+              <span className="badge badge-xs bg-fin-orange text-white border-0 text-[10px] font-medium px-2">
+                Free Tool
+              </span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => setSolutionsOpen(!solutionsOpen)}
+              className="py-2 px-2.5 rounded-md hover:bg-canvas text-ink-muted hover:text-ink transition-colors text-xs font-medium flex items-center justify-between w-full text-left"
+            >
+              <span>Industry Solutions</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-ink-subtle transition-transform ${solutionsOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            {solutionsOpen && (
+              <div className="pl-4 space-y-1 border-l-2 border-fin-orange/20 my-1">
+                {solutions.map((sol) => (
+                  <Link
+                    key={sol.href}
+                    href={sol.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block py-1.5 px-2 text-xs text-ink-muted hover:text-fin-orange transition-colors"
+                  >
+                    {sol.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            <Link
+              href="/guides"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2 px-2.5 rounded-md hover:bg-canvas text-ink-muted hover:text-ink transition-colors text-xs font-medium flex items-center gap-2"
+            >
+              <BookOpen className="w-4 h-4 text-ink-subtle" />
+              <span>Guides & Tutorials</span>
+            </Link>
+
+            <Link
+              href="/case-studies"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2 px-2.5 rounded-md hover:bg-canvas text-ink-muted hover:text-ink transition-colors text-xs font-medium flex items-center gap-2"
+            >
+              <TrendingUp className="w-4 h-4 text-ink-subtle" />
+              <span>Case Studies & ROI</span>
+            </Link>
           </nav>
 
           <div className="pt-3 border-t border-hairline-soft space-y-2">

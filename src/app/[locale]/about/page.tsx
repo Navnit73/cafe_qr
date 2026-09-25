@@ -8,39 +8,19 @@ interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
+import { constructMetadata } from "@/lib/seo";
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}/about`;
-  const title = "About Us — QRVenues Hospitality Platform";
-  const description = "Learn about the mission, team, and hospitality expertise behind QRVenues.";
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": "https://www.qrvenues.com/en-us/about",
-        "en-GB": "https://www.qrvenues.com/en-gb/about",
-        "en-AU": "https://www.qrvenues.com/en-au/about",
-        "x-default": "https://www.qrvenues.com/en-us/about",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  return constructMetadata({
+    title: "About Us — Hospitality Technology Built by Operators",
+    description: "Learn about the mission, engineering standards, and hospitality operations expertise powering QRVenues digital menus and ordering systems.",
+    path: "/about",
+    locale,
+    keywords: ["about qrvenues", "hospitality technology team", "restaurant pos engineers"],
+  });
 }
 
 export default async function AboutPage({ params }: PageProps) {

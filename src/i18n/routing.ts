@@ -6,6 +6,7 @@ export const routing = defineRouting({
   defaultLocale: "en-us",
   localePrefix: "always",
   localeCookie: true,
+  localeDetection: false,
 });
 
 // Locales with active, human-reviewed copy

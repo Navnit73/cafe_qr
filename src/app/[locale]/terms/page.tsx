@@ -8,39 +8,19 @@ interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
+import { constructMetadata } from "@/lib/seo";
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}/terms`;
-  const title = "Terms of Service — QRVenues";
-  const description = "Terms and conditions governing the use of QRVenues software and services.";
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": "https://www.qrvenues.com/en-us/terms",
-        "en-GB": "https://www.qrvenues.com/en-gb/terms",
-        "en-AU": "https://www.qrvenues.com/en-au/terms",
-        "x-default": "https://www.qrvenues.com/en-us/terms",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  return constructMetadata({
+    title: "Terms of Service & Venue SLA Agreement",
+    description: "Terms and conditions governing the use of QRVenues digital menus, table ordering software, 99.98% SLA, and customer licensing terms.",
+    path: "/terms",
+    locale,
+    keywords: ["terms of service", "user agreement", "hospitality service agreement"],
+  });
 }
 
 export default async function TermsPage({ params }: PageProps) {

@@ -8,39 +8,19 @@ interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
+import { constructMetadata } from "@/lib/seo";
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}/gdpr`;
-  const title = "GDPR & Data Protection Compliance — QRVenues";
-  const description = "Our comprehensive commitment to the EU GDPR, UK DPA, and international data privacy regulations.";
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": "https://www.qrvenues.com/en-us/gdpr",
-        "en-GB": "https://www.qrvenues.com/en-gb/gdpr",
-        "en-AU": "https://www.qrvenues.com/en-au/gdpr",
-        "x-default": "https://www.qrvenues.com/en-us/gdpr",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  return constructMetadata({
+    title: "GDPR & Data Protection Compliance — EU & UK Standards",
+    description: "Our comprehensive commitment to EU GDPR, UK DPA, and international data privacy regulations for restaurant operators and dining guests.",
+    path: "/gdpr",
+    locale,
+    keywords: ["gdpr compliance", "data protection officer", "guest privacy standards"],
+  });
 }
 
 export default async function GdprPage({ params }: PageProps) {

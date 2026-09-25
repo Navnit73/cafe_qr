@@ -8,39 +8,19 @@ interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
+import { constructMetadata } from "@/lib/seo";
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}/privacy`;
-  const title = "Privacy Policy — QRVenues";
-  const description = "Our full privacy policy outlining data collection, cookies, and protection measures.";
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": "https://www.qrvenues.com/en-us/privacy",
-        "en-GB": "https://www.qrvenues.com/en-gb/privacy",
-        "en-AU": "https://www.qrvenues.com/en-au/privacy",
-        "x-default": "https://www.qrvenues.com/en-us/privacy",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  return constructMetadata({
+    title: "Privacy Policy & Privacy-by-Design Standards",
+    description: "Our privacy policy outlining zero cross-site tracking, minimal guest data retention, SOC-2 hosting, and compliance with global privacy regulations.",
+    path: "/privacy",
+    locale,
+    keywords: ["privacy policy", "data privacy", "no tracking qr code"],
+  });
 }
 
 export default async function PrivacyPage({ params }: PageProps) {

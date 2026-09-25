@@ -8,39 +8,19 @@ interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
+import { constructMetadata } from "@/lib/seo";
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}/security`;
-  const title = "Security & PCI DSS Compliance — QRVenues";
-  const description = "Our security controls, TLS 1.3 encryption, and Level 1 PCI DSS compliant payment handling.";
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": "https://www.qrvenues.com/en-us/security",
-        "en-GB": "https://www.qrvenues.com/en-gb/security",
-        "en-AU": "https://www.qrvenues.com/en-au/security",
-        "x-default": "https://www.qrvenues.com/en-us/security",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  return constructMetadata({
+    title: "Security & PCI DSS Compliance — Infrastructure Controls",
+    description: "Detailed overview of QRVenues enterprise security controls, end-to-end TLS 1.3 encryption, and Level 1 PCI DSS compliant tokenized payment handling.",
+    path: "/security",
+    locale,
+    keywords: ["security compliance", "pci dds level 1", "tls 1.3 encryption", "soc 2 cloud"],
+  });
 }
 
 export default async function SecurityPage({ params }: PageProps) {

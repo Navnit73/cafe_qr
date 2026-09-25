@@ -8,43 +8,19 @@ interface LoginPageProps {
   params: Promise<{ locale: string }>;
 }
 
+import { constructMetadata } from "@/lib/seo";
+
 export async function generateMetadata({
   params,
 }: LoginPageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}/login`;
-  const title = "Sign In — QRVenues";
-  const description = "Sign in to your QRVenues dashboard to manage menus, tables, and AI orders.";
-
-  return {
-    title,
-    description,
-    robots: {
-      index: false,
-      follow: true,
-    },
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": "https://www.qrvenues.com/en-us/login",
-        "en-GB": "https://www.qrvenues.com/en-gb/login",
-        "en-AU": "https://www.qrvenues.com/en-au/login",
-        "x-default": "https://www.qrvenues.com/en-us/login",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  return constructMetadata({
+    title: "Sign In to Venue Dashboard",
+    description: "Sign in to your QRVenues dashboard to manage digital menus, table QR codes, and live ordering streams.",
+    path: "/login",
+    locale,
+    noIndex: true,
+  });
 }
 
 export default async function LoginPage({ params }: LoginPageProps) {

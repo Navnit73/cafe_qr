@@ -12,6 +12,8 @@ import {
   Coffee,
 } from "lucide-react";
 
+import { constructMetadata } from "@/lib/seo";
+
 interface PageProps {
   params: Promise<{ locale: string }>;
 }
@@ -20,35 +22,18 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}/case-studies`;
-  const title = "Hospitality Case Studies & Operator ROI — QRVenues";
-  const description = "Read how cafes and restaurants achieved +42% table turnaround, 4.9-star ratings, and zero queue friction with QRVenues.";
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": "https://www.qrvenues.com/en-us/case-studies",
-        "en-GB": "https://www.qrvenues.com/en-gb/case-studies",
-        "en-AU": "https://www.qrvenues.com/en-au/case-studies",
-        "x-default": "https://www.qrvenues.com/en-us/case-studies",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  return constructMetadata({
+    title: "Hospitality Case Studies & Operator ROI — 42% Faster Turnaround",
+    description: "Read real ROI case studies from cafes and restaurants achieving +42% faster table turns, 4.9-star Google ratings, and higher average order values with QRVenues.",
+    path: "/case-studies",
+    locale,
+    keywords: [
+      "qr code case studies",
+      "restaurant qr menu roi",
+      "hospitality technology case study",
+      "contactless ordering success",
+    ],
+  });
 }
 
 export default async function CaseStudiesPage({ params }: PageProps) {

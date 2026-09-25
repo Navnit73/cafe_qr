@@ -8,39 +8,19 @@ interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
+import { constructMetadata } from "@/lib/seo";
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}/contact`;
-  const title = "Contact & Support — QRVenues";
-  const description = "Contact the QRVenues hospitality operations and compliance desk.";
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": "https://www.qrvenues.com/en-us/contact",
-        "en-GB": "https://www.qrvenues.com/en-gb/contact",
-        "en-AU": "https://www.qrvenues.com/en-au/contact",
-        "x-default": "https://www.qrvenues.com/en-us/contact",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  return constructMetadata({
+    title: "Contact Support & Operations Desk — 24/7 Hospitality Help",
+    description: "Get in touch with the QRVenues hospitality operations, technical integration, and enterprise compliance desk. 24/7 global support.",
+    path: "/contact",
+    locale,
+    keywords: ["contact qrvenues", "hospitality support", "restaurant pos help desk"],
+  });
 }
 
 export default async function ContactPage({ params }: PageProps) {

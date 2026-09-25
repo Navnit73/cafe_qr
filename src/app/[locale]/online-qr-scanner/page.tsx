@@ -11,6 +11,8 @@ import {
   HelpCircle,
 } from "lucide-react";
 
+import { constructMetadata } from "@/lib/seo";
+
 interface ScannerPageProps {
   params: Promise<{ locale: string }>;
 }
@@ -19,14 +21,11 @@ export async function generateMetadata({
   params,
 }: ScannerPageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}/online-qr-scanner`;
-  const title = "Free QR Code & Barcode Scanner Online | QRVenues";
-  const description =
-    "Scan QR codes, EAN/UPC product barcodes, Code 128, Wi-Fi codes, and contacts instantly in your browser via camera or image upload. Fast, free, and 100% private.";
-
-  return {
-    title,
-    description,
+  return constructMetadata({
+    title: "Free QR Code & Barcode Scanner Online — Camera & Image Reader",
+    description: "Scan QR codes, EAN/UPC product barcodes, Code 128, Wi-Fi codes, and contacts instantly in your browser via camera or image upload. Fast, free, and 100% private.",
+    path: "/online-qr-scanner",
+    locale,
     keywords: [
       "online qr scanner",
       "qr code scanner",
@@ -39,28 +38,7 @@ export async function generateMetadata({
       "wifi qr code reader",
       "free qr scanner web",
     ],
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": "https://www.qrvenues.com/en-us/online-qr-scanner",
-        "en-GB": "https://www.qrvenues.com/en-gb/online-qr-scanner",
-        "en-AU": "https://www.qrvenues.com/en-au/online-qr-scanner",
-        "x-default": "https://www.qrvenues.com/en-us/online-qr-scanner",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  });
 }
 
 export default async function OnlineQrScannerPage({ params }: ScannerPageProps) {

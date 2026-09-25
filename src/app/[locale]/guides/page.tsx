@@ -7,6 +7,8 @@ import { getAllGuides } from "@/lib/guides";
 import { QRCodeGenerator } from "@/components/qr-code";
 import { BookOpen, Calendar, Clock, ArrowRight, Tag, Sparkles } from "lucide-react";
 
+import { constructMetadata } from "@/lib/seo";
+
 interface PageProps {
   params: Promise<{ locale: string }>;
 }
@@ -15,37 +17,19 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}/guides`;
-  const title =
-    "QR Code Guides & Tutorials — Restaurant QR Menus, Reviews & Ordering";
-  const description =
-    "Free guides on QR code menus, Google review QR codes, contactless ordering, and restaurant technology. Step-by-step tutorials for hospitality venues.";
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": "https://www.qrvenues.com/en-us/guides",
-        "en-GB": "https://www.qrvenues.com/en-gb/guides",
-        "en-AU": "https://www.qrvenues.com/en-au/guides",
-        "x-default": "https://www.qrvenues.com/en-us/guides",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  return constructMetadata({
+    title: "QR Code Guides & Tutorials — Menus, Reviews & Ordering Systems",
+    description: "Free in-depth guides on QR code menus, Google review QR codes, Wi-Fi codes, and contactless ordering technology. Step-by-step tutorials for businesses.",
+    path: "/guides",
+    locale,
+    keywords: [
+      "qr code guides",
+      "qr code tutorial",
+      "how to create qr code menu",
+      "google review qr code guide",
+      "restaurant qr technology",
+    ],
+  });
 }
 
 export default async function GuidesIndexPage({ params }: PageProps) {

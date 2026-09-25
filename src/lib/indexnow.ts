@@ -1,5 +1,6 @@
 import { activeLocales } from "@/i18n/routing";
 import { getGuideSlugs } from "@/lib/guides";
+import { getAllIndustrySlugs } from "@/lib/industries";
 
 export const INDEXNOW_KEY = "9493ae36fcb848a2a4686641c38600a6";
 export const INDEXNOW_HOST = process.env.INDEXNOW_HOST || "www.qrvenues.com";
@@ -9,10 +10,11 @@ export const INDEXNOW_ENDPOINT = "https://api.indexnow.org/IndexNow";
 
 const STATIC_PATHS = [
   "",
+  "/online-qr-scanner",
+  "/guides",
+  "/case-studies",
   "/about",
   "/contact",
-  "/case-studies",
-  "/guides",
   "/gdpr",
   "/privacy",
   "/terms",
@@ -20,7 +22,7 @@ const STATIC_PATHS = [
 ];
 
 /**
- * Returns an array of all active canonical URLs across all locales and guides.
+ * Returns an array of all active canonical URLs across all locales, industries, and guides.
  */
 export function getAllSiteUrls(baseUrl: string = INDEXNOW_BASE_URL): string[] {
   const urls: string[] = [];
@@ -29,6 +31,14 @@ export function getAllSiteUrls(baseUrl: string = INDEXNOW_BASE_URL): string[] {
   for (const pagePath of STATIC_PATHS) {
     for (const locale of activeLocales) {
       urls.push(`${baseUrl}/${locale}${pagePath}`);
+    }
+  }
+
+  // Industry long-tail landing pages
+  const industrySlugs = getAllIndustrySlugs();
+  for (const slug of industrySlugs) {
+    for (const locale of activeLocales) {
+      urls.push(`${baseUrl}/${locale}/${slug}`);
     }
   }
 

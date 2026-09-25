@@ -38,6 +38,8 @@ export function generateStaticParams() {
   return params;
 }
 
+import { constructMetadata } from "@/lib/seo";
+
 // ---------------------------------------------------------------------------
 // Metadata
 // ---------------------------------------------------------------------------
@@ -49,39 +51,18 @@ export async function generateMetadata({
   if (!guide) return {};
 
   const { frontmatter } = guide;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}/guides/${frontmatter.slug}`;
 
-  return {
-    title: `${frontmatter.title} — QRVenues Guides`,
+  return constructMetadata({
+    title: frontmatter.title,
     description: frontmatter.description,
+    path: `/guides/${frontmatter.slug}`,
+    locale,
     keywords: frontmatter.tags,
-    authors: [{ name: frontmatter.author }],
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": `https://www.qrvenues.com/en-us/guides/${frontmatter.slug}`,
-        "en-GB": `https://www.qrvenues.com/en-gb/guides/${frontmatter.slug}`,
-        "en-AU": `https://www.qrvenues.com/en-au/guides/${frontmatter.slug}`,
-        "x-default": `https://www.qrvenues.com/en-us/guides/${frontmatter.slug}`,
-      },
-    },
-    openGraph: {
-      title: frontmatter.title,
-      description: frontmatter.description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "article",
-      publishedTime: frontmatter.publishedAt,
-      modifiedTime: frontmatter.updatedAt || frontmatter.publishedAt,
-      authors: [frontmatter.author],
-      tags: frontmatter.tags,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: frontmatter.title,
-      description: frontmatter.description,
-    },
-  };
+    type: "article",
+    publishedTime: frontmatter.publishedAt,
+    modifiedTime: frontmatter.updatedAt || frontmatter.publishedAt,
+    authors: [frontmatter.author],
+  });
 }
 
 // ---------------------------------------------------------------------------

@@ -25,6 +25,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 
+import { constructMetadata } from "@/lib/seo";
+
 interface LandingPageProps {
   params: Promise<{ locale: string }>;
 }
@@ -33,13 +35,11 @@ export async function generateMetadata({
   params,
 }: LandingPageProps): Promise<Metadata> {
   const { locale } = await params;
-  const canonicalUrl = `https://www.qrvenues.com/${locale}`;
-  const title = "Create QR Code Menus, Google Review Links & Contactless Ordering — Free to Start | QRVenues";
-  const description = "Give your restaurant or cafe a QR code menu, a Google review QR code, and a full ordering system — all from one dashboard. Free to start.";
-
-  return {
-    title,
-    description,
+  return constructMetadata({
+    title: "Create QR Code Menus, Google Review Links & Contactless Ordering",
+    description: "Give your restaurant or cafe a digital QR code menu, a Google review QR code, and a full ordering system — all from one dashboard. Free to start.",
+    path: "",
+    locale,
     keywords: [
       "qr code menu",
       "free qr menu maker",
@@ -50,28 +50,7 @@ export async function generateMetadata({
       "restaurant qr code",
       "cafe qr ordering",
     ],
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "en-US": "https://www.qrvenues.com/en-us",
-        "en-GB": "https://www.qrvenues.com/en-gb",
-        "en-AU": "https://www.qrvenues.com/en-au",
-        "x-default": "https://www.qrvenues.com/en-us",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "QRVenues",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  });
 }
 
 export default async function LandingPage({ params }: LandingPageProps) {

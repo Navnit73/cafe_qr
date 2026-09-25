@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/*/login"],
+        disallow: ["/api/"],
       },
     ],
     sitemap: "https://www.qrvenues.com/sitemap.xml",
