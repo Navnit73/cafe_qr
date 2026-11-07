@@ -366,7 +366,7 @@ export const INDUSTRIES: IndustryData[] = [
     metaDescription: "Streamline event check-ins, share live agendas, connect attendees with digital vCards, and gather real-time session feedback via QR codes.",
     subtitle: "Eliminate printed event programs, distribute real-time room schedule updates, and empower attendees and exhibitors with digital networking.",
     sampleQrValue: "https://www.qrvenues.com/events/tech-summit-2026",
-    sampleFrame: "plain",
+    sampleFrame: "none",
     stats: [
       { value: "0 sec", label: "Check-in Scan Latency" },
       { value: "100%", label: "Paperless Conference Schedules" },
@@ -447,7 +447,7 @@ export const INDUSTRIES: IndustryData[] = [
     metaDescription: "Capture active home buyer leads 24/7 with QR code yard sign riders linking directly to 3D virtual tours, floor plans, and agent contact vCards.",
     subtitle: "Turn drive-by traffic into qualified buyer inquiries. Give prospective buyers instant access to pricing, photo galleries, and private showing bookings.",
     sampleQrValue: "https://www.qrvenues.com/property/104-grand-view",
-    sampleFrame: "plain",
+    sampleFrame: "none",
     stats: [
       { value: "24/7", label: "Lead Capture On Yard Signs" },
       { value: "+60%", label: "Virtual Tour Engagement" },
