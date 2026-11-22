@@ -4,11 +4,24 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+# Only one deploy at a time; a newer push waits instead of racing the VPS script.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  SITE_URL: https://www.qrvenues.com
 
 jobs:
   build:
     name: Build Check
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -23,6 +36,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**', 'content/**', 'messages/**', 'public/**') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+
       - name: Build
         run: npm run build
 
@@ -30,6 +54,8 @@ jobs:
     name: Deploy to VPS
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
 
     steps:
       - name: Deploy to VPS
@@ -38,5 +64,34 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT || 22 }}
+          connect_timeout: 30s
+          command_timeout: 15m
+          script_stop: true
+          # Runs the script that already exists on the VPS; nothing on the server is changed.
           script: |
+            set -euo pipefail
             ~/deploy-cafe-qr.sh
+
+  verify:
+    name: Verify Deployment
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Health check
+        run: |
+          for path in "/" "/en-us" "/robots.txt" "/sitemap.xml"; do
+            ok=0
+            for attempt in $(seq 1 10); do
+              code=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 20 "$SITE_URL$path" || echo 000)
+              echo "GET $path -> $code (attempt $attempt/10)"
+              if [ "$code" = "200" ]; then ok=1; break; fi
+              sleep 15
+            done
+            if [ "$ok" != "1" ]; then
+              echo "::error::$SITE_URL$path did not return 200 after deploy"
+              exit 1
+            fi
+          done
