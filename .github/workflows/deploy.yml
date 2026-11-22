@@ -58,17 +58,37 @@ jobs:
     environment: production
 
     steps:
-      - name: Deploy to VPS
+      - name: Deploy to VPS (attempt 1)
+        id: deploy1
+        continue-on-error: true
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT || 22 }}
-          connect_timeout: 30s
+          timeout: 30s
           command_timeout: 15m
-          script_stop: true
           # Runs the script that already exists on the VPS; nothing on the server is changed.
+          script: |
+            set -euo pipefail
+            ~/deploy-cafe-qr.sh
+
+      # A transient failure (e.g. git ref lock from an overlapping fetch) usually clears on a retry.
+      - name: Wait before retry
+        if: steps.deploy1.outcome == 'failure'
+        run: sleep 20
+
+      - name: Deploy to VPS (attempt 2)
+        if: steps.deploy1.outcome == 'failure'
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT || 22 }}
+          timeout: 30s
+          command_timeout: 15m
           script: |
             set -euo pipefail
             ~/deploy-cafe-qr.sh
