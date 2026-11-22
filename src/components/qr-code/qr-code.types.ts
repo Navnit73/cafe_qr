@@ -33,6 +33,7 @@ export type QRContentType =
   | "menu"
   | "review"
   | "wifi"
+  | "whatsapp"
   | "vcard"
   | "phone"
   | "email"

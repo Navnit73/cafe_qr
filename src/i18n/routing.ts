@@ -14,5 +14,11 @@ export const activeLocales = ["en-us", "en-gb", "en-au"] as const;
 export type Locale = (typeof activeLocales)[number];
 
 // Lightweight wrappers around Next.js navigation APIs
-export const { Link, redirect, usePathname, useRouter, getPathname } =
-  createNavigation(routing);
+export const {
+  Link,
+  redirect,
+  permanentRedirect,
+  usePathname,
+  useRouter,
+  getPathname,
+} = createNavigation(routing);

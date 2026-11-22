@@ -136,22 +136,38 @@ export const QRCode = forwardRef<QRCodeHandle, QRCodeProps>(function QRCode(
   ref
 ) {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const qrCanvasContainerRef = useRef<HTMLDivElement>(null);
+  const svgExportRef = useRef<HTMLDivElement>(null);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [copied, setCopied] = useState(false);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
 
-  // Expose imperative handle for external canvas and SVG extraction
-  useImperativeHandle(ref, () => ({
-    getCanvas: () => wrapperRef.current?.querySelector("canvas") ?? null,
-    getSvgString: () => {
-      const svg = wrapperRef.current?.querySelector("svg");
-      return svg ? svgToString(svg) : null;
-    },
-    wrapperElement: wrapperRef.current,
-  }));
+  const extractCanvas = useCallback(
+    () => qrCanvasContainerRef.current?.querySelector("canvas") ?? null,
+    []
+  );
 
-  // Force level "H" when logo is attached for maximum scannability
-  const effectiveLevel = useMemo(
-    () => level ?? (logo ? "H" : "H"),
+  const extractSvgString = useCallback(() => {
+    const svg =
+      svgExportRef.current?.querySelector("svg") ??
+      qrCanvasContainerRef.current?.querySelector("svg");
+    return svg ? svgToString(svg) : null;
+  }, []);
+
+  // Expose imperative handle for external canvas and crisp vector SVG extraction
+  useImperativeHandle(
+    ref,
+    () => ({
+      getCanvas: extractCanvas,
+      getSvgString: extractSvgString,
+      wrapperElement: wrapperRef.current,
+    }),
+    [extractCanvas, extractSvgString]
+  );
+
+  // Force level "H" whenever a center logo is attached for maximum scannability
+  const effectiveLevel = useMemo<NonNullable<QRCodeProps["level"]>>(
+    () => (logo ? "H" : level ?? "H"),
     [level, logo]
   );
 
@@ -176,7 +192,7 @@ export const QRCode = forwardRef<QRCodeHandle, QRCodeProps>(function QRCode(
     if (!gradient || format === "svg") return;
 
     const timer = setTimeout(() => {
-      const canvas = wrapperRef.current?.querySelector("canvas");
+      const canvas = extractCanvas();
       if (canvas) {
         applyCanvasGradient(
           canvas,
@@ -188,14 +204,21 @@ export const QRCode = forwardRef<QRCodeHandle, QRCodeProps>(function QRCode(
     }, 40);
 
     return () => clearTimeout(timer);
-  }, [gradient, format, value, size, fgColor, bgColor, effectiveLevel]);
+  }, [gradient, format, value, size, fgColor, bgColor, effectiveLevel, extractCanvas]);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
 
   // Copy helper
   const handleCopy = useCallback(async () => {
     const ok = await copyValueToClipboard(value);
     if (ok) {
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = setTimeout(() => setCopied(false), 2000);
     }
   }, [value]);
 
@@ -206,14 +229,14 @@ export const QRCode = forwardRef<QRCodeHandle, QRCodeProps>(function QRCode(
       size,
       bgColor,
       fgColor,
-      level: effectiveLevel as "L" | "M" | "Q" | "H",
+      level: effectiveLevel,
       includeMargin,
       imageSettings,
     }),
     [value, size, bgColor, fgColor, effectiveLevel, includeMargin, imageSettings]
   );
 
-  // Render QR element
+  // Render visible QR element
   const qrElement = useMemo(() => {
     if (format === "svg" && !gradient) {
       return <QRCodeSVG {...qrProps} />;
@@ -229,8 +252,11 @@ export const QRCode = forwardRef<QRCodeHandle, QRCodeProps>(function QRCode(
       }
     : undefined;
 
-  // Frame configurations
-  const frameInfo = frame !== "none" ? FRAME_CONFIG[frame] : null;
+  // Safely resolve frame preset (guards against invalid strings like "plain")
+  const normalizedFrame: FramePreset =
+    frame !== "none" && frame in FRAME_CONFIG ? frame : "none";
+  const frameInfo =
+    normalizedFrame !== "none" ? FRAME_CONFIG[normalizedFrame] : null;
   const resolvedFrameLabel = frameLabel ?? frameInfo?.label ?? "";
   const resolvedFrameSubtext = frameSubtext ?? frameInfo?.subtext;
   const IconComponent = frameInfo?.icon || QrIcon;
@@ -252,7 +278,7 @@ export const QRCode = forwardRef<QRCodeHandle, QRCodeProps>(function QRCode(
         <div
           className={clsx(
             "bg-surface-1 border border-hairline rounded-xl overflow-hidden transition-all max-w-full",
-            frame !== "none" && "p-2 sm:p-2.5"
+            frameInfo && "p-2 sm:p-2.5"
           )}
         >
           {/* Top Banner Frame */}
@@ -282,12 +308,18 @@ export const QRCode = forwardRef<QRCodeHandle, QRCodeProps>(function QRCode(
               </div>
             )}
 
-          {/* QR Code Canvas Area */}
+          {/* QR Code Canvas / SVG Area */}
           <div
+            ref={qrCanvasContainerRef}
             className="bg-surface-1 p-2 flex items-center justify-center rounded-lg max-w-full overflow-hidden"
             style={roundedStyle}
           >
             {qrElement}
+          </div>
+
+          {/* Dedicated hidden vector SVG mirror so Download SVG always exports a real QR SVG */}
+          <div ref={svgExportRef} className="sr-only" aria-hidden="true">
+            <QRCodeSVG {...qrProps} />
           </div>
 
           {/* Bottom Banner Frame / SCAN ME pill */}
@@ -316,7 +348,7 @@ export const QRCode = forwardRef<QRCodeHandle, QRCodeProps>(function QRCode(
           <div className="flex items-center gap-2 mt-3 flex-wrap justify-center">
             <div
               className="tooltip tooltip-bottom"
-              data-tip={`Download high-res ${format.toUpperCase()} (15s processing)`}
+              data-tip={`Download high-res ${format.toUpperCase()} (${processingSeconds}s processing)`}
             >
               <button
                 type="button"
@@ -358,25 +390,22 @@ export const QRCode = forwardRef<QRCodeHandle, QRCodeProps>(function QRCode(
         )}
       </div>
 
-      {/* 15-Second Download Processing Modal */}
+      {/* Download Processing Modal */}
       <QRCodeDownloadModal
         isOpen={isDownloadModalOpen}
         onClose={() => setIsDownloadModalOpen(false)}
         value={value}
         format={format}
-        frame={frame}
+        frame={normalizedFrame}
         frameLabel={resolvedFrameLabel}
         frameSubtext={resolvedFrameSubtext}
         frameBgColor={frameBgColor}
         frameTextColor={frameTextColor}
-        getCanvas={() => wrapperRef.current?.querySelector("canvas") ?? null}
-        getSvgString={() => {
-          const svg = wrapperRef.current?.querySelector("svg");
-          return svg ? svgToString(svg) : null;
-        }}
+        getCanvas={extractCanvas}
+        getSvgString={extractSvgString}
         filename={`qr-${value.slice(0, 24).replace(/[^a-zA-Z0-9]/g, "_") || "code"}`}
         processingDuration={processingSeconds}
-        includeFrame={frame !== "none"}
+        includeFrame={Boolean(frameInfo)}
       />
     </>
   );

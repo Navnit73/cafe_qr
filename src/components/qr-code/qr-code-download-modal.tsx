@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
   Download,
   CheckCircle2,
@@ -43,8 +43,8 @@ interface StepInfo {
   title: string;
   description: string;
   icon: React.ElementType;
-  startSec: number;
-  endSec: number;
+  startRatio: number;
+  endRatio: number;
 }
 
 const PROCESSING_STEPS: StepInfo[] = [
@@ -53,40 +53,40 @@ const PROCESSING_STEPS: StepInfo[] = [
     title: "Initializing High-Res Canvas",
     description: "Configuring 300 DPI layout grid and color profile...",
     icon: Sparkles,
-    startSec: 0,
-    endSec: 3.0,
+    startRatio: 0,
+    endRatio: 0.2,
   },
   {
     id: "frame",
     title: "Rendering Tabletop Frame & Typography",
     description: "Composing custom banner, badge accents, and typography...",
     icon: Layers,
-    startSec: 3.0,
-    endSec: 6.5,
+    startRatio: 0.2,
+    endRatio: 0.43,
   },
   {
     id: "scannability",
     title: "Optimizing Error Correction & Contrast",
     description: "Validating Level H scannability matrix and finder patterns...",
     icon: ShieldCheck,
-    startSec: 6.5,
-    endSec: 10.5,
+    startRatio: 0.43,
+    endRatio: 0.7,
   },
   {
     id: "compress",
     title: "Synthesizing Anti-Aliased Asset",
-    description: "Rendering high-fidelity pixels with custom logo overlay...",
+    description: "Rendering high-fidelity output with custom logo overlay...",
     icon: Loader2,
-    startSec: 10.5,
-    endSec: 13.5,
+    startRatio: 0.7,
+    endRatio: 0.9,
   },
   {
     id: "finalize",
     title: "Packaging & Generating Download",
     description: "Exporting crystal-clear production file...",
     icon: FileCheck,
-    startSec: 13.5,
-    endSec: 15.0,
+    startRatio: 0.9,
+    endRatio: 1.0,
   },
 ];
 
@@ -142,6 +142,7 @@ function QRCodeDownloadModalContent({
   processingDuration = 15,
   includeFrame = true,
 }: Omit<QRCodeDownloadModalProps, "isOpen">) {
+  const safeDuration = Math.max(1, processingDuration);
   const [elapsed, setElapsed] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -151,24 +152,43 @@ function QRCodeDownloadModalContent({
   const animFrameRef = useRef<number | null>(null);
   const hasTriggeredDownload = useRef(false);
 
-  const totalMs = processingDuration * 1000;
+  const totalMs = safeDuration * 1000;
   const progressPercent = Math.min(100, Math.round((elapsed / totalMs) * 100));
   const remainingSeconds = Math.max(0, Math.ceil((totalMs - elapsed) / 1000));
+  const progressRatio = Math.min(1, elapsed / totalMs);
 
-  // Extract thumbnail preview on mount
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  // Extract thumbnail preview on mount (canvas or SVG data URL fallback)
   useEffect(() => {
     const handle = requestAnimationFrame(() => {
       const sourceCanvas = getCanvas();
       if (sourceCanvas) {
         try {
           setPreviewDataUrl(sourceCanvas.toDataURL("image/png"));
+          return;
         } catch {
           // Ignore cross-origin error
         }
       }
+      if (getSvgString) {
+        const svgStr = getSvgString();
+        if (svgStr) {
+          setPreviewDataUrl(
+            `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgStr)}`
+          );
+        }
+      }
     });
     return () => cancelAnimationFrame(handle);
-  }, [getCanvas]);
+  }, [getCanvas, getSvgString]);
 
   // Actual Download Execution Handler
   const executeDownload = useCallback(async () => {
@@ -201,7 +221,7 @@ function QRCodeDownloadModalContent({
           frameSubtext,
           frameBgColor,
           frameTextColor,
-          targetScale: 3, // 3x ultra-crisp output (approx 1200px+ width)
+          targetScale: 3, // 3x ultra-crisp output
         });
         const blob = await canvasToBlob(compositeCanvas, "image/png", 1.0);
         downloadBlob(blob, `${filename}-framed.png`);
@@ -216,7 +236,6 @@ function QRCodeDownloadModalContent({
       }
     } catch (err) {
       console.error("Export error:", err);
-      // Fallback
       const sourceCanvas = getCanvas();
       if (sourceCanvas) {
         downloadDataUrl(sourceCanvas.toDataURL("image/png"), `${filename}.png`);
@@ -266,19 +285,12 @@ function QRCodeDownloadModalContent({
     };
   }, [totalMs, executeDownload]);
 
-  const currentSeconds = elapsed / 1000;
-  const currentStepIndex = Math.min(
-    PROCESSING_STEPS.length - 1,
-    PROCESSING_STEPS.findIndex(
-      (s) => currentSeconds >= s.startSec && currentSeconds < s.endSec
-    ) === -1
-      ? PROCESSING_STEPS.length - 1
-      : PROCESSING_STEPS.findIndex(
-          (s) => currentSeconds >= s.startSec && currentSeconds < s.endSec
-        )
-  );
-
-  const activeStep = PROCESSING_STEPS[currentStepIndex];
+  const activeStep = useMemo(() => {
+    const idx = PROCESSING_STEPS.findIndex(
+      (s) => progressRatio >= s.startRatio && progressRatio < s.endRatio
+    );
+    return PROCESSING_STEPS[idx === -1 ? PROCESSING_STEPS.length - 1 : idx];
+  }, [progressRatio]);
 
   return (
     <div
@@ -286,6 +298,9 @@ function QRCodeDownloadModalContent({
       role="dialog"
       aria-modal="true"
       aria-labelledby="download-modal-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div className="bg-surface-1 border border-hairline rounded-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
         {/* Modal Header */}
@@ -305,8 +320,8 @@ function QRCodeDownloadModalContent({
               </h3>
               <p className="text-[11px] text-ink-muted">
                 {isCompleted
-                  ? "Your asset was generated and downloaded."
-                  : `Processing high-DPI ${format.toUpperCase()} (15-second optimization)`}
+                  ? `Your ${format.toUpperCase()} asset was generated and downloaded.`
+                  : `Processing high-DPI ${format.toUpperCase()} (${safeDuration}-second optimization)`}
               </p>
             </div>
           </div>
@@ -352,17 +367,17 @@ function QRCodeDownloadModalContent({
               <div className="flex items-center justify-between text-xs font-semibold text-ink">
                 <span>
                   {isCompleted
-                    ? "✨ 100% Processed"
+                    ? "100% Processed"
                     : `${progressPercent}% Completed`}
                 </span>
                 <span className="text-ink-muted font-mono text-[11px]">
                   {isCompleted
                     ? "0s remaining"
-                    : `${remainingSeconds}s remaining (${(elapsed / 1000).toFixed(1)}s / ${processingDuration}s)`}
+                    : `${remainingSeconds}s remaining (${(elapsed / 1000).toFixed(1)}s / ${safeDuration}s)`}
                 </span>
               </div>
 
-              {/* daisyUI Progress Bar */}
+              {/* Progress Bar */}
               <div className="w-full bg-surface-2 rounded-full h-2.5 overflow-hidden border border-hairline-soft">
                 <div
                   className={clsx(
@@ -408,11 +423,11 @@ function QRCodeDownloadModalContent({
             <div className="space-y-1.5">
               {PROCESSING_STEPS.map((step, idx) => {
                 const isStepDone =
-                  isCompleted || currentSeconds >= step.endSec;
+                  isCompleted || progressRatio >= step.endRatio;
                 const isStepCurrent =
                   !isCompleted &&
-                  currentSeconds >= step.startSec &&
-                  currentSeconds < step.endSec;
+                  progressRatio >= step.startRatio &&
+                  progressRatio < step.endRatio;
 
                 return (
                   <div

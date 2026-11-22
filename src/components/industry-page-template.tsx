@@ -3,7 +3,9 @@ import { Link } from "@/i18n/routing";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { QRCodeGenerator } from "@/components/qr-code";
-import { IndustryData } from "@/lib/industries";
+import { INDUSTRIES, IndustryData } from "@/lib/industries";
+import { HIGH_DEMAND_TOOLS } from "@/lib/tools";
+import { getLocaleCurrency } from "@/lib/seo";
 import {
   Utensils,
   Coffee,
@@ -19,8 +21,8 @@ import {
   ChevronRight,
   ArrowRight,
   HelpCircle,
-  CheckCircle2,
   BookOpen,
+  QrCode,
 } from "lucide-react";
 
 interface IndustryPageTemplateProps {
@@ -76,7 +78,7 @@ export function IndustryPageTemplate({ data, locale }: IndustryPageTemplateProps
     offers: {
       "@type": "Offer",
       price: "0",
-      priceCurrency: "USD",
+      priceCurrency: getLocaleCurrency(locale),
       description: "Free tier available for QR code generation and menus",
     },
     featureList: data.features.map((f) => f.title),
@@ -301,6 +303,7 @@ export function IndustryPageTemplate({ data, locale }: IndustryPageTemplateProps
                   <input
                     type="radio"
                     name={`faq-${data.slug}`}
+                    aria-label={faq.question}
                     defaultChecked={idx === 0}
                   />
                   <div className="collapse-title text-sm sm:text-base font-semibold text-ink py-4">
@@ -314,29 +317,70 @@ export function IndustryPageTemplate({ data, locale }: IndustryPageTemplateProps
             </div>
           </section>
 
-          {/* Related Guides & Cross Links */}
-          {data.relatedGuides.length > 0 && (
-            <section className="space-y-4 pt-6 border-t border-hairline">
-              <div className="flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-fin-orange" />
-                <h2 className="text-base font-semibold text-ink">Related Tutorials & Guides</h2>
+          {/* Related Guides, Free Tools & Sibling Industries */}
+          <section className="space-y-8 pt-6 border-t border-hairline">
+            {data.relatedGuides.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-fin-orange" />
+                  <h2 className="text-base font-semibold text-ink">
+                    Related Tutorials & Guides
+                  </h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {data.relatedGuides.map((guide, idx) => (
+                    <Link
+                      key={idx}
+                      href={`/guides/${guide.slug}`}
+                      className="card bg-surface-1 border border-hairline rounded-xl p-4 shadow-none hover:border-ink transition-all group flex flex-row items-center justify-between"
+                    >
+                      <span className="text-xs font-medium text-ink group-hover:text-fin-orange transition-colors">
+                        {guide.title}
+                      </span>
+                      <ArrowRight className="w-3.5 h-3.5 text-fin-orange group-hover:translate-x-1 transition-transform shrink-0 ml-2" />
+                    </Link>
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {data.relatedGuides.map((guide, idx) => (
+            )}
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <QrCode className="w-4 h-4 text-primary" />
+                <h2 className="text-base font-semibold text-ink">
+                  Free QR Tools & Other Industries
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {HIGH_DEMAND_TOOLS.slice(0, 3).map((tool) => (
                   <Link
-                    key={idx}
-                    href={`/guides/${guide.slug}`}
-                    className="card bg-surface-1 border border-hairline rounded-xl p-4 shadow-none hover:border-ink hover:transition-all group flex flex-row items-center justify-between"
+                    key={tool.slug}
+                    href={`/${tool.slug}`}
+                    className="card bg-surface-1 border border-hairline rounded-xl p-4 shadow-none hover:border-ink transition-all group flex flex-row items-center justify-between"
                   >
                     <span className="text-xs font-medium text-ink group-hover:text-fin-orange transition-colors">
-                      {guide.title}
+                      {tool.shortLabel}
                     </span>
-                    <ArrowRight className="w-3.5 h-3.5 text-fin-orange group-hover:translate-x-1 transition-transform shrink-0 ml-2" />
+                    <ArrowRight className="w-3.5 h-3.5 text-fin-orange shrink-0 ml-2" />
                   </Link>
                 ))}
+                {INDUSTRIES.filter((i) => i.slug !== data.slug)
+                  .slice(0, 3)
+                  .map((ind) => (
+                    <Link
+                      key={ind.slug}
+                      href={`/${ind.slug}`}
+                      className="card bg-surface-1 border border-hairline rounded-xl p-4 shadow-none hover:border-ink transition-all group flex flex-row items-center justify-between"
+                    >
+                      <span className="text-xs font-medium text-ink group-hover:text-fin-orange transition-colors">
+                        QR Codes for {ind.industry}
+                      </span>
+                      <ArrowRight className="w-3.5 h-3.5 text-fin-orange shrink-0 ml-2" />
+                    </Link>
+                  ))}
               </div>
-            </section>
-          )}
+            </div>
+          </section>
 
           {/* CTA Banner */}
           <section className="card bg-surface-1 border border-hairline rounded-2xl p-8 sm:p-12 text-center space-y-4 shadow-none">

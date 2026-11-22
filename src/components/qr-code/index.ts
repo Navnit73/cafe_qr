@@ -2,6 +2,7 @@ export { QRCode } from "./qr-code";
 export type { QRCodeHandle } from "./qr-code";
 export { QRCodeBatch } from "./qr-code-batch";
 export { QRCodeGenerator } from "./qr-code-generator";
+export { BulkQRStudio } from "./bulk-qr-studio";
 export { QRCodeDownloadModal } from "./qr-code-download-modal";
 export type { QRCodeDownloadModalProps } from "./qr-code-download-modal";
 export type {

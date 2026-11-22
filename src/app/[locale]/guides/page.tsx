@@ -7,7 +7,7 @@ import { getAllGuides } from "@/lib/guides";
 import { QRCodeGenerator } from "@/components/qr-code";
 import { BookOpen, Calendar, Clock, ArrowRight, Tag, Sparkles } from "lucide-react";
 
-import { constructMetadata } from "@/lib/seo";
+import { constructMetadata, getBcp47Locale } from "@/lib/seo";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -164,7 +164,7 @@ export default async function GuidesIndexPage({ params }: PageProps) {
                 <Link
                   key={guide.frontmatter.slug}
                   href={`/guides/${guide.frontmatter.slug}`}
-                  className="card bg-surface-1 border border-hairline rounded-xl shadow-none hover:border-ink hover: transition-all duration-200 group flex flex-col justify-between"
+                  className="card bg-surface-1 border border-hairline rounded-xl shadow-none hover:border-ink transition-all duration-200 group flex flex-col justify-between"
                 >
                   <div className="card-body p-6">
                     {/* Category badge */}
@@ -189,7 +189,7 @@ export default async function GuidesIndexPage({ params }: PageProps) {
                     <div className="flex items-center gap-3 text-[11px] text-ink-subtle mt-auto pt-3 border-t border-hairline-soft">
                       <span className="inline-flex items-center gap-1">
                         <Calendar className="w-3.5 h-3.5 text-semantic-success" />
-                        {formatDate(guide.frontmatter.publishedAt)}
+                        {formatDate(guide.frontmatter.publishedAt, locale)}
                       </span>
                       <span className="inline-flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5 text-link-blue" />
@@ -228,9 +228,9 @@ export default async function GuidesIndexPage({ params }: PageProps) {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-function formatDate(dateStr: string): string {
+function formatDate(dateStr: string, locale: string): string {
   const date = new Date(dateStr);
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(getBcp47Locale(locale), {
     year: "numeric",
     month: "short",
     day: "numeric",

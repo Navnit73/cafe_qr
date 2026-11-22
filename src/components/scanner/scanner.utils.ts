@@ -5,11 +5,30 @@ import {
 } from "./scanner.types";
 
 /**
+ * Safely decodes URI components without throwing URIError on literal '%' characters.
+ */
+function safeDecodeURIComponent(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+/**
+ * Unescapes backslash-escaped characters in Wi-Fi QR fields (\;, \:, \\, \", \,).
+ */
+function unescapeWifiField(value: string): string {
+  return value.replace(/\\([\\;,:"])/g, "$1");
+}
+
+/**
  * Format names mapping from numeric codes or standard strings
  */
-export function formatBarcodeType(format: string | number | undefined): BarcodeFormatName {
+export function formatBarcodeType(
+  format: string | number | undefined
+): BarcodeFormatName {
   if (typeof format === "number") {
-    // Map ZXing / Html5Qrcode numeric formats
     const formatMap: Record<number, BarcodeFormatName> = {
       0: "QR_CODE",
       1: "AZTEC",
@@ -42,7 +61,8 @@ export function formatBarcodeType(format: string | number | undefined): BarcodeF
     if (upper.includes("CODE_128") || upper === "CODE128") return "CODE_128";
     if (upper.includes("CODE_39") || upper === "CODE39") return "CODE_39";
     if (upper.includes("CODE_93") || upper === "CODE93") return "CODE_93";
-    if (upper.includes("DATA_MATRIX") || upper === "DATAMATRIX") return "DATA_MATRIX";
+    if (upper.includes("DATA_MATRIX") || upper === "DATAMATRIX")
+      return "DATA_MATRIX";
     if (upper.includes("AZTEC")) return "AZTEC";
     if (upper.includes("PDF_417") || upper === "PDF417") return "PDF_417";
     if (upper.includes("ITF")) return "ITF";
@@ -92,36 +112,44 @@ export function getFormatLabel(format: BarcodeFormatName): string {
 /**
  * Parses raw barcode text into rich structured information
  */
-export function parseBarcodePayload(rawText: string, format: BarcodeFormatName): ParsedPayload {
+export function parseBarcodePayload(
+  rawText: string,
+  format: BarcodeFormatName
+): ParsedPayload {
   const trimmed = rawText.trim();
 
   // 1. WiFi Format: WIFI:T:WPA;S:MyNetwork;P:MyPassword;H:false;;
   if (/^WIFI:/i.test(trimmed)) {
-    const ssidMatch = trimmed.match(/S:([^;]*)/i);
-    const passMatch = trimmed.match(/P:([^;]*)/i);
-    const typeMatch = trimmed.match(/T:([^;]*)/i);
-    const hiddenMatch = trimmed.match(/H:([^;]*)/i);
+    const ssidMatch = trimmed.match(/(?:^|;)S:((?:\\.|[^;])*)/i);
+    const passMatch = trimmed.match(/(?:^|;)P:((?:\\.|[^;])*)/i);
+    const typeMatch = trimmed.match(/(?:^|;)T:([^;]*)/i);
+    const hiddenMatch = trimmed.match(/(?:^|;)H:([^;]*)/i);
 
     return {
       type: "wifi",
-      ssid: ssidMatch ? decodeURIComponent(ssidMatch[1]) : "Unknown SSID",
-      password: passMatch ? passMatch[1] : undefined,
-      security: typeMatch ? typeMatch[1] : "WPA",
+      ssid: ssidMatch
+        ? unescapeWifiField(safeDecodeURIComponent(ssidMatch[1]))
+        : "Unknown SSID",
+      password:
+        passMatch && passMatch[1]
+          ? unescapeWifiField(passMatch[1])
+          : undefined,
+      security: typeMatch && typeMatch[1] ? typeMatch[1] : "WPA",
       hidden: hiddenMatch ? hiddenMatch[1].toLowerCase() === "true" : false,
     };
   }
 
   // 2. vCard Format: BEGIN:VCARD ... END:VCARD
   if (/^BEGIN:VCARD/i.test(trimmed)) {
-    const fnMatch = trimmed.match(/FN:(.*?)(\r?\n|$)/i);
-    const nMatch = trimmed.match(/N:(.*?)(\r?\n|$)/i);
-    const telMatch = trimmed.match(/TEL.*?:(.*?)(\r?\n|$)/i);
-    const emailMatch = trimmed.match(/EMAIL.*?:(.*?)(\r?\n|$)/i);
-    const orgMatch = trimmed.match(/ORG:(.*?)(\r?\n|$)/i);
-    const titleMatch = trimmed.match(/TITLE:(.*?)(\r?\n|$)/i);
-    const urlMatch = trimmed.match(/URL:(.*?)(\r?\n|$)/i);
-    const adrMatch = trimmed.match(/ADR.*?:(.*?)(\r?\n|$)/i);
-    const noteMatch = trimmed.match(/NOTE:(.*?)(\r?\n|$)/i);
+    const fnMatch = trimmed.match(/^FN:(.*?)(\r?\n|$)/im);
+    const nMatch = trimmed.match(/^N:(.*?)(\r?\n|$)/im);
+    const telMatch = trimmed.match(/^TEL[^:]*:(.*?)(\r?\n|$)/im);
+    const emailMatch = trimmed.match(/^EMAIL[^:]*:(.*?)(\r?\n|$)/im);
+    const orgMatch = trimmed.match(/^ORG:(.*?)(\r?\n|$)/im);
+    const titleMatch = trimmed.match(/^TITLE:(.*?)(\r?\n|$)/im);
+    const urlMatch = trimmed.match(/^URL:(.*?)(\r?\n|$)/im);
+    const adrMatch = trimmed.match(/^ADR[^:]*:(.*?)(\r?\n|$)/im);
+    const noteMatch = trimmed.match(/^NOTE:(.*?)(\r?\n|$)/im);
 
     let parsedName = fnMatch ? fnMatch[1].trim() : undefined;
     if (!parsedName && nMatch) {
@@ -179,7 +207,7 @@ export function parseBarcodePayload(rawText: string, format: BarcodeFormatName):
 
     if (trimmed.includes("body=")) {
       const bodyMatch = trimmed.match(/body=([^&]*)/i);
-      if (bodyMatch) message = decodeURIComponent(bodyMatch[1]);
+      if (bodyMatch) message = safeDecodeURIComponent(bodyMatch[1]);
     } else if (parts.length > 1) {
       message = parts.slice(1).join(":");
     }
@@ -202,7 +230,7 @@ export function parseBarcodePayload(rawText: string, format: BarcodeFormatName):
 
     if (queryPart && queryPart.includes("q=")) {
       const qMatch = queryPart.match(/q=([^&]*)/);
-      if (qMatch) query = decodeURIComponent(qMatch[1]);
+      if (qMatch) query = safeDecodeURIComponent(qMatch[1]);
     }
 
     if (!isNaN(latitude) && !isNaN(longitude)) {
@@ -217,18 +245,17 @@ export function parseBarcodePayload(rawText: string, format: BarcodeFormatName):
 
   // 7. Standard HTTP / HTTPS URL or www. URL
   if (/^(https?:\/\/|www\.)[^\s/$.?#].[^\s]*$/i.test(trimmed)) {
-    let fullUrl = trimmed;
-    if (trimmed.startsWith("www.")) {
-      fullUrl = `https://${trimmed}`;
-    }
+    const fullUrl = /^www\./i.test(trimmed) ? `https://${trimmed}` : trimmed;
     try {
       const u = new URL(fullUrl);
-      return {
-        type: "url",
-        url: u.href,
-        hostname: u.hostname,
-        isSecure: u.protocol === "https:",
-      };
+      if (u.protocol === "http:" || u.protocol === "https:") {
+        return {
+          type: "url",
+          url: u.href,
+          hostname: u.hostname,
+          isSecure: u.protocol === "https:",
+        };
+      }
     } catch {
       // Fallback
     }
@@ -271,14 +298,15 @@ export function parseBarcodePayload(rawText: string, format: BarcodeFormatName):
 }
 
 /**
- * Play a subtle high-tech confirmation beep using Web Audio API
+ * Play a subtle confirmation beep using Web Audio API and properly close AudioContext
  */
 export function playScanBeep(): void {
   try {
     if (typeof window === "undefined") return;
     const AudioContextClass =
       window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      (window as unknown as { webkitAudioContext: typeof AudioContext })
+        .webkitAudioContext;
     if (!AudioContextClass) return;
 
     const ctx = new AudioContextClass();
@@ -286,14 +314,18 @@ export function playScanBeep(): void {
     const gain = ctx.createGain();
 
     osc.type = "sine";
-    osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
-    osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.08); // E6 note
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.08);
 
     gain.gain.setValueAtTime(0.12, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
+
+    osc.onended = () => {
+      ctx.close().catch(() => {});
+    };
 
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.13);
@@ -316,6 +348,14 @@ export function triggerHaptic(durationMs: number = 40): void {
 }
 
 /**
+ * Sanitize a string for safe CSV output (prevents spreadsheet formula injection).
+ */
+function sanitizeCsvCell(value: string): string {
+  const neutralized = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  return `"${neutralized.replace(/"/g, '""')}"`;
+}
+
+/**
  * Export scan history to CSV file download
  */
 export function exportHistoryToCSV(history: ScannedResult[]): void {
@@ -324,13 +364,12 @@ export function exportHistoryToCSV(history: ScannedResult[]): void {
   const headers = ["Timestamp", "Date", "Format", "Payload Type", "Content"];
   const rows = history.map((item) => {
     const dateStr = new Date(item.timestamp).toISOString();
-    const cleanContent = `"${item.rawText.replace(/"/g, '""')}"`;
     return [
       item.timestamp,
       `"${dateStr}"`,
       `"${item.format}"`,
       `"${item.parsed.type}"`,
-      cleanContent,
+      sanitizeCsvCell(item.rawText),
     ].join(",");
   });
 
@@ -345,8 +384,10 @@ export function exportHistoryToCSV(history: ScannedResult[]): void {
   );
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  setTimeout(() => {
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, 200);
 }
 
 /**
@@ -356,7 +397,9 @@ export function exportHistoryToJSON(history: ScannedResult[]): void {
   if (!history || history.length === 0) return;
 
   const jsonString = JSON.stringify(history, null, 2);
-  const blob = new Blob([jsonString], { type: "application/json;charset=utf-8;" });
+  const blob = new Blob([jsonString], {
+    type: "application/json;charset=utf-8",
+  });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.setAttribute("href", url);
@@ -366,6 +409,8 @@ export function exportHistoryToJSON(history: ScannedResult[]): void {
   );
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  setTimeout(() => {
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, 200);
 }

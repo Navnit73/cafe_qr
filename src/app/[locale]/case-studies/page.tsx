@@ -64,61 +64,76 @@ export default async function CaseStudiesPage({ params }: PageProps) {
   const caseStudiesSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "name": "QRVenues Hospitality Operator Case Studies",
-    "itemListElement": [
+    name: "QRVenues Hospitality Operator Case Studies",
+    itemListElement: [
       {
-        "@type": "Review",
-        "position": 1,
-        "itemReviewed": {
-          "@type": "SoftwareApplication",
-          "name": "QRVenues",
+        "@type": "ListItem",
+        position: 1,
+        item: {
+          "@type": "Review",
+          itemReviewed: {
+            "@type": "SoftwareApplication",
+            name: "QRVenues",
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "All (Web Browser)",
+          },
+          author: {
+            "@type": "Organization",
+            name: "The Roasted Bean Roastery & Cafe",
+          },
+          reviewRating: {
+            "@type": "Rating",
+            ratingValue: "5",
+            bestRating: "5",
+          },
+          reviewBody: tCases("case1Desc"),
         },
-        "author": {
-          "@type": "Organization",
-          "name": "The Roasted Bean Roastery & Cafe",
-        },
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5",
-          "bestRating": "5",
-        },
-        "reviewBody": tCases("case1Desc"),
       },
       {
-        "@type": "Review",
-        "position": 2,
-        "itemReviewed": {
-          "@type": "SoftwareApplication",
-          "name": "QRVenues",
+        "@type": "ListItem",
+        position: 2,
+        item: {
+          "@type": "Review",
+          itemReviewed: {
+            "@type": "SoftwareApplication",
+            name: "QRVenues",
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "All (Web Browser)",
+          },
+          author: {
+            "@type": "Organization",
+            name: "Little Napoli Authentic Pizzeria",
+          },
+          reviewRating: {
+            "@type": "Rating",
+            ratingValue: "4.9",
+            bestRating: "5",
+          },
+          reviewBody: tCases("case2Desc"),
         },
-        "author": {
-          "@type": "Organization",
-          "name": "Little Napoli Authentic Pizzeria",
-        },
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "4.9",
-          "bestRating": "5",
-        },
-        "reviewBody": tCases("case2Desc"),
       },
       {
-        "@type": "Review",
-        "position": 3,
-        "itemReviewed": {
-          "@type": "SoftwareApplication",
-          "name": "QRVenues",
+        "@type": "ListItem",
+        position: 3,
+        item: {
+          "@type": "Review",
+          itemReviewed: {
+            "@type": "SoftwareApplication",
+            name: "QRVenues",
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "All (Web Browser)",
+          },
+          author: {
+            "@type": "Organization",
+            name: "The Daily Grind Espresso Bar",
+          },
+          reviewRating: {
+            "@type": "Rating",
+            ratingValue: "5",
+            bestRating: "5",
+          },
+          reviewBody: tCases("case3Desc"),
         },
-        "author": {
-          "@type": "Organization",
-          "name": "The Daily Grind Espresso Bar",
-        },
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5",
-          "bestRating": "5",
-        },
-        "reviewBody": tCases("case3Desc"),
       },
     ],
   };
@@ -230,7 +245,7 @@ export default async function CaseStudiesPage({ params }: PageProps) {
 
         {/* CTA Card */}
         <div className="card bg-surface-1 border border-hairline rounded-2xl p-8 text-center space-y-4 shadow-none">
-          <h3 className="text-xl font-semibold text-ink">Ready to achieve similar results?</h3>
+          <h2 className="text-xl font-semibold text-ink">Ready to achieve similar results?</h2>
           <p className="text-xs text-ink-muted max-w-md mx-auto">
             Join over 1,200+ hospitality venues generating menus, Google reviews, and contactless orders in minutes.
           </p>

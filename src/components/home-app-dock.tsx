@@ -3,12 +3,12 @@
 import React from "react";
 import { Link } from "@/i18n/routing";
 import {
-  QrCode,
   Scan,
-  Barcode,
   Utensils,
   Star,
   Wifi,
+  MessageCircle,
+  Layers,
 } from "lucide-react";
 import { triggerHaptic } from "./scanner/scanner.utils";
 
@@ -22,19 +22,18 @@ interface AppItem {
   shadowColor: string;
   badge?: string;
   badgeColor?: string;
-  isExternalPage?: boolean;
 }
 
 const APP_ITEMS: AppItem[] = [
   {
-    id: "make-qr",
-    title: "Make QR Code",
-    subtitle: "Custom Studio App",
-    href: "/#qr-studio",
-    icon: QrCode,
+    id: "qr-menu",
+    title: "QR Menu Maker",
+    subtitle: "Digital Menus Tool",
+    href: "/qr-code-menu-generator",
+    icon: Utensils,
     gradient: "from-[#5645d4] via-[#7c3aed] to-[#c026d3]",
     shadowColor: "shadow-indigo-500/25",
-    badge: "Create",
+    badge: "Menu",
     badgeColor: "bg-[#5645d4]",
   },
   {
@@ -47,36 +46,12 @@ const APP_ITEMS: AppItem[] = [
     shadowColor: "shadow-orange-500/30",
     badge: "Scanner",
     badgeColor: "bg-fin-orange",
-    isExternalPage: true,
-  },
-  {
-    id: "barcode-scanner",
-    title: "Barcode Scanner",
-    subtitle: "EAN · UPC · 128 App",
-    href: "/online-qr-scanner",
-    icon: Barcode,
-    gradient: "from-[#059669] via-[#10b981] to-[#34d399]",
-    shadowColor: "shadow-emerald-500/25",
-    badge: "1D / 2D",
-    badgeColor: "bg-semantic-success",
-    isExternalPage: true,
-  },
-  {
-    id: "qr-menu",
-    title: "QR Menu Maker",
-    subtitle: "Digital Menus App",
-    href: "/#menu-maker",
-    icon: Utensils,
-    gradient: "from-[#0052cc] via-[#0065ff] to-[#38bdf8]",
-    shadowColor: "shadow-blue-500/25",
-    badge: "Menu",
-    badgeColor: "bg-[#0052cc]",
   },
   {
     id: "google-reviews",
     title: "Google Reviews",
     subtitle: "5-Star Rating Tool",
-    href: "/#google-reviews",
+    href: "/google-review-qr-code-generator",
     icon: Star,
     gradient: "from-[#d97706] via-[#f59e0b] to-[#fbbf24]",
     shadowColor: "shadow-amber-500/25",
@@ -86,16 +61,43 @@ const APP_ITEMS: AppItem[] = [
   {
     id: "wifi-qr",
     title: "Guest Wi-Fi QR",
-    subtitle: "Instant Login Tool",
-    href: "/#qr-studio",
+    subtitle: "WPA2 / WPA3 Login",
+    href: "/wifi-qr-code-generator",
     icon: Wifi,
     gradient: "from-[#0284c7] via-[#06b6d4] to-[#22d3ee]",
     shadowColor: "shadow-cyan-500/25",
+    badge: "Wi-Fi",
+    badgeColor: "bg-[#0284c7]",
+  },
+  {
+    id: "whatsapp-qr",
+    title: "WhatsApp QR",
+    subtitle: "Click-to-Chat Link",
+    href: "/whatsapp-qr-code-generator",
+    icon: MessageCircle,
+    gradient: "from-[#059669] via-[#10b981] to-[#34d399]",
+    shadowColor: "shadow-emerald-500/25",
+    badge: "Chat",
+    badgeColor: "bg-semantic-success",
+  },
+  {
+    id: "bulk-qr",
+    title: "Bulk QR Batch",
+    subtitle: "Tables & CSV Tool",
+    href: "/bulk-qr-code-generator",
+    icon: Layers,
+    gradient: "from-[#0052cc] via-[#0065ff] to-[#38bdf8]",
+    shadowColor: "shadow-blue-500/25",
+    badge: "50x",
+    badgeColor: "bg-[#0052cc]",
   },
 ];
 
 export function HomeAppDock() {
-  const handleAppClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleAppClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
     triggerHaptic(40);
     if (href.startsWith("/#") && typeof window !== "undefined") {
       const targetId = href.replace("/#", "");
@@ -103,7 +105,6 @@ export function HomeAppDock() {
       if (elem) {
         e.preventDefault();
         elem.scrollIntoView({ behavior: "smooth", block: "start" });
-        // Update URL hash without reload
         window.history.pushState(null, "", href.replace("/", ""));
       }
     }
@@ -112,9 +113,7 @@ export function HomeAppDock() {
   return (
     <div className="w-full max-w-4xl mx-auto my-8 sm:my-12 px-2">
       {/* App Dock Container */}
-      <div className="bg-surface-1  rounded-3xl p-5 sm:p-7 ">
-      
-
+      <div className="bg-surface-1 rounded-3xl p-5 sm:p-7">
         {/* 6 App Icons Grid */}
         <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 justify-items-center">
           {APP_ITEMS.map((app) => {

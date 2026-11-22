@@ -1,31 +1,65 @@
 import { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ScannerView } from "@/components/scanner";
+import { HIGH_DEMAND_TOOLS } from "@/lib/tools";
+import {
+  constructMetadata,
+  getLocaleCurrency,
+  generateBreadcrumbSchema,
+  generateWebAppSchema,
+  generateFaqSchema,
+} from "@/lib/seo";
 import {
   Scan,
   ShieldCheck,
   Zap,
   Layers,
   HelpCircle,
+  QrCode,
+  ArrowRight,
 } from "lucide-react";
-
-import { constructMetadata } from "@/lib/seo";
 
 interface ScannerPageProps {
   params: Promise<{ locale: string }>;
 }
+
+const SCANNER_FAQS = [
+  {
+    question: "How do I scan a QR code or barcode using my camera?",
+    answer:
+      "Allow camera permissions when prompted by your browser, hold the QR code or barcode within the highlighted frame, and the reader will automatically detect and decode the content instantly.",
+  },
+  {
+    question: "Can I scan a barcode from an image file or screenshot without a camera?",
+    answer:
+      "Yes! Switch to the 'Upload Image' tab, drag and drop any image file (PNG, JPG, WEBP, SVG), or paste a screenshot directly using Ctrl+V or Cmd+V.",
+  },
+  {
+    question: "Which barcode formats are supported?",
+    answer:
+      "The scanner supports 2D formats (QR Code, Data Matrix, Aztec, PDF-417) and 1D standard barcodes (EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, Code 93, ITF).",
+  },
+  {
+    question: "Is my camera feed or uploaded image private and secure?",
+    answer:
+      "Yes, completely. All image processing and barcode decoding is performed 100% locally in your device's browser memory. No video frames, images, or decoded contents are ever transmitted to external servers.",
+  },
+];
 
 export async function generateMetadata({
   params,
 }: ScannerPageProps): Promise<Metadata> {
   const { locale } = await params;
   return constructMetadata({
-    title: "Free QR Code & Barcode Scanner Online — Camera & Image Reader",
-    description: "Scan QR codes, EAN/UPC product barcodes, Code 128, Wi-Fi codes, and contacts instantly in your browser via camera or image upload. Fast, free, and 100% private.",
+    title: "Free Online QR Code & Barcode Scanner — Camera & Image Reader",
+    description:
+      "Scan QR codes, EAN/UPC product barcodes, Code 128, Wi-Fi codes, and contacts instantly in your browser via camera or image upload. Fast, free, and 100% private.",
     path: "/online-qr-scanner",
     locale,
+    ogBadge: "Free Online Scanner",
     keywords: [
       "online qr scanner",
       "qr code scanner",
@@ -41,91 +75,27 @@ export async function generateMetadata({
   });
 }
 
-export default async function OnlineQrScannerPage({ params }: ScannerPageProps) {
+export default async function OnlineQrScannerPage({
+  params,
+}: ScannerPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // Structured Data: Breadcrumbs
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": `https://www.qrvenues.com/${locale}`,
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Online QR & Barcode Scanner",
-        "item": `https://www.qrvenues.com/${locale}/online-qr-scanner`,
-      },
-    ],
-  };
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: `/${locale}` },
+    { name: "Online QR & Barcode Scanner", url: `/${locale}/online-qr-scanner` },
+  ]);
 
-  // Structured Data: WebApplication
-  const webAppSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "QRVenues Online QR & Barcode Scanner",
-    "url": `https://www.qrvenues.com/${locale}/online-qr-scanner`,
-    "applicationCategory": "UtilitiesApplication",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD",
-    },
-    "description":
+  const webAppSchema = generateWebAppSchema({
+    name: "QRVenues Online QR & Barcode Scanner",
+    url: `/${locale}/online-qr-scanner`,
+    category: "UtilitiesApplication",
+    currency: getLocaleCurrency(locale),
+    description:
       "Free browser-based camera and image scanner for QR codes, EAN-13, UPC-A, Code-128, Data Matrix, Aztec, and PDF-417 barcodes.",
-  };
+  });
 
-  // Structured Data: FAQPage
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I scan a QR code or barcode using my camera?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text":
-            "Allow camera permissions when prompted by your browser, hold the QR code or barcode within the highlighted frame, and the reader will automatically detect and decode the content instantly.",
-        },
-      },
-      {
-        "@type": "Question",
-        "name": "Can I scan a barcode from an image or screenshot?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text":
-            "Yes! Switch to the 'Upload Image' tab, drag and drop any image file (PNG, JPG, WEBP, SVG), or paste a screenshot directly using Ctrl+V or Cmd+V.",
-        },
-      },
-      {
-        "@type": "Question",
-        "name": "Which barcode formats are supported?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text":
-            "The scanner supports 2D formats (QR Code, Data Matrix, Aztec, PDF-417) and 1D standard barcodes (EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, Code 93, ITF).",
-        },
-      },
-      {
-        "@type": "Question",
-        "name": "Is scanning private and secure?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text":
-            "Yes. All image processing and barcode decoding is performed 100% locally in your device's browser memory. No images or camera feeds are ever transmitted to external servers.",
-        },
-      },
-    ],
-  };
+  const faqSchema = generateFaqSchema(SCANNER_FAQS);
 
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between">
@@ -160,7 +130,8 @@ export default async function OnlineQrScannerPage({ params }: ScannerPageProps) 
           </h1>
 
           <p className="text-xs sm:text-sm text-ink-muted leading-relaxed max-w-lg mx-auto">
-            Scan QR codes, retail product barcodes (EAN/UPC), logistics codes, and Wi-Fi networks in your browser. Fast, free, and private.
+            Scan QR codes, retail product barcodes (EAN/UPC), logistics codes,
+            and Wi-Fi networks in your browser. Fast, free, and private.
           </p>
         </div>
 
@@ -183,8 +154,8 @@ export default async function OnlineQrScannerPage({ params }: ScannerPageProps) 
         {/* Interactive Scanner Core */}
         <ScannerView />
 
-        {/* Frequently Asked Questions */}
-        <div className="space-y-4 pt-6 border-t border-hairline-soft max-w-3xl mx-auto">
+        {/* Frequently Asked Questions (100% synced with FAQPage JSON-LD) */}
+        <section className="space-y-4 pt-6 border-t border-hairline-soft max-w-3xl mx-auto">
           <div className="text-center space-y-1">
             <h2 className="text-lg sm:text-xl font-bold text-ink flex items-center justify-center gap-1.5">
               <HelpCircle className="w-4 h-4 text-fin-orange" />
@@ -196,47 +167,54 @@ export default async function OnlineQrScannerPage({ params }: ScannerPageProps) 
           </div>
 
           <div className="space-y-2">
-            <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-2xl">
-              <input type="radio" name="faq-accordion" defaultChecked />
-              <div className="collapse-title text-xs sm:text-sm font-semibold text-ink">
-                How do I scan a QR code or barcode using my camera?
+            {SCANNER_FAQS.map((faq, idx) => (
+              <div
+                key={idx}
+                className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-2xl"
+              >
+                <input
+                  type="radio"
+                  name="scanner-faq-accordion"
+                  aria-label={faq.question}
+                  defaultChecked={idx === 0}
+                />
+                <div className="collapse-title text-xs sm:text-sm font-semibold text-ink">
+                  {faq.question}
+                </div>
+                <div className="collapse-content text-xs text-ink-muted leading-relaxed">
+                  <p>{faq.answer}</p>
+                </div>
               </div>
-              <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-                Allow camera access in your browser, point your camera at any QR code or barcode, and keep it steady within the scanning frame. The reader will immediately recognize, decode, and present the result.
-              </div>
-            </div>
-
-            <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-2xl">
-              <input type="radio" name="faq-accordion" />
-              <div className="collapse-title text-xs sm:text-sm font-semibold text-ink">
-                Can I scan an image file or screenshot without a camera?
-              </div>
-              <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-                Yes! Click the &quot;Upload Image&quot; tab and drag in any image file (PNG, JPG, WEBP, SVG), or press Cmd+V / Ctrl+V to paste an image directly from your clipboard.
-              </div>
-            </div>
-
-            <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-2xl">
-              <input type="radio" name="faq-accordion" />
-              <div className="collapse-title text-xs sm:text-sm font-semibold text-ink">
-                Which barcode formats are supported?
-              </div>
-              <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-                The scanner supports QR Code, Data Matrix, Aztec, PDF-417, EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, Code 93, and ITF.
-              </div>
-            </div>
-
-            <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-2xl">
-              <input type="radio" name="faq-accordion" />
-              <div className="collapse-title text-xs sm:text-sm font-semibold text-ink">
-                Is my camera feed or uploaded image private?
-              </div>
-              <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-                Yes, completely. Decoding runs entirely on your device via client-side JavaScript. No video frames, images, or decoded contents are ever sent to external servers.
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
+        </section>
+
+        {/* Cross-Link to Free QR Generators */}
+        <section className="space-y-4 pt-6 border-t border-hairline-soft">
+          <div className="flex items-center gap-2">
+            <QrCode className="w-4 h-4 text-fin-orange" />
+            <h2 className="text-base font-semibold text-ink">
+              Need to Create a Custom QR Code?
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {HIGH_DEMAND_TOOLS.map((tool) => (
+              <Link
+                key={tool.slug}
+                href={`/${tool.slug}`}
+                className="card bg-surface-1 border border-hairline rounded-xl p-4 shadow-none hover:border-ink transition-all group"
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-semibold text-ink group-hover:text-fin-orange transition-colors">
+                    {tool.shortLabel}
+                  </span>
+                  <ArrowRight className="w-3.5 h-3.5 text-fin-orange group-hover:translate-x-1 transition-transform shrink-0" />
+                </div>
+                <p className="text-[11px] text-ink-muted">{tool.navDescription}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
       </main>
 
       {/* Common Footer */}

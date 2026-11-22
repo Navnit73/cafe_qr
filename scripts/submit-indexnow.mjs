@@ -5,6 +5,9 @@
  * Usage: node scripts/submit-indexnow.mjs
  */
 
+import fs from "fs";
+import path from "path";
+
 const KEY = "9493ae36fcb848a2a4686641c38600a6";
 const HOST = process.env.INDEXNOW_HOST || "www.qrvenues.com";
 const BASE_URL = `https://${HOST}`;
@@ -25,6 +28,14 @@ const STATIC_PATHS = [
   "/security",
 ];
 
+const TOOL_SLUGS = [
+  "qr-code-menu-generator",
+  "google-review-qr-code-generator",
+  "wifi-qr-code-generator",
+  "whatsapp-qr-code-generator",
+  "bulk-qr-code-generator",
+];
+
 const INDUSTRY_SLUGS = [
   "qr-code-for-restaurants",
   "qr-code-for-cafes",
@@ -34,14 +45,14 @@ const INDUSTRY_SLUGS = [
   "qr-code-for-real-estate",
 ];
 
-const GUIDE_SLUGS = [
-  "free-qr-code-generator",
-  "generate-qrcode-online",
-  "google-review-qr-code",
-  "qr-code-visiting-card-generator",
-  "wifi-qr-code-generator",
-  "pdf-qr-code-generator",
-];
+function getGuideSlugs() {
+  const guidesDir = path.join(process.cwd(), "content/guides");
+  if (!fs.existsSync(guidesDir)) return [];
+  return fs
+    .readdirSync(guidesDir)
+    .filter((f) => f.endsWith(".mdx"))
+    .map((f) => f.replace(/\.mdx$/, ""));
+}
 
 function buildUrls() {
   const urls = [];
@@ -52,13 +63,19 @@ function buildUrls() {
     }
   }
 
+  for (const slug of TOOL_SLUGS) {
+    for (const loc of LOCALES) {
+      urls.push(`${BASE_URL}/${loc}/${slug}`);
+    }
+  }
+
   for (const slug of INDUSTRY_SLUGS) {
     for (const loc of LOCALES) {
       urls.push(`${BASE_URL}/${loc}/${slug}`);
     }
   }
 
-  for (const slug of GUIDE_SLUGS) {
+  for (const slug of getGuideSlugs()) {
     for (const loc of LOCALES) {
       urls.push(`${BASE_URL}/${loc}/guides/${slug}`);
     }
@@ -95,7 +112,7 @@ async function run() {
       console.log("✅ Success! URLs submitted to IndexNow (Bing, Yandex, etc.).");
     } else {
       const text = await res.text();
-      console.error(`❌ IndexNow submission response:`, text);
+      console.error("❌ IndexNow submission response:", text);
     }
   } catch (err) {
     console.error("❌ Network error:", err.message);

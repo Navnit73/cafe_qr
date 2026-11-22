@@ -19,12 +19,27 @@ import {
   Home,
   BookOpen,
   TrendingUp,
+  Star,
+  Wifi,
+  MessageCircle,
+  Layers,
+  QrCode,
 } from "lucide-react";
 
 export function Header() {
   const tNav = useTranslations("nav");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [solutionsOpen, setSolutionsOpen] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
+
+  const freeTools = [
+    { href: "/qr-code-menu-generator", label: "QR Menu Generator", icon: Utensils, desc: "Restaurant & cafe digital menus" },
+    { href: "/google-review-qr-code-generator", label: "Google Review QR", icon: Star, desc: "Direct 5-star Google review links" },
+    { href: "/wifi-qr-code-generator", label: "Wi-Fi QR Generator", icon: Wifi, desc: "1-tap WPA2 / WPA3 guest login" },
+    { href: "/whatsapp-qr-code-generator", label: "WhatsApp QR Generator", icon: MessageCircle, desc: "Click-to-chat with pre-filled text" },
+    { href: "/bulk-qr-code-generator", label: "Bulk QR Generator", icon: Layers, desc: "Sequential tables, rooms & CSV" },
+    { href: "/online-qr-scanner", label: "Online QR & Barcode Scanner", icon: Scan, desc: "Camera & image decoder" },
+  ];
 
   const solutions = [
     { href: "/qr-code-for-restaurants", label: "Restaurants", icon: Utensils, desc: "Menus, table ordering & POS" },
@@ -55,12 +70,59 @@ export function Header() {
         </div>
 
         {/* Center Links (Desktop) */}
-        <nav className="navbar-center hidden lg:flex items-center gap-6 text-xs font-medium text-ink-muted">
+        <nav aria-label="Main navigation" className="navbar-center hidden lg:flex items-center gap-6 text-xs font-medium text-ink-muted">
+          {/* Free QR Tools Dropdown */}
+          <div className="dropdown dropdown-hover">
+            <div
+              tabIndex={0}
+              role="button"
+              aria-haspopup="true"
+              className="flex items-center gap-1.5 hover:text-ink text-ink font-semibold transition-colors cursor-pointer py-2"
+            >
+              <QrCode className="w-3.5 h-3.5 text-fin-orange" />
+              <span>Free Tools</span>
+              <ChevronDown className="w-3.5 h-3.5 text-ink-subtle" />
+            </div>
+            <div
+              tabIndex={0}
+              className="dropdown-content z-50 menu p-3 shadow-lg bg-surface-1 rounded-xl border border-hairline w-80 space-y-1"
+            >
+              <div className="px-2 py-1 text-[10px] font-semibold text-ink-subtle uppercase tracking-wider">
+                Free Online QR Generators & Scanner
+              </div>
+              <div className="grid grid-cols-1 gap-1">
+                {freeTools.map((tool) => {
+                  const Icon = tool.icon;
+                  return (
+                    <Link
+                      key={tool.href}
+                      href={tool.href}
+                      className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-canvas text-ink transition-colors group"
+                    >
+                      <div className="w-7 h-7 rounded-md bg-canvas border border-hairline flex items-center justify-center text-fin-orange shrink-0 mt-0.5 group-hover:border-ink">
+                        <Icon className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-semibold text-ink group-hover:text-fin-orange transition-colors">
+                          {tool.label}
+                        </div>
+                        <div className="text-[11px] text-ink-muted leading-tight">
+                          {tool.desc}
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
           {/* Solutions Dropdown */}
           <div className="dropdown dropdown-hover">
             <div
               tabIndex={0}
               role="button"
+              aria-haspopup="true"
               className="flex items-center gap-1 hover:text-ink transition-colors cursor-pointer py-2"
             >
               <span>Solutions</span>
@@ -100,16 +162,13 @@ export function Header() {
             </div>
           </div>
 
-          {/* Scanner Link */}
+          {/* Direct Scanner Link */}
           <Link
             href="/online-qr-scanner"
-            className="hover:text-ink transition-colors flex items-center gap-1.5 text-ink font-semibold"
+            className="hover:text-ink transition-colors flex items-center gap-1.5"
           >
             <Scan className="w-3.5 h-3.5 text-fin-orange" />
             <span>{tNav("scanner")}</span>
-            <span className="badge badge-xs bg-fin-orange/10 text-fin-orange border-fin-orange/20 text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded">
-              Free Tool
-            </span>
           </Link>
 
           {/* Guides Link */}
@@ -166,11 +225,13 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-surface-1 border-b border-hairline px-4 py-4 space-y-4 animate-in slide-in-from-top-2 shadow-lg">
           <div className="pb-2 border-b border-hairline-soft flex items-center justify-between">
-            <span className="text-xs font-semibold text-ink uppercase tracking-wider">Navigation</span>
+            <span className="text-xs font-semibold text-ink uppercase tracking-wider">
+              Navigation
+            </span>
             <span className="text-[10px] text-ink-subtle">QRVenues Menu</span>
           </div>
 
-          <nav className="flex flex-col space-y-1 text-sm font-medium text-ink">
+          <nav aria-label="Mobile navigation" className="flex flex-col space-y-1 text-sm font-medium text-ink">
             <Link
               href="/online-qr-scanner"
               onClick={() => setMobileMenuOpen(false)}
@@ -185,13 +246,49 @@ export function Header() {
               </span>
             </Link>
 
+            {/* Free Tools Accordion */}
             <button
               type="button"
+              aria-expanded={toolsOpen}
+              onClick={() => setToolsOpen(!toolsOpen)}
+              className="py-2 px-2.5 rounded-md hover:bg-canvas text-ink-muted hover:text-ink transition-colors text-xs font-medium flex items-center justify-between w-full text-left"
+            >
+              <span>Free QR Code Generators</span>
+              <ChevronDown
+                className={`w-3.5 h-3.5 text-ink-subtle transition-transform ${
+                  toolsOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {toolsOpen && (
+              <div className="pl-4 space-y-1 border-l-2 border-primary/20 my-1">
+                {freeTools.map((tool) => (
+                  <Link
+                    key={tool.href}
+                    href={tool.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block py-1.5 px-2 text-xs text-ink-muted hover:text-fin-orange transition-colors"
+                  >
+                    {tool.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {/* Industry Solutions Accordion */}
+            <button
+              type="button"
+              aria-expanded={solutionsOpen}
               onClick={() => setSolutionsOpen(!solutionsOpen)}
               className="py-2 px-2.5 rounded-md hover:bg-canvas text-ink-muted hover:text-ink transition-colors text-xs font-medium flex items-center justify-between w-full text-left"
             >
               <span>Industry Solutions</span>
-              <ChevronDown className={`w-3.5 h-3.5 text-ink-subtle transition-transform ${solutionsOpen ? "rotate-180" : ""}`} />
+              <ChevronDown
+                className={`w-3.5 h-3.5 text-ink-subtle transition-transform ${
+                  solutionsOpen ? "rotate-180" : ""
+                }`}
+              />
             </button>
 
             {solutionsOpen && (

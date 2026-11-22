@@ -9,11 +9,9 @@ import {
   Camera,
 } from "lucide-react";
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
+import { BarcodeFormatName, ScannedResult } from "./scanner.types";
 import {
-  BarcodeFormatName,
-  ScannedResult,
-} from "./scanner.types";
-import {
+  formatBarcodeType,
   parseBarcodePayload,
   playScanBeep,
   triggerHaptic,
@@ -60,7 +58,7 @@ export function FileScanner({ onScanSuccess, soundEnabled }: FileScannerProps) {
     onScanSuccessRef.current = onScanSuccess;
   }, [onScanSuccess]);
 
-  // Scan file using Html5Qrcode
+  // Scan file using Html5Qrcode scanFileV2 (returns exact format) with fallback to scanFile
   const scanImageFile = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) {
       setErrorMessage("Please select a valid image file (PNG, JPG, WEBP, SVG)");
@@ -81,7 +79,22 @@ export function FileScanner({ onScanSuccess, soundEnabled }: FileScannerProps) {
         },
       });
 
-      const decodedText = await html5QrCode.scanFile(file, false);
+      let decodedText = "";
+      let detectedFormat: BarcodeFormatName = "QR_CODE";
+
+      if (typeof html5QrCode.scanFileV2 === "function") {
+        const scanRes = await html5QrCode.scanFileV2(file, false);
+        decodedText = scanRes.decodedText;
+        const rawFormat =
+          scanRes.result?.format?.formatName ?? scanRes.result?.format?.format;
+        detectedFormat = rawFormat ? formatBarcodeType(rawFormat) : "QR_CODE";
+      } else {
+        decodedText = await html5QrCode.scanFile(file, false);
+        const trimmed = decodedText.trim();
+        if (/^\d{13}$/.test(trimmed)) detectedFormat = "EAN_13";
+        else if (/^\d{8}$/.test(trimmed)) detectedFormat = "EAN_8";
+        else if (/^\d{12}$/.test(trimmed)) detectedFormat = "UPC_A";
+      }
 
       if (decodedText) {
         if (soundEnabledRef.current) {
@@ -89,27 +102,20 @@ export function FileScanner({ onScanSuccess, soundEnabled }: FileScannerProps) {
         }
         triggerHaptic(50);
 
-        let guessedFormat: BarcodeFormatName = "QR_CODE";
-        const trimmed = decodedText.trim();
-        if (/^\d{13}$/.test(trimmed)) guessedFormat = "EAN_13";
-        else if (/^\d{8}$/.test(trimmed)) guessedFormat = "EAN_8";
-        else if (/^\d{12}$/.test(trimmed)) guessedFormat = "UPC_A";
-        else if (/^[A-Z0-9\-_]{4,}$/i.test(trimmed) && !trimmed.includes("http") && !trimmed.includes("\n")) {
-          guessedFormat = "CODE_128";
-        }
-
-        const parsed = parseBarcodePayload(decodedText, guessedFormat);
+        const parsed = parseBarcodePayload(decodedText, detectedFormat);
 
         const result: ScannedResult = {
           id: `scan-file-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
           rawText: decodedText,
-          format: guessedFormat,
+          format: detectedFormat,
           timestamp: Date.now(),
           source: "file",
           parsed,
         };
 
-        setDetectedSummary(`Decoded: ${decodedText.slice(0, 35)}${decodedText.length > 35 ? "..." : ""}`);
+        setDetectedSummary(
+          `Decoded: ${decodedText.slice(0, 35)}${decodedText.length > 35 ? "..." : ""}`
+        );
         onScanSuccessRef.current(result);
       }
     } catch (err: unknown) {
@@ -149,7 +155,6 @@ export function FileScanner({ onScanSuccess, soundEnabled }: FileScannerProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       scanImageFile(e.target.files[0]);
-      // Reset input value so re-selecting same file triggers onChange
       e.target.value = "";
     }
   };
@@ -217,10 +222,15 @@ export function FileScanner({ onScanSuccess, soundEnabled }: FileScannerProps) {
 
           <div className="space-y-1">
             <p className="text-sm sm:text-base font-bold text-ink">
-              {isProcessing ? "Decoding Image Barcode..." : "Upload or Drop Image File"}
+              {isProcessing
+                ? "Decoding Image Barcode..."
+                : "Upload or Drop Image File"}
             </p>
             <p className="text-xs text-ink-muted max-w-xs mx-auto">
-              PNG, JPG, WEBP, SVG · Paste screenshot with <kbd className="kbd kbd-xs bg-canvas text-ink border border-hairline font-mono">⌘ V</kbd>
+              PNG, JPG, WEBP, SVG · Paste screenshot with{" "}
+              <kbd className="kbd kbd-xs bg-canvas text-ink border border-hairline font-mono">
+                ⌘ V
+              </kbd>
             </p>
           </div>
 
@@ -251,18 +261,26 @@ export function FileScanner({ onScanSuccess, soundEnabled }: FileScannerProps) {
 
       {/* Error Feedback */}
       {errorMessage && (
-        <div className="alert alert-error bg-error/10 border-error/20 text-ink rounded-xl text-xs py-2.5 px-3.5 flex items-start gap-2 shadow-none animate-in fade-in">
+        <div
+          role="alert"
+          className="alert alert-error bg-error/10 border-error/20 text-ink rounded-xl text-xs py-2.5 px-3.5 flex items-start gap-2 shadow-none animate-in fade-in"
+        >
           <AlertCircle className="w-4 h-4 text-error shrink-0 mt-0.5" />
           <div className="space-y-0.5">
             <span className="font-bold text-error">Scan Unsuccessful</span>
-            <p className="text-ink-muted text-xs leading-relaxed">{errorMessage}</p>
+            <p className="text-ink-muted text-xs leading-relaxed">
+              {errorMessage}
+            </p>
           </div>
         </div>
       )}
 
       {/* Success Feedback */}
       {detectedSummary && !errorMessage && (
-        <div className="alert alert-success bg-semantic-success/10 border-semantic-success/20 text-ink rounded-xl text-xs py-2.5 px-3.5 flex items-center gap-2 shadow-none animate-in fade-in">
+        <div
+          role="status"
+          className="alert alert-success bg-semantic-success/10 border-semantic-success/20 text-ink rounded-xl text-xs py-2.5 px-3.5 flex items-center gap-2 shadow-none animate-in fade-in"
+        >
           <CheckCircle2 className="w-4 h-4 text-semantic-success shrink-0" />
           <span className="font-semibold text-ink">{detectedSummary}</span>
         </div>

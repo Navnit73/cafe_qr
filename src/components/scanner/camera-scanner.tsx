@@ -77,6 +77,7 @@ export function CameraScanner({
   const isStoppingRef = useRef<boolean>(false);
   const lastScannedTimeRef = useRef<number>(0);
   const lastScannedTextRef = useRef<string>("");
+  const cooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     onScanSuccessRef.current = onScanSuccess;
@@ -122,7 +123,8 @@ export function CameraScanner({
 
     // Visual feedback
     setScanCooldown(true);
-    setTimeout(() => setScanCooldown(false), 900);
+    if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
+    cooldownTimerRef.current = setTimeout(() => setScanCooldown(false), 900);
 
     // Audio & Haptic feedback
     if (soundEnabledRef.current) {
@@ -324,6 +326,7 @@ export function CameraScanner({
     }, 0);
     return () => {
       clearTimeout(timer);
+      if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
       stopScanner();
     };
   }, [startScanner, stopScanner]);

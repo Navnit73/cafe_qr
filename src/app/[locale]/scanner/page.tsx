@@ -1,4 +1,4 @@
-import { redirect } from "@/i18n/routing";
+import { permanentRedirect } from "@/i18n/routing";
 
 interface ScannerPageProps {
   params: Promise<{ locale: string }>;
@@ -6,5 +6,5 @@ interface ScannerPageProps {
 
 export default async function ScannerPage({ params }: ScannerPageProps) {
   const { locale } = await params;
-  redirect({ href: "/online-qr-scanner", locale });
+  permanentRedirect({ href: "/online-qr-scanner", locale });
 }

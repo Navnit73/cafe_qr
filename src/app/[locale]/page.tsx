@@ -25,7 +25,9 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-import { constructMetadata } from "@/lib/seo";
+import { constructMetadata, getLocaleCurrency, SITE_URL } from "@/lib/seo";
+import { HIGH_DEMAND_TOOLS } from "@/lib/tools";
+import { INDUSTRIES } from "@/lib/industries";
 
 interface LandingPageProps {
   params: Promise<{ locale: string }>;
@@ -131,16 +133,17 @@ export default async function LandingPage({ params }: LandingPageProps) {
     "name": "QRVenues",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "All (Web Browser)",
-    "url": "https://www.qrvenues.com",
+    "url": `${SITE_URL}/${locale}`,
     "offers": {
       "@type": "Offer",
       "price": "0",
-      "priceCurrency": "USD",
+      "priceCurrency": getLocaleCurrency(locale),
       "description": "Free tier with QR code menu maker and Google review link generator",
     },
     "featureList": [
       "Digital Menu QR Code Generator",
       "Google Review QR Code Generator & Private Feedback Loop",
+      "Wi-Fi, WhatsApp & Bulk QR Code Studio",
       "Contactless Dine-in & Takeaway Table Ordering System",
       "Live Kitchen POS Order Stream",
       "Print-ready Table Tent Templates",
@@ -209,7 +212,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
             <div className="flex items-center justify-between pb-4 border-b border-hairline-soft mb-4">
               <div className="flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-md bg-ink flex items-center justify-center text-on-primary font-bold text-xs">
-                  CQ
+                  QV
                 </div>
                 <div>
                   <div className="text-xs font-semibold text-ink">QR Code Studio Hub</div>
@@ -750,6 +753,103 @@ export default async function LandingPage({ params }: LandingPageProps) {
       </section>
 
       {/* =========================================================================
+          7b. Dedicated Free Tools & Industry Solutions Directory (Internal Links)
+          ========================================================================= */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-8 py-14 space-y-10">
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-hairline pb-3">
+            <div>
+              <div className="text-xs font-semibold uppercase text-fin-orange tracking-wider mb-1">
+                Free Browser Tools
+              </div>
+              <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-ink">
+                Dedicated QR Code Generators & Scanner
+              </h2>
+            </div>
+            <Link
+              href="/online-qr-scanner"
+              className="text-xs font-medium text-primary hover:underline"
+            >
+              Open Online QR & Barcode Scanner →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {HIGH_DEMAND_TOOLS.map((tool) => (
+              <Link
+                key={tool.slug}
+                href={`/${tool.slug}`}
+                className="card bg-surface-1 border border-hairline rounded-xl p-5 shadow-none hover:border-ink transition-all group"
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-sm font-semibold text-ink group-hover:text-fin-orange transition-colors">
+                    {tool.shortLabel}
+                  </span>
+                  <ArrowRight className="w-3.5 h-3.5 text-fin-orange group-hover:translate-x-1 transition-transform shrink-0" />
+                </div>
+                <p className="text-xs text-ink-muted leading-relaxed">
+                  {tool.navDescription}
+                </p>
+              </Link>
+            ))}
+            <Link
+              href="/online-qr-scanner"
+              className="card bg-surface-1 border border-hairline rounded-xl p-5 shadow-none hover:border-ink transition-all group"
+            >
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-sm font-semibold text-ink group-hover:text-fin-orange transition-colors">
+                  Online QR & Barcode Scanner
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-fin-orange group-hover:translate-x-1 transition-transform shrink-0" />
+              </div>
+              <p className="text-xs text-ink-muted leading-relaxed">
+                Decode QR, EAN-13, UPC & Code 128 via camera or screenshot.
+              </p>
+            </Link>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-hairline pb-3">
+            <div>
+              <div className="text-xs font-semibold uppercase text-fin-orange tracking-wider mb-1">
+                Built for Your Venue
+              </div>
+              <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-ink">
+                QR Code Solutions by Industry
+              </h2>
+            </div>
+            <Link
+              href="/guides"
+              className="text-xs font-medium text-primary hover:underline"
+            >
+              Browse All Guides & Tutorials →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {INDUSTRIES.map((ind) => (
+              <Link
+                key={ind.slug}
+                href={`/${ind.slug}`}
+                className="card bg-surface-1 border border-hairline rounded-xl p-5 shadow-none hover:border-ink transition-all group"
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-sm font-semibold text-ink group-hover:text-fin-orange transition-colors">
+                    QR Codes for {ind.industry}
+                  </span>
+                  <ArrowRight className="w-3.5 h-3.5 text-fin-orange group-hover:translate-x-1 transition-transform shrink-0" />
+                </div>
+                <p className="text-xs text-ink-muted leading-relaxed line-clamp-2">
+                  {ind.subtitle}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
           8. Frequently Asked Questions (daisyUI Accordion)
           ========================================================================= */}
       <section id="faq" className="max-w-3xl mx-auto px-4 sm:px-8 py-16 scroll-mt-24">
@@ -763,115 +863,29 @@ export default async function LandingPage({ params }: LandingPageProps) {
         </div>
 
         <div className="space-y-3">
-          {/* FAQ 1 */}
-          <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-xl">
-            <input type="radio" name="faq-accordion" defaultChecked />
-            <div className="collapse-title text-sm font-semibold text-ink">
-              {tFaq("q1")}
-            </div>
-            <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-              <p>{tFaq("a1")}</p>
-            </div>
-          </div>
-
-          {/* FAQ 2 */}
-          <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-xl">
-            <input type="radio" name="faq-accordion" />
-            <div className="collapse-title text-sm font-semibold text-ink">
-              {tFaq("q2")}
-            </div>
-            <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-              <p>{tFaq("a2")}</p>
-            </div>
-          </div>
-
-          {/* FAQ 3 */}
-          <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-xl">
-            <input type="radio" name="faq-accordion" />
-            <div className="collapse-title text-sm font-semibold text-ink">
-              {tFaq("q3")}
-            </div>
-            <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-              <p>{tFaq("a3")}</p>
-            </div>
-          </div>
-
-          {/* FAQ 4 */}
-          <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-xl">
-            <input type="radio" name="faq-accordion" />
-            <div className="collapse-title text-sm font-semibold text-ink">
-              {tFaq("q4")}
-            </div>
-            <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-              <p>{tFaq("a4")}</p>
-            </div>
-          </div>
-
-          {/* FAQ 5 */}
-          <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-xl">
-            <input type="radio" name="faq-accordion" />
-            <div className="collapse-title text-sm font-semibold text-ink">
-              {tFaq("q5")}
-            </div>
-            <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-              <p>{tFaq("a5")}</p>
-            </div>
-          </div>
-
-          {/* FAQ 6 */}
-          <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-xl">
-            <input type="radio" name="faq-accordion" />
-            <div className="collapse-title text-sm font-semibold text-ink">
-              {tFaq("q6")}
-            </div>
-            <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-              <p>{tFaq("a6")}</p>
-            </div>
-          </div>
-
-          {/* FAQ 7 */}
-          <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-xl">
-            <input type="radio" name="faq-accordion" />
-            <div className="collapse-title text-sm font-semibold text-ink">
-              {tFaq("q7")}
-            </div>
-            <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-              <p>{tFaq("a7")}</p>
-            </div>
-          </div>
-
-          {/* FAQ 8 */}
-          <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-xl">
-            <input type="radio" name="faq-accordion" />
-            <div className="collapse-title text-sm font-semibold text-ink">
-              {tFaq("q8")}
-            </div>
-            <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-              <p>{tFaq("a8")}</p>
-            </div>
-          </div>
-
-          {/* FAQ 9 */}
-          <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-xl">
-            <input type="radio" name="faq-accordion" />
-            <div className="collapse-title text-sm font-semibold text-ink">
-              {tFaq("q9")}
-            </div>
-            <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-              <p>{tFaq("a9")}</p>
-            </div>
-          </div>
-
-          {/* FAQ 10 */}
-          <div className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-xl">
-            <input type="radio" name="faq-accordion" />
-            <div className="collapse-title text-sm font-semibold text-ink">
-              {tFaq("q10")}
-            </div>
-            <div className="collapse-content text-xs text-ink-muted leading-relaxed">
-              <p>{tFaq("a10")}</p>
-            </div>
-          </div>
+          {([1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const).map((num) => {
+            const q = tFaq(`q${num}`);
+            const a = tFaq(`a${num}`);
+            return (
+              <div
+                key={num}
+                className="collapse collapse-arrow bg-surface-1 border border-hairline rounded-xl"
+              >
+                <input
+                  type="radio"
+                  name="faq-accordion"
+                  aria-label={q}
+                  defaultChecked={num === 1}
+                />
+                <div className="collapse-title text-sm font-semibold text-ink">
+                  {q}
+                </div>
+                <div className="collapse-content text-xs text-ink-muted leading-relaxed">
+                  <p>{a}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
       </main>

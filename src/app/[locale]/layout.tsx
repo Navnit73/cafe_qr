@@ -5,6 +5,13 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import {
+  SITE_URL,
+  SITE_NAME,
+  DEFAULT_LOGO_PNG,
+  buildOgImageUrl,
+  getBcp47Locale,
+} from "@/lib/seo";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -25,46 +32,66 @@ export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
 
+const defaultOgImage = buildOgImageUrl({
+  title: "QR Code Menus, Google Review Links & Free QR Studio",
+  subtitle:
+    "Smart contactless ordering, Google review QR codes, Wi-Fi QR codes & digital menus for hospitality venues.",
+  badge: "QRVenues Studio",
+});
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.qrvenues.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "QRVenues — QR Code Menus, Google Review Links & Contactless Ordering",
+    default: "QRVenues — QR Code Menus, Google Review Links & Free QR Studio",
     template: "%s | QRVenues",
   },
-  description: "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues",
+  description:
+    "Smart contactless ordering, Google review QR codes, Wi-Fi & WhatsApp QR generators, and digital menus for hospitality venues.",
   keywords: [
-    "cafe",
-    "qr ordering",
+    "qr code menu",
+    "free qr code generator",
     "contactless menu",
     "restaurant POS",
-    "qr code menu",
     "qrvenues",
     "google review qr code",
+    "wifi qr code generator",
     "digital menu maker",
   ],
-  authors: [{ name: "QRVenues" }],
-  creator: "QRVenues",
-  publisher: "QRVenues",
+  authors: [{ name: SITE_NAME }],
+  verification: {
+    other: { "msvalidate.01": "6BFE4F80CD650E2E0CA99EA3C6C7664F" },
+  },
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
   icons: {
-    icon: [
-      { url: "/favicons.svg", type: "image/svg+xml" },
-    ],
+    icon: [{ url: "/favicons.svg", type: "image/svg+xml" }],
     shortcut: "/favicons.svg",
-    apple: "/favicons.svg",
   },
   openGraph: {
     type: "website",
-    siteName: "QRVenues",
-    title: "QRVenues — QR Code Menus, Google Review Links & Contactless Ordering",
-    description: "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues",
-    url: "https://www.qrvenues.com",
+    siteName: SITE_NAME,
+    title: "QRVenues — QR Code Menus, Google Review Links & Free QR Studio",
+    description:
+      "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues.",
+    url: SITE_URL,
     locale: "en_US",
     alternateLocale: ["en_GB", "en_AU"],
+    images: [
+      {
+        url: defaultOgImage,
+        width: 1200,
+        height: 630,
+        alt: "QRVenues — QR Code Studio for Hospitality & Businesses",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QRVenues — QR Code Menus, Google Review Links & Contactless Ordering",
-    description: "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues",
+    title: "QRVenues — QR Code Menus, Google Review Links & Free QR Studio",
+    description:
+      "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues.",
+    images: [defaultOgImage],
+    creator: "@qrvenues",
   },
   robots: {
     index: true,
@@ -104,40 +131,57 @@ export default async function LocaleLayout({
 
   // Providing all messages to the client side
   const messages = await getMessages();
+  const bcp47Locale = getBcp47Locale(locale);
 
   // Global Structured Data: Organization and WebSite
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "QRVenues",
-    "url": "https://www.qrvenues.com",
-    "logo": "https://www.qrvenues.com/favicons.svg",
-    "description": "Smart contactless ordering, Google review QR codes & digital menus for hospitality venues",
-    "contactPoint": {
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: {
+      "@type": "ImageObject",
+      url: DEFAULT_LOGO_PNG,
+      width: 180,
+      height: 180,
+    },
+    description:
+      "Smart contactless ordering, Google review QR codes, Wi-Fi QR generators & digital menus for hospitality venues.",
+    contactPoint: {
       "@type": "ContactPoint",
-      "email": "support@qrvenues.com",
-      "contactType": "customer service",
-      "availableLanguage": ["en"],
+      email: "support@qrvenues.com",
+      contactType: "customer service",
+      availableLanguage: ["en-US", "en-GB", "en-AU"],
     },
   };
 
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "QRVenues",
-    "url": "https://www.qrvenues.com",
+    name: SITE_NAME,
+    url: `${SITE_URL}/${locale}`,
+    inLanguage: bcp47Locale,
+    description:
+      "Free online QR code generator studio, barcode scanner, digital menu maker, and Google review QR tools.",
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
   };
 
   return (
     <html
-      lang={locale}
+      lang={bcp47Locale}
       data-theme="airbnb"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
         />
         <script
           type="application/ld+json"

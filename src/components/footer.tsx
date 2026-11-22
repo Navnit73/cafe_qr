@@ -123,7 +123,7 @@ export function Footer() {
           {/* Column 2: Free Tools */}
           <div className="space-y-3">
             <h3 className="text-xs font-semibold text-ink uppercase tracking-wider">
-              Tools & Studio
+              Free QR Tools
             </h3>
             <ul className="space-y-2 text-xs text-ink-muted">
               <li>
@@ -133,28 +133,28 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/guides/free-qr-code-generator" className="hover:text-ink hover:underline transition-colors">
-                  Free QR Generator
+                <Link href="/qr-code-menu-generator" className="hover:text-ink hover:underline transition-colors">
+                  QR Code Menu Generator
                 </Link>
               </li>
               <li>
-                <Link href="/guides/google-review-qr-code" className="hover:text-ink hover:underline transition-colors">
-                  Google Review QR
+                <Link href="/google-review-qr-code-generator" className="hover:text-ink hover:underline transition-colors">
+                  Google Review QR Generator
                 </Link>
               </li>
               <li>
-                <Link href="/guides/wifi-qr-code-generator" className="hover:text-ink hover:underline transition-colors">
-                  Wi-Fi QR Generator
+                <Link href="/wifi-qr-code-generator" className="hover:text-ink hover:underline transition-colors">
+                  Wi-Fi QR Code Generator
                 </Link>
               </li>
               <li>
-                <Link href="/guides/pdf-qr-code-generator" className="hover:text-ink hover:underline transition-colors">
-                  PDF QR Generator
+                <Link href="/whatsapp-qr-code-generator" className="hover:text-ink hover:underline transition-colors">
+                  WhatsApp QR Generator
                 </Link>
               </li>
               <li>
-                <Link href="/guides/qr-code-visiting-card-generator" className="hover:text-ink hover:underline transition-colors">
-                  vCard Business Card QR
+                <Link href="/bulk-qr-code-generator" className="hover:text-ink hover:underline transition-colors">
+                  Bulk QR Code Generator
                 </Link>
               </li>
             </ul>

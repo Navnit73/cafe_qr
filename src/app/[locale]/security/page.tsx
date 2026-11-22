@@ -19,7 +19,7 @@ export async function generateMetadata({
     description: "Detailed overview of QRVenues enterprise security controls, end-to-end TLS 1.3 encryption, and Level 1 PCI DSS compliant tokenized payment handling.",
     path: "/security",
     locale,
-    keywords: ["security compliance", "pci dds level 1", "tls 1.3 encryption", "soc 2 cloud"],
+    keywords: ["security compliance", "pci dss level 1", "tls 1.3 encryption", "soc 2 cloud"],
   });
 }
 

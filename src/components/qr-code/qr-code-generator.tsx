@@ -21,6 +21,7 @@ import {
   Mail,
   Phone,
   MessageSquare,
+  MessageCircle,
   User,
   Wifi,
   ChevronDown,
@@ -37,10 +38,13 @@ import type {
   QRContentType,
 } from "./qr-code.types";
 import { QRCodeDownloadModal } from "./qr-code-download-modal";
+import { copyValueToClipboard } from "./qr-code.utils";
 
 export interface QRCodeGeneratorProps {
   /** Initial text/URL to encode */
   initialValue?: string;
+  /** Initial active content tab */
+  initialTab?: QRContentType;
   /** Initial frame preset */
   initialFrame?: FramePreset;
   /** Initial foreground color */
@@ -61,7 +65,7 @@ const FG_COLORS = [
   { name: "Deep Violet", hex: "#3a2a99" },
   { name: "Navy", hex: "#0a1530" },
   { name: "Link Blue", hex: "#0075de" },
-  { name: "Ocean Blue", hex: "#2563eb" },
+  { name: "Emerald", hex: "#059669" },
   { name: "Sky Blue", hex: "#0284c7" },
   { name: "Brand Orange", hex: "#dd5b00" },
   { name: "Rausch Red", hex: "#ff385c" },
@@ -76,7 +80,6 @@ const BG_COLORS = [
   { name: "Soft Gray", hex: "#f4f4f8" },
   { name: "Warm Cream", hex: "#f5f1ec" },
 ];
-
 
 // ---------------------------------------------------------------------------
 // Built-in Logo Presets (Embedded SVG Data URIs for CORS-free exports)
@@ -113,6 +116,12 @@ const LOGO_PRESETS = [
     src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%230075de'/><path d='M25 42 a36 36 0 0 1 50 0 M34 52 a22 22 0 0 1 32 0 M43 62 a10 10 0 0 1 14 0 M50 72 a2 2 0 1 1 0 -0.1' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round'/></svg>",
   },
   {
+    id: "whatsapp",
+    name: "WhatsApp",
+    icon: MessageCircle,
+    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23059669'/><path d='M50 24 a26 26 0 0 0 -22.5 39 l-3.5 13 l13.5 -3.5 a26 26 0 1 0 12.5 -48.5 z' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linejoin='round'/></svg>",
+  },
+  {
     id: "qrvenues",
     name: "QRVenues",
     icon: QrIcon,
@@ -128,8 +137,9 @@ const TABS: { id: QRContentType; label: string; icon: React.ElementType }[] = [
   { id: "menu", label: "MENU", icon: UtensilsCrossed },
   { id: "review", label: "REVIEW", icon: Star },
   { id: "wifi", label: "WIFI", icon: Wifi },
-  { id: "text", label: "TEXT", icon: FileText },
+  { id: "whatsapp", label: "WHATSAPP", icon: MessageCircle },
   { id: "vcard", label: "VCARD", icon: User },
+  { id: "text", label: "TEXT", icon: FileText },
   { id: "phone", label: "PHONE", icon: Phone },
   { id: "email", label: "EMAIL", icon: Mail },
   { id: "sms", label: "SMS", icon: MessageSquare },
@@ -137,8 +147,16 @@ const TABS: { id: QRContentType; label: string; icon: React.ElementType }[] = [
 
 type AccordionSection = "content" | "colors" | "logo" | "design";
 
+/**
+ * Escapes special characters required by the ZXing Wi-Fi QR specification.
+ */
+function escapeWifiField(value: string): string {
+  return value.replace(/([\\;,:"])/g, "\\$1");
+}
+
 export function QRCodeGenerator({
   initialValue = "https://www.qrvenues.com/menu/the-artisan-cafe",
+  initialTab = "url",
   initialFrame = "menu",
   initialFgColor = "#5645d4",
   title = "Interactive QR Code Studio",
@@ -146,7 +164,7 @@ export function QRCodeGenerator({
   className,
 }: QRCodeGeneratorProps) {
   // Active Content Tab
-  const [activeTab, setActiveTab] = useState<QRContentType>("url");
+  const [activeTab, setActiveTab] = useState<QRContentType>(initialTab);
 
   // Single Active Accordion Section
   const [activeAccordion, setActiveAccordion] =
@@ -169,10 +187,17 @@ export function QRCodeGenerator({
   const [wifiSsid, setWifiSsid] = useState("Artisan_Guest_WiFi");
   const [wifiPass, setWifiPass] = useState("coffeetime2026");
   const [wifiType, setWifiType] = useState<"WPA" | "WEP" | "nopass">("WPA");
+  const [wifiHidden, setWifiHidden] = useState(false);
+  const [whatsappPhone, setWhatsappPhone] = useState("+1 555 234 5678");
+  const [whatsappMsg, setWhatsappMsg] = useState(
+    "Hi! I would like to reserve a table for tonight."
+  );
   const [vcardName, setVcardName] = useState("Marcus Vance");
+  const [vcardTitle, setVcardTitle] = useState("Hospitality Director");
   const [vcardOrg, setVcardOrg] = useState("The Artisan Cafe");
   const [vcardPhone, setVcardPhone] = useState("+1 555 234 5678");
   const [vcardEmail, setVcardEmail] = useState("hello@artisancafe.com");
+  const [vcardUrl, setVcardUrl] = useState("https://www.qrvenues.com");
   const [phoneVal, setPhoneVal] = useState("+1 555 234 5678");
   const [emailTo, setEmailTo] = useState("contact@artisancafe.com");
   const [emailSubject, setEmailSubject] = useState("Table Reservation");
@@ -203,7 +228,7 @@ export function QRCodeGenerator({
   const [downloadFormat, setDownloadFormat] = useState<"png" | "svg">("png");
   const [downloadIncludeFrame, setDownloadIncludeFrame] = useState(true);
 
-  // QR Component Ref for direct canvas access
+  // QR Component Ref for direct canvas & SVG access
   const qrRef = useRef<QRCodeHandle>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -211,29 +236,74 @@ export function QRCodeGenerator({
   const encodedValue = useMemo(() => {
     switch (activeTab) {
       case "url":
-        return urlVal || "https://www.qrvenues.com";
-      case "menu":
-        return `https://www.qrvenues.com/menu/${menuSlug || "menu"}${
-          menuTable ? `?table=${menuTable}` : ""
-        }`;
-      case "review":
-        return `https://search.google.com/local/writereview?placeid=${
-          reviewPlaceId || "ChIJN1t_tDeuEmsRUsoyG83frY4"
-        }`;
-      case "wifi":
-        return `WIFI:T:${wifiType};S:${wifiSsid};P:${wifiPass};;`;
+        return urlVal.trim() || "https://www.qrvenues.com";
+      case "menu": {
+        const cleanSlug = menuSlug.trim().replace(/^\/+/, "") || "menu";
+        const tableQuery = menuTable.trim()
+          ? `?table=${encodeURIComponent(menuTable.trim())}`
+          : "";
+        return `https://www.qrvenues.com/menu/${cleanSlug}${tableQuery}`;
+      }
+      case "review": {
+        const input = reviewPlaceId.trim();
+        if (!input) {
+          return "https://search.google.com/local/writereview?placeid=ChIJN1t_tDeuEmsRUsoyG83frY4";
+        }
+        // Support pasting full direct review URLs (e.g. https://g.page/r/...) directly
+        if (/^https?:\/\//i.test(input)) {
+          return input;
+        }
+        return `https://search.google.com/local/writereview?placeid=${encodeURIComponent(
+          input
+        )}`;
+      }
+      case "wifi": {
+        const escapedSsid = escapeWifiField(wifiSsid);
+        const escapedPass =
+          wifiType === "nopass" ? "" : escapeWifiField(wifiPass);
+        const hiddenFlag = wifiHidden ? "H:true;" : "";
+        return `WIFI:T:${wifiType};S:${escapedSsid};P:${escapedPass};${hiddenFlag};`;
+      }
+      case "whatsapp": {
+        const digits = whatsappPhone.replace(/\D/g, "") || "15552345678";
+        const trimmedMsg = whatsappMsg.trim();
+        return trimmedMsg
+          ? `https://wa.me/${digits}?text=${encodeURIComponent(trimmedMsg)}`
+          : `https://wa.me/${digits}`;
+      }
       case "text":
         return textVal || "Welcome to QRVenues!";
-      case "vcard":
-        return `BEGIN:VCARD\nVERSION:3.0\nN:${vcardName}\nORG:${vcardOrg}\nTEL:${vcardPhone}\nEMAIL:${vcardEmail}\nEND:VCARD`;
+      case "vcard": {
+        const nameParts = vcardName.trim().split(/\s+/).filter(Boolean);
+        const firstName = nameParts[0] || "";
+        const lastName =
+          nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+        const lines = [
+          "BEGIN:VCARD",
+          "VERSION:3.0",
+          `N:${lastName};${firstName};;;`,
+          `FN:${vcardName.trim() || "Contact"}`,
+          vcardOrg.trim() ? `ORG:${vcardOrg.trim()}` : "",
+          vcardTitle.trim() ? `TITLE:${vcardTitle.trim()}` : "",
+          vcardPhone.trim() ? `TEL;TYPE=CELL:${vcardPhone.trim()}` : "",
+          vcardEmail.trim() ? `EMAIL:${vcardEmail.trim()}` : "",
+          vcardUrl.trim() ? `URL:${vcardUrl.trim()}` : "",
+          "END:VCARD",
+        ].filter(Boolean);
+        return lines.join("\n");
+      }
       case "phone":
-        return `tel:${phoneVal}`;
+        return `tel:${phoneVal.trim()}`;
       case "email":
-        return `mailto:${emailTo}?subject=${encodeURIComponent(emailSubject)}`;
+        return `mailto:${emailTo.trim()}${
+          emailSubject.trim()
+            ? `?subject=${encodeURIComponent(emailSubject.trim())}`
+            : ""
+        }`;
       case "sms":
-        return `smsto:${smsPhone}:${smsMsg}`;
+        return `smsto:${smsPhone.trim()}:${smsMsg}`;
       default:
-        return urlVal || "https://www.qrvenues.com";
+        return urlVal.trim() || "https://www.qrvenues.com";
     }
   }, [
     activeTab,
@@ -244,11 +314,16 @@ export function QRCodeGenerator({
     wifiSsid,
     wifiPass,
     wifiType,
+    wifiHidden,
+    whatsappPhone,
+    whatsappMsg,
     textVal,
     vcardName,
+    vcardTitle,
     vcardOrg,
     vcardPhone,
     vcardEmail,
+    vcardUrl,
     phoneVal,
     emailTo,
     emailSubject,
@@ -275,14 +350,10 @@ export function QRCodeGenerator({
 
   // Copy helper
   const handleCopyValue = useCallback(async () => {
-    try {
-      if (typeof navigator !== "undefined" && navigator.clipboard) {
-        await navigator.clipboard.writeText(encodedValue);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      }
-    } catch {
-      // Ignore
+    const ok = await copyValueToClipboard(encodedValue);
+    if (ok) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
   }, [encodedValue]);
 
@@ -294,12 +365,13 @@ export function QRCodeGenerator({
       reader.onload = () => {
         setCustomLogoUrl(reader.result as string);
         setSelectedLogoId("custom");
+        setLevel("H");
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Open 15-second download processing modal
+  // Open download processing modal
   const openDownloadModal = (format: "png" | "svg", includeFrame: boolean) => {
     setDownloadFormat(format);
     setDownloadIncludeFrame(includeFrame);
@@ -323,9 +395,9 @@ export function QRCodeGenerator({
               <QrIcon className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-ink leading-tight">
+              <div className="text-sm font-semibold text-ink leading-tight">
                 {title}
-              </h2>
+              </div>
               <p className="text-[11px] text-ink-muted hidden sm:block">
                 {description}
               </p>
@@ -341,7 +413,11 @@ export function QRCodeGenerator({
         </div>
 
         {/* Scrollable Horizontal Tabs */}
-        <div role="tablist" aria-label="QR Code Content Types" className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-1 pb-0 -mb-[1px]">
+        <div
+          role="tablist"
+          aria-label="QR Code Content Types"
+          className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-1 pb-0 -mb-[1px]"
+        >
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -410,13 +486,17 @@ export function QRCodeGenerator({
                   {/* URL Content Tab */}
                   {activeTab === "url" && (
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-ink flex items-center justify-between">
+                      <label
+                        htmlFor="qr-url-input"
+                        className="text-xs font-semibold text-ink flex items-center justify-between"
+                      >
                         <span>Target Website URL</span>
                         <span className="text-[10px] text-ink-subtle font-normal">
                           https://
                         </span>
                       </label>
                       <input
+                        id="qr-url-input"
                         type="url"
                         value={urlVal}
                         onChange={(e) => setUrlVal(e.target.value)}
@@ -430,10 +510,14 @@ export function QRCodeGenerator({
                   {activeTab === "menu" && (
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="sm:col-span-2 space-y-1.5">
-                        <label className="text-xs font-semibold text-ink">
+                        <label
+                          htmlFor="qr-menu-slug"
+                          className="text-xs font-semibold text-ink"
+                        >
                           Restaurant Menu Slug
                         </label>
                         <input
+                          id="qr-menu-slug"
                           type="text"
                           value={menuSlug}
                           onChange={(e) => setMenuSlug(e.target.value)}
@@ -442,10 +526,14 @@ export function QRCodeGenerator({
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-ink">
+                        <label
+                          htmlFor="qr-menu-table"
+                          className="text-xs font-semibold text-ink"
+                        >
                           Table Number
                         </label>
                         <input
+                          id="qr-menu-table"
                           type="text"
                           value={menuTable}
                           onChange={(e) => setMenuTable(e.target.value)}
@@ -459,22 +547,26 @@ export function QRCodeGenerator({
                   {/* Google Review Tab */}
                   {activeTab === "review" && (
                     <div className="space-y-2">
-                      <label className="text-xs font-semibold text-ink flex items-center justify-between">
+                      <label
+                        htmlFor="qr-review-input"
+                        className="text-xs font-semibold text-ink flex items-center justify-between"
+                      >
                         <span>Google Place ID or Direct Review URL</span>
                         <span className="badge badge-xs bg-semantic-success/15 text-semantic-success font-medium border-0">
                           5-Star Direct Link
                         </span>
                       </label>
                       <input
+                        id="qr-review-input"
                         type="text"
                         value={reviewPlaceId}
                         onChange={(e) => setReviewPlaceId(e.target.value)}
-                        placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4"
+                        placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4 or https://g.page/r/..."
                         className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink focus:border-primary h-10"
                       />
                       <p className="text-[11px] text-ink-subtle leading-normal">
-                        Launches Google Maps write-review prompt automatically
-                        when scanned.
+                        Paste either a Google Place ID or a full https://g.page/r/...
+                        review link to launch the star-rating box automatically.
                       </p>
                     </div>
                   )}
@@ -484,10 +576,14 @@ export function QRCodeGenerator({
                     <div className="space-y-3">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <label className="text-xs font-semibold text-ink">
+                          <label
+                            htmlFor="qr-wifi-ssid"
+                            className="text-xs font-semibold text-ink"
+                          >
                             Network SSID Name
                           </label>
                           <input
+                            id="qr-wifi-ssid"
                             type="text"
                             value={wifiSsid}
                             onChange={(e) => setWifiSsid(e.target.value)}
@@ -496,35 +592,105 @@ export function QRCodeGenerator({
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-xs font-semibold text-ink">
+                          <label
+                            htmlFor="qr-wifi-pass"
+                            className="text-xs font-semibold text-ink"
+                          >
                             Password
                           </label>
                           <input
+                            id="qr-wifi-pass"
                             type="text"
                             value={wifiPass}
+                            disabled={wifiType === "nopass"}
                             onChange={(e) => setWifiPass(e.target.value)}
-                            placeholder="WiFi Password"
-                            className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink h-10"
+                            placeholder={
+                              wifiType === "nopass"
+                                ? "No password needed"
+                                : "WiFi Password"
+                            }
+                            className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink h-10 disabled:opacity-50"
                           />
                         </div>
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-ink-muted">
-                        <span className="font-semibold text-ink">Security:</span>
-                        {(["WPA", "WEP", "nopass"] as const).map((t) => (
-                          <label
-                            key={t}
-                            className="flex items-center gap-1.5 cursor-pointer"
-                          >
-                            <input
-                              type="radio"
-                              name="wifi-sec"
-                              checked={wifiType === t}
-                              onChange={() => setWifiType(t)}
-                              className="radio radio-xs radio-primary"
-                            />
-                            <span>{t === "nopass" ? "Open (No Pass)" : t}</span>
-                          </label>
-                        ))}
+                      <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-ink-muted">
+                        <div className="flex flex-wrap items-center gap-4">
+                          <span className="font-semibold text-ink">
+                            Security:
+                          </span>
+                          {(["WPA", "WEP", "nopass"] as const).map((t) => (
+                            <label
+                              key={t}
+                              className="flex items-center gap-1.5 cursor-pointer"
+                            >
+                              <input
+                                type="radio"
+                                name="wifi-sec"
+                                checked={wifiType === t}
+                                onChange={() => setWifiType(t)}
+                                className="radio radio-xs radio-primary"
+                              />
+                              <span>
+                                {t === "nopass"
+                                  ? "Open (No Pass)"
+                                  : t === "WPA"
+                                  ? "WPA / WPA2 / WPA3"
+                                  : t}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+
+                        <label className="flex items-center gap-2 cursor-pointer text-xs text-ink-muted">
+                          <input
+                            type="checkbox"
+                            checked={wifiHidden}
+                            onChange={(e) => setWifiHidden(e.target.checked)}
+                            className="checkbox checkbox-xs checkbox-primary"
+                          />
+                          <span>Hidden SSID</span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* WhatsApp Content Tab */}
+                  {activeTab === "whatsapp" && (
+                    <div className="space-y-3">
+                      <div className="space-y-1">
+                        <label
+                          htmlFor="qr-whatsapp-phone"
+                          className="text-xs font-semibold text-ink flex items-center justify-between"
+                        >
+                          <span>WhatsApp Number (with country code)</span>
+                          <span className="text-[10px] text-ink-subtle font-normal">
+                            e.g. +1 555 234 5678
+                          </span>
+                        </label>
+                        <input
+                          id="qr-whatsapp-phone"
+                          type="tel"
+                          value={whatsappPhone}
+                          onChange={(e) => setWhatsappPhone(e.target.value)}
+                          placeholder="+1 555 234 5678"
+                          className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink h-10"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label
+                          htmlFor="qr-whatsapp-msg"
+                          className="text-xs font-semibold text-ink"
+                        >
+                          Pre-Filled Message (Optional)
+                        </label>
+                        <textarea
+                          id="qr-whatsapp-msg"
+                          value={whatsappMsg}
+                          onChange={(e) => setWhatsappMsg(e.target.value)}
+                          rows={2}
+                          placeholder="Hi! I would like to book a table..."
+                          className="textarea textarea-sm w-full bg-canvas border border-hairline rounded-lg text-xs font-medium text-ink"
+                        />
                       </div>
                     </div>
                   )}
@@ -532,10 +698,14 @@ export function QRCodeGenerator({
                   {/* Text Content Tab */}
                   {activeTab === "text" && (
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-ink">
+                      <label
+                        htmlFor="qr-text-input"
+                        className="text-xs font-semibold text-ink"
+                      >
                         Plain Text Payload
                       </label>
                       <textarea
+                        id="qr-text-input"
                         value={textVal}
                         onChange={(e) => setTextVal(e.target.value)}
                         rows={3}
@@ -549,10 +719,14 @@ export function QRCodeGenerator({
                   {activeTab === "vcard" && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <label className="text-xs font-semibold text-ink">
+                        <label
+                          htmlFor="qr-vcard-name"
+                          className="text-xs font-semibold text-ink"
+                        >
                           Full Name
                         </label>
                         <input
+                          id="qr-vcard-name"
                           type="text"
                           value={vcardName}
                           onChange={(e) => setVcardName(e.target.value)}
@@ -560,10 +734,29 @@ export function QRCodeGenerator({
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-xs font-semibold text-ink">
-                          Company / Restaurant
+                        <label
+                          htmlFor="qr-vcard-title"
+                          className="text-xs font-semibold text-ink"
+                        >
+                          Job Title
                         </label>
                         <input
+                          id="qr-vcard-title"
+                          type="text"
+                          value={vcardTitle}
+                          onChange={(e) => setVcardTitle(e.target.value)}
+                          className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs h-10"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label
+                          htmlFor="qr-vcard-org"
+                          className="text-xs font-semibold text-ink"
+                        >
+                          Company / Venue
+                        </label>
+                        <input
+                          id="qr-vcard-org"
                           type="text"
                           value={vcardOrg}
                           onChange={(e) => setVcardOrg(e.target.value)}
@@ -571,24 +764,47 @@ export function QRCodeGenerator({
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-xs font-semibold text-ink">
+                        <label
+                          htmlFor="qr-vcard-phone"
+                          className="text-xs font-semibold text-ink"
+                        >
                           Phone
                         </label>
                         <input
-                          type="text"
+                          id="qr-vcard-phone"
+                          type="tel"
                           value={vcardPhone}
                           onChange={(e) => setVcardPhone(e.target.value)}
                           className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs h-10"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-xs font-semibold text-ink">
+                        <label
+                          htmlFor="qr-vcard-email"
+                          className="text-xs font-semibold text-ink"
+                        >
                           Email
                         </label>
                         <input
+                          id="qr-vcard-email"
                           type="email"
                           value={vcardEmail}
                           onChange={(e) => setVcardEmail(e.target.value)}
+                          className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs h-10"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label
+                          htmlFor="qr-vcard-url"
+                          className="text-xs font-semibold text-ink"
+                        >
+                          Website URL
+                        </label>
+                        <input
+                          id="qr-vcard-url"
+                          type="url"
+                          value={vcardUrl}
+                          onChange={(e) => setVcardUrl(e.target.value)}
                           className="input input-sm w-full bg-canvas border border-hairline rounded-lg text-xs h-10"
                         />
                       </div>
@@ -598,10 +814,14 @@ export function QRCodeGenerator({
                   {/* Phone Tab */}
                   {activeTab === "phone" && (
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-ink">
+                      <label
+                        htmlFor="qr-phone-input"
+                        className="text-xs font-semibold text-ink"
+                      >
                         Phone Number
                       </label>
                       <input
+                        id="qr-phone-input"
                         type="tel"
                         value={phoneVal}
                         onChange={(e) => setPhoneVal(e.target.value)}
@@ -615,10 +835,14 @@ export function QRCodeGenerator({
                   {activeTab === "email" && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <label className="text-xs font-semibold text-ink">
+                        <label
+                          htmlFor="qr-email-to"
+                          className="text-xs font-semibold text-ink"
+                        >
                           Recipient Email
                         </label>
                         <input
+                          id="qr-email-to"
                           type="email"
                           value={emailTo}
                           onChange={(e) => setEmailTo(e.target.value)}
@@ -626,10 +850,14 @@ export function QRCodeGenerator({
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-xs font-semibold text-ink">
+                        <label
+                          htmlFor="qr-email-subject"
+                          className="text-xs font-semibold text-ink"
+                        >
                           Subject Line
                         </label>
                         <input
+                          id="qr-email-subject"
                           type="text"
                           value={emailSubject}
                           onChange={(e) => setEmailSubject(e.target.value)}
@@ -643,10 +871,14 @@ export function QRCodeGenerator({
                   {activeTab === "sms" && (
                     <div className="space-y-3">
                       <div className="space-y-1">
-                        <label className="text-xs font-semibold text-ink">
+                        <label
+                          htmlFor="qr-sms-phone"
+                          className="text-xs font-semibold text-ink"
+                        >
                           Mobile Number
                         </label>
                         <input
+                          id="qr-sms-phone"
                           type="tel"
                           value={smsPhone}
                           onChange={(e) => setSmsPhone(e.target.value)}
@@ -654,10 +886,14 @@ export function QRCodeGenerator({
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-xs font-semibold text-ink">
+                        <label
+                          htmlFor="qr-sms-msg"
+                          className="text-xs font-semibold text-ink"
+                        >
                           Message Body
                         </label>
                         <textarea
+                          id="qr-sms-msg"
                           value={smsMsg}
                           onChange={(e) => setSmsMsg(e.target.value)}
                           rows={2}
@@ -668,14 +904,14 @@ export function QRCodeGenerator({
                   )}
 
                   {/* Encoded String Preview */}
-                  <div className="p-3 bg-canvas rounded-xl border border-hairline-soft flex items-center justify-between text-[11px] text-ink-muted">
+                  <div className="p-3 bg-canvas rounded-xl border border-hairline-soft flex items-center justify-between gap-2 text-[11px] text-ink-muted">
                     <span className="truncate max-w-[240px] sm:max-w-xs font-mono">
                       {encodedValue}
                     </span>
                     <button
                       type="button"
                       onClick={handleCopyValue}
-                      className="btn btn-ghost btn-xs h-7 min-h-7 px-2.5 text-[11px] text-ink-muted hover:text-ink gap-1 rounded-md"
+                      className="btn btn-ghost btn-xs h-7 min-h-7 px-2.5 text-[11px] text-ink-muted hover:text-ink gap-1 rounded-md shrink-0"
                     >
                       {copied ? (
                         <Check className="w-3.5 h-3.5 text-semantic-success" />
@@ -752,6 +988,7 @@ export function QRCodeGenerator({
                         type="color"
                         value={fgColor}
                         onChange={(e) => setFgColor(e.target.value)}
+                        aria-label="Custom QR foreground color"
                         className="w-8 h-8 rounded-lg border border-hairline cursor-pointer p-0.5 bg-transparent"
                         title="Custom Color Picker"
                       />
@@ -770,6 +1007,7 @@ export function QRCodeGenerator({
                             key={c.name}
                             type="button"
                             onClick={() => setGradientTo(c.hex)}
+                            aria-label={`Set gradient end color to ${c.name}`}
                             className={clsx(
                               "w-6 h-6 rounded-full border transition-transform",
                               gradientTo === c.hex
@@ -784,6 +1022,7 @@ export function QRCodeGenerator({
                           type="color"
                           value={gradientTo}
                           onChange={(e) => setGradientTo(e.target.value)}
+                          aria-label="Custom gradient secondary color"
                           className="w-6 h-6 rounded border border-hairline cursor-pointer p-0 bg-transparent"
                         />
                       </div>
@@ -848,7 +1087,7 @@ export function QRCodeGenerator({
                     <span className="text-xs font-semibold text-ink">
                       Hospitality Logo Presets
                     </span>
-                    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                       {LOGO_PRESETS.map((preset) => {
                         const isSelected =
                           selectedLogoId === preset.id && !customLogoUrl;
@@ -859,6 +1098,7 @@ export function QRCodeGenerator({
                             onClick={() => {
                               setSelectedLogoId(preset.id);
                               setCustomLogoUrl(undefined);
+                              if (preset.id !== "none") setLevel("H");
                             }}
                             className={clsx(
                               "p-2 rounded-xl border text-center flex flex-col items-center justify-center gap-1 text-xs transition-all h-16",
@@ -1011,10 +1251,14 @@ export function QRCodeGenerator({
                     {frame !== "none" && (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                         <div className="space-y-1">
-                          <label className="text-xs font-medium text-ink">
+                          <label
+                            htmlFor="qr-frame-headline"
+                            className="text-xs font-medium text-ink"
+                          >
                             Custom Frame Headline
                           </label>
                           <input
+                            id="qr-frame-headline"
                             type="text"
                             value={customFrameLabel}
                             onChange={(e) => setCustomFrameLabel(e.target.value)}
@@ -1023,10 +1267,14 @@ export function QRCodeGenerator({
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-xs font-medium text-ink">
+                          <label
+                            htmlFor="qr-frame-subtext"
+                            className="text-xs font-medium text-ink"
+                          >
                             Custom Subtitle Text
                           </label>
                           <input
+                            id="qr-frame-subtext"
                             type="text"
                             value={customFrameSubtext}
                             onChange={(e) =>
@@ -1042,7 +1290,7 @@ export function QRCodeGenerator({
 
                   {/* Modules & Accuracy */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-hairline-soft">
-                    <div className="flex items-center justify-between p-3 bg-canvas rounded-xl border border-hairline-soft">
+                    <label className="flex items-center justify-between p-3 bg-canvas rounded-xl border border-hairline-soft cursor-pointer">
                       <span className="text-xs text-ink font-medium">
                         Rounded Modules
                       </span>
@@ -1052,14 +1300,19 @@ export function QRCodeGenerator({
                         onChange={(e) => setRounded(e.target.checked)}
                         className="toggle toggle-xs toggle-primary"
                       />
-                    </div>
+                    </label>
 
                     <div className="flex items-center justify-between p-3 bg-canvas rounded-xl border border-hairline-soft">
-                      <span className="text-xs text-ink font-medium">
+                      <label
+                        htmlFor="qr-error-correction"
+                        className="text-xs text-ink font-medium"
+                      >
                         Error Correction
-                      </span>
+                      </label>
                       <select
-                        value={level}
+                        id="qr-error-correction"
+                        value={activeLogoSrc ? "H" : level}
+                        disabled={Boolean(activeLogoSrc)}
                         onChange={(e) =>
                           setLevel(e.target.value as ErrorCorrectionLevel)
                         }
@@ -1080,7 +1333,7 @@ export function QRCodeGenerator({
           {/* -----------------------------------------------------------------
               RIGHT COLUMN: Prominent Live QR Preview & Export Center
               ----------------------------------------------------------------- */}
-          <div className="lg:col-span-5 bg-surface-1 border border-hairline rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-between text-center space-y-6 lg:sticky lg:top-6">
+          <div className="lg:col-span-5 bg-surface-1 border border-hairline rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-between text-center space-y-6 lg:sticky lg:top-20">
             {/* Header Badge */}
             <div className="flex items-center justify-between w-full border-b border-hairline-soft pb-3">
               <span className="text-[11px] font-semibold uppercase tracking-wider text-ink-subtle flex items-center gap-1.5">
@@ -1103,7 +1356,7 @@ export function QRCodeGenerator({
                 fgColor={fgColor}
                 gradient={gradient}
                 rounded={rounded}
-                level={level}
+                level={activeLogoSrc ? "H" : level}
                 logo={activeLogoSrc}
                 logoSize={Math.round(size * 0.22)}
                 frame={frame}
@@ -1122,30 +1375,35 @@ export function QRCodeGenerator({
               routing.
             </p>
 
-            {/* Controls & 15-Second Download Buttons */}
+            {/* Controls & Download Buttons */}
             <div className="w-full space-y-4 pt-4 border-t border-hairline-soft">
               {/* Size Slider */}
               <div className="space-y-1.5 text-left">
                 <div className="flex items-center justify-between text-xs text-ink-muted">
-                  <span className="flex items-center gap-1">
+                  <label
+                    htmlFor="qr-size-range"
+                    className="flex items-center gap-1"
+                  >
                     <Sliders className="w-3.5 h-3.5 text-primary" />
-                    Canvas Size:
-                  </span>
+                    <span>Canvas Size:</span>
+                  </label>
                   <span className="font-semibold text-ink font-mono">
                     {size}px × {size}px
                   </span>
                 </div>
                 <input
+                  id="qr-size-range"
                   type="range"
                   min={180}
                   max={280}
                   value={size}
                   onChange={(e) => setSize(Number(e.target.value))}
+                  aria-label="QR code preview size in pixels"
                   className="range range-xs range-primary"
                 />
               </div>
 
-              {/* Action Buttons with 15-Second Processing Modal */}
+              {/* Action Buttons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                 <button
                   type="button"
@@ -1193,8 +1451,9 @@ export function QRCodeGenerator({
                 <button
                   type="button"
                   onClick={() => {
-                    setUrlVal("https://www.qrvenues.com/menu/the-artisan-cafe");
-                    setFgColor("#5645d4");
+                    setActiveTab(initialTab);
+                    setUrlVal(initialValue);
+                    setFgColor(initialFgColor);
                     setBgColor("#ffffff");
                     setEnableGradient(false);
                     setSelectedLogoId("none");
@@ -1203,6 +1462,7 @@ export function QRCodeGenerator({
                     setCustomFrameLabel("");
                     setCustomFrameSubtext("");
                     setSize(210);
+                    setLevel("H");
                   }}
                   className="btn btn-ghost btn-xs text-ink-muted hover:text-ink gap-1"
                 >
@@ -1215,7 +1475,7 @@ export function QRCodeGenerator({
         </div>
       </div>
 
-      {/* 15-Second Download Processing Modal */}
+      {/* Download Processing Modal */}
       <QRCodeDownloadModal
         isOpen={isDownloadModalOpen}
         onClose={() => setIsDownloadModalOpen(false)}
